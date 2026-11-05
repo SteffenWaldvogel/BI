@@ -1,0 +1,23 @@
+{
+  "seed": 20261127,
+  "fehlerquote": 1.0,
+  "kunden": 200,
+  "verteilung": {
+    "ERP+SHOP+CRM": 45,
+    "ERP+CRM": 20,
+    "SHOP+CRM": 30,
+    "CRM": 15,
+    "SHOP": 65,
+    "ERP": 25
+  },
+  "erp_auftraege": 354,
+  "shop_orders": 384,
+  "crm_accounts": 115,
+  "crm_dubletten": 5,
+  "chf_kurs_eur": 0.96,
+  "mwst": {
+    "DE": 1.19,
+    "AT": 1.2,
+    "CH": 1.081
+  }
+}

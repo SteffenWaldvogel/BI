@@ -1,0 +1,8 @@
+VertreterNr;Name;Gebiet;Austritt
+V01;Keller, Thomas;70-79;30.06.2024
+V02;Huber, Stefan;80-89;31.12.9999
+V03;Schneider, Anja;01-19;31.12.9999
+V04;Brunner, Reto;CH;31.12.9999
+V05;Pichler, Lukas;AT;31.12.9999
+I01;Vogt, Sabine;;31.12.9999
+I02;Maier, Jonas;;31.12.9999

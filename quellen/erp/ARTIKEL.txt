@@ -1,0 +1,26 @@
+ArtNr;Bezeichnung;EKPreis
+FL-STD-0407;Standard Flights;1,96
+FL-PRO-0414;Slim Flights;2,32
+FL-VAR-0421;Kite Flights;2,38
+FL-VAR-0428;Pear Flights;3,24
+FL-VAR-0435;Turnier-Flights;2,17
+SH-STD-0442;Nylon Shafts;3,88
+SH-PRO-0449;Alu Shafts;5,83
+SH-VAR-0456;Carbon Shafts;3,44
+SH-VAR-0463;Spinning Shafts;2,80
+BA-STD-0470;Steel Barrel 22g;25,60
+BA-PRO-0477;Steel Barrel 24g;19,60
+BA-VAR-0484;Tungsten Barrel 90%;61,11
+BA-VAR-0491;Soft Barrel 18g;53,03
+BA-VAR-0498;Brass Barrel 20g;19,92
+BO-STD-0505;Sisal Board Pro;179,08
+BO-PRO-0512;Sisal Board Club;127,05
+BO-VAR-0519;E-Dartboard;51,76
+BO-VAR-0526;Board-Surround;136,75
+ZU-STD-0533;Flight Protector;21,43
+ZU-PRO-0540;Dart Case;2,78
+ZU-VAR-0547;Spitzen Steel;21,85
+ZU-VAR-0554;Spitzen Soft;13,64
+ZU-VAR-0561;Abwurflinie;15,06
+ZU-VAR-0568;Scoreboard;16,68
+ZU-VAR-0575;Wurfmatte;17,44
