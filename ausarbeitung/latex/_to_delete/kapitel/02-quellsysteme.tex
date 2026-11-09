@@ -1,0 +1,59 @@
+\section{Entwurf der Quellsysteme}\label{sec:quellsysteme}
+
+% Zielumfang: ca. 2–2,5 Seiten. Je Quelle: Technik, Tabellen, 3–4 markante Konflikte; Rest über die Checkliste im Anhang.
+
+\subsection{Quellsystem ERP (Lexware-Typ)}\label{sec:erp}
+
+\todo{Technik: on-premise, .txt, Windows-1252, Semikolon, TT.MM.JJJJ, Dezimalkomma, CRLF, Vollabzug ohne Delta \skript{7.1}, Preise netto, Währung je Auftrag.}
+
+Tabellen: \quelle{KUNDE}, \quelle{VERTRETER}, \quelle{AUFTRAG}, \quelle{AUFTRAGSPOS}, \quelle{ZAHLUNG}, \quelle{LIEFERUNG}, \quelle{ARTIKEL}.
+
+\todo{Tabelle KUNDE (Attribut / Beispiel / eingebauter Konflikt) -- Auswahl: KdNr numerisch, Firma mit/ohne e.V., Name1 mit Titel, Strasse mit Hausnummer in einem Feld, PLZ als Zahl (führende Null), Land als Kfz-Code, Kundengruppe 1--4 ohne Doku, Zahlungsziel -1, GesperrtBis 31.12.9999, Bemerkung mit eingebetteten Zeilenumbrüchen (90 Datensätze auf 124 physischen Zeilen).}
+
+\subsection{Quellsystem Online-Shop}\label{sec:shop}
+
+\todo{Technik: .csv, UTF-8, Komma, ISO-Datum UTC, Dezimalpunkt, LF; created\_at/updated\_at vorhanden (Delta möglich); Preise brutto, immer EUR auch für CH.}
+
+Tabellen: \quelle{customers}, \quelle{orders}, \quelle{order\_items}, \quelle{products}, \quelle{shipping\_methods}.
+
+\todo{Markante Konflikte: customer\_id alphanumerisch, email als einziger Linkage-Kandidat zum CRM, address in einem Feld (Elementizing), gender 1/2/0, is\_club als Boolean statt Kundentyp (schematische Heterogenität), erp\_customer\_no nur bei 40\,\%, Lieferart als eigene Entität (Abb.~8.10 im Skript), status als Homonym.}
+
+\subsection{Quellsystem CRM}\label{sec:crm}
+
+\todo{Technik: SaaS, .xlsx, US-Datum, GUIDs; vom Vertrieb gepflegt, daher Dubletten und Freitext.}
+
+Tabellen: \quelle{Accounts}, \quelle{Betreuer}, \quelle{Aktivitaet}.
+
+\todo{Markante Konflikte: AccountId GUID (dritter Schlüsseltyp), Firma ohne Präfix/e.V., Anrede-Varianten, Vorname/Nachname mit ue statt ü und Mojibake, Strasse/Hausnr getrennt, Land Klartext, Kundentyp 5 Werte, Segment als Homonym-Falle, ERP\_KdNr bei 60\,\% und mit Tippfehlern, Erstkontakt US-Format teils nur MM/YYYY, LetzteAenderung für Aktualität.}
+
+\subsection{Überlappungen und Beispieldaten}\label{sec:ueberlappung}
+
+\todo{Tabelle der extensionalen Beziehungen \skript{8.2.3}: Überlappung (Vereine/Händler/Gastro), Teilmenge (Privatkunden ERP $\subset$ Shop), Disjunkt (Leads), Äquivalenz mit verschiedenen Schlüsseln (Verkäufer, Produkte), Shop-Aufträge $\subset$ ERP-Aufträge.}
+
+\begin{table}[H]
+  \centering\small
+  \caption{Verteilung der 200 eindeutigen Kunden auf die Quellsysteme (Sollwerte der Datengenerierung)}
+  \label{tab:verteilung}
+  \begin{tabular}{@{}lrl@{}}
+    \toprule
+    Präsenz & Anzahl & Kundentypen \\
+    \midrule
+    ERP + Shop + CRM & 45 & Vereine, Händler, Gastro \\
+    ERP + CRM & 20 & Vereine, Händler, Gastro \\
+    Shop + CRM & 30 & Vereine, Privat, Gastro \\
+    nur CRM (Leads) & 15 & Vereine, Händler, Gastro \\
+    nur Shop & 65 & Privat \\
+    nur ERP (Altkunden, gesperrt) & 25 & Vereine, Händler, Gastro \\
+    \midrule
+    \multicolumn{3}{@{}p{11cm}}{Ergibt ERP 90 (+3 Dubletten), Shop 140, CRM 110 (+5 Dubletten) Datensätze. Von den 95 überlappenden Kunden: 40\,\% identische Adresse, 40\,\% abweichende Schreibweise, 20\,\% Umzug mit jüngerer CRM-Adresse.} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\todo{Datengenerierung begründen: Python-Skript mit festem Seed statt KI oder Hand -- reproduzierbar, Fehlerdichte skalierbar (FEHLERQUOTE), und vor allem: Ground Truth (\texttt{kunden\_mapping.csv}) als Messlatte für \cref{sec:erfolgsmessung}. Die Sollwerte sind NICHT Teil der Quellen.}
+
+\subsection{Checkliste der Integrationsprobleme}\label{sec:checkliste}
+
+Die Vorgabe verlangt, dass alle im Skript genannten Probleme und Lösungsansätze der Datenintegration in den Quellsystemen vorkommen und gelöst werden. \Cref{tab:checkliste} im Anhang ordnet 49 Problemklassen dem Skriptabschnitt, der Stelle im Entwurf und dem Power-Query-Schritt zu. Sie ist das Rückgrat der Umsetzung in \cref{sec:integration} und wird dort gruppenweise abgearbeitet.
+
+\todo{Hier 4--5 Sätze: welche Problemgruppen die Checkliste bildet (syntaktisch / Kodierung / Schema / Datenfehler / Linkage / Historisierung) und welche Zeilen in Kap. 4 ausführlich, welche nur tabellarisch behandelt werden.}

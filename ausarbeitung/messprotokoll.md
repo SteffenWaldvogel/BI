@@ -66,4 +66,17 @@ Endstand für die Faktenseite: Variante 3b mit pSchwelle = 0,8.
 
 CRM_k: 1 ERP-Schlüssel 38 · 3 Adresse exakt 18 · 4 Fuzzy 5 · neu 49 (15 Leads + 30 nur Shop+CRM + 4 Umzieher)
 SHOP_k: 1 ERP-Schlüssel 24 · 2 E-Mail CRM 51 · neu 65 (= die 65 reinen Privatkunden)
-(Zahlen aus CHECK_Sollwerte, Zeilen mit Sollwert; Schlüsselzahl 38 statt 43 wie in Messung 2 → im Editor in CRM_k gegenprüfen, Gruppierung nach Matchmethode.)
+(Zahlen aus CHECK_Sollwerte, Zeilen mit Sollwert.)
+
+**Gegenprüfung Schlüsseltreffer (09.11.2026), Nachrechnung direkt auf den Quelldateien:** 115 CRM-Accounts, davon 39 mit ERP_KdNr.
+38 davon zeigen auf eine existierende KdNr mit identischem Name_norm → 38 ist korrekt. Der 39. (ERP_KdNr 10368 am Account „Dartwelt OHG")
+zeigt auf „Treffpunkt 180 Luzern e.V." – der eingebaute Tippfehler im Fremdschlüssel, den die Namensprüfung (Checkliste 30) richtig abweist
+(Flag_Schluessel_Name = true). Keine Referenz zeigt auf eine verworfene ERP-Dublette. Die 43 aus Messung 2 stammen aus einem älteren
+Generatorlauf: jede Generatoränderung (hier die Präfix-Korrektur) verschiebt den Zufallsstrom und damit die 60-%-Auswahl, welche Accounts
+eine ERP_KdNr tragen. Die Zahl ist also kein Fehler der Integration, sondern eine Eigenschaft des jeweiligen Datenstands.
+
+**Offener Befund im Generator (nicht korrigiert, um die Messreihe nicht zu invalidieren):** `_nkey` ersetzt „sv " vor „tsv " – derselbe
+Präfixfehler wie ursprünglich in fnNormName. Folge: „TSV Steeldarters Augsburg" (10206) und „DC Steeldarters Augsburg" (10381) haben
+dieselbe Name_norm in derselben Stadt, obwohl der Generator das verhindern soll. In Messung 3b harmlos (10206 hat ERP-Schlüssel im CRM,
+10381 ist reiner ERP-Altkunde), aber ein realistischer Grenzfall für Kap. 8: zwei Vereine mit gleichem Namensstamm in einer Stadt
+sind über Namen allein nicht trennbar → Prüfliste.

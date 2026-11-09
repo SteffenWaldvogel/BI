@@ -10,7 +10,8 @@ Entwurf der Quellsysteme und Checkliste: Claude-Doc "Quellsysteme Dart-Händler"
 - `quellen/crm/`  – CRM-Export: CRM_Export.xlsx (Accounts, Betreuer, Aktivitaet), US-Datum, GUIDs
 - `sollwerte/`    – Ground Truth (kunden_mapping.csv, parameter.json). NUR zur Erfolgsmessung, nicht Teil der Quellen.
 - `integration/`  – hier entsteht die Excel mit den Power-Query-Abfragen (leer)
-- `ausarbeitung/` – Text, Screenshots, Folien (leer)
+- `ausarbeitung/` – messprotokoll.md (Messreihe Kap. 4.5), latex/ (Overleaf-Projekt, Hauptdatei main.tex, pdfLaTeX),
+                   overleaf_upload.zip (= latex/ gezippt, bei Änderungen neu erzeugen)
 
 ## Neu generieren
     python generate_sources.py      (benötigt: pip install openpyxl)

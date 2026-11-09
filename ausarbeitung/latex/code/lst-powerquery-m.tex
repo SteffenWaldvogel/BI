@@ -1,0 +1,37 @@
+% Listings-Definition für Power Query M und Grundstil
+\definecolor{lstbg}{gray}{0.96}
+\definecolor{lstkw}{RGB}{0,70,140}
+\definecolor{lstcm}{RGB}{90,110,90}
+\definecolor{lststr}{RGB}{140,40,40}
+
+\lstdefinelanguage{PowerQueryM}{
+  morekeywords={let, in, each, if, then, else, try, otherwise, type, as, is, and, or, not, meta, section, shared, nullable, null, true, false},
+  morekeywords=[2]{Table, Text, List, Record, Date, DateTime, DateTimeZone, Number, Value, Csv, Excel, File, Character, Replacer, JoinKind, QuoteStyle, Splitter, Order, Int64},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  alsoletter={.},
+}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{lstkw}\bfseries,
+  keywordstyle=[2]\color{lstkw},
+  commentstyle=\color{lstcm}\itshape,
+  stringstyle=\color{lststr},
+  backgroundcolor=\color{lstbg},
+  frame=single, framerule=0pt, framesep=4pt,
+  breaklines=true, breakatwhitespace=false,
+  postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
+  columns=fullflexible, keepspaces=true,
+  showstringspaces=false,
+  numbers=left, numberstyle=\tiny\color{gray}, numbersep=6pt,
+  tabsize=2,
+  captionpos=b,
+  literate=
+    {ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1
+    {→}{{$\rightarrow$}}1 {–}{{--}}1 {„}{{\glqq}}1 {“}{{\grqq}}1 {”}{{\grqq}}1
+}
+\renewcommand{\lstlistingname}{Listing}
+\renewcommand{\lstlistlistingname}{Listingverzeichnis}

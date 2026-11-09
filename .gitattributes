@@ -1,0 +1,11 @@
+# Zeilenenden (09.11.2026, wie Projektarbeit 2): Windows-Checkout erzeugte CRLF-Scheinänderungen.
+# Quelldateien bleiben byteidentisch (ERP bewusst CRLF, Shop bewusst LF – Teil des Fallbeispiels).
+* text=auto
+quellen/**  -text
+sollwerte/** -text
+*.pdf  binary
+*.png  binary
+*.jpg  binary
+*.docx binary
+*.xlsx binary
+*.zip  binary

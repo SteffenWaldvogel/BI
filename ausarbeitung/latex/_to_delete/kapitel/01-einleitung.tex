@@ -1,0 +1,28 @@
+\section{Einleitung}\label{sec:einleitung}
+
+% Zielumfang: ca. 1 Seite. Keine theoretischen Grundlagen (Vorgabe), nur Aufgabe, Fall, Vorgehen.
+
+\subsection{Aufgabenstellung und Fallbeispiel}
+
+Ein großer Händler für Dart-Zubehör setzt drei Systeme ein: eine ERP-Software für Bestellungen, Zahlungen und Lieferungen, einen Online-Shop und eine CRM-Lösung. Aufgabe ist es, für diese drei Quellsysteme Tabellen zu entwerfen, die für Auswertungen von Verkäufern mit Bezug zu Kundenmerkmalen relevant sind, und sie mit Excel Power Query in einen gemeinsamen, integrierten Datenbestand zu überführen. Die Quellsysteme sind dabei so zu entwerfen, dass alle im Skript genannten Integrationsprobleme auftreten und gelöst werden.
+
+Als Fallbeispiel dient die fiktive \textbf{DartPoint GmbH}, ein Großhändler mit Sitz in Süddeutschland und Kunden in Deutschland, Österreich und der Schweiz. Sie beliefert Dartvereine, Fachhändler und Gastronomie über Außen- und Innendienst und verkauft an Privatkunden über einen eigenen Online-Shop. Die drei Systeme sind historisch gewachsen: das ERP seit 2012 (Lexware-ähnlich, on-premise, deutsche Feldnamen, Windows-1252-Export), der Shop seit 2018 (Standardsystem, englische Feldnamen, UTF-8, ISO-Datum) und das CRM seit 2022 (SaaS, GUIDs, US-Datumsformat, Excel-Export). Die Heterogenität ist damit keine Nachlässigkeit, sondern die realistische Folge von drei Werkzeugen aus drei Jahrzehnten.
+
+\subsection{Auswertungsziele}
+
+Der integrierte Datenbestand soll sechs Fragen beantworten, die jeweils Verkäufer und Kundenmerkmal verknüpfen:
+\begin{enumerate}[label=F\arabic*]
+  \item Umsatz je Verkäufer nach Kundentyp (Verein, Fachhändler, Gastronomie, Privat)
+  \item Umsatz je Verkäufer nach Land und Region seiner Kunden
+  \item Saisonverlauf je Verkäufer und Kundentyp (Ligastart, Weihnachten, Sommerloch)
+  \item Produktgruppen je Verkäufer und Kundentyp
+  \item Kanalanteil: Umsatz betreuter Kunden direkt über den Verkäufer vs. über den Shop (Abwanderung)
+  \item Zahlungs- und Lieferqualität: Anteil verspäteter Zahlungen und Lieferungen je Verkäufer
+\end{enumerate}
+Einkauf, Lager und Lieferanten bleiben außen vor; sie liegen zwar im ERP, sind für die Verkäuferauswertung aber nicht relevant und werden gemäß dem Grundsatz, nur tatsächlich benötigte Daten zu übernehmen, nicht extrahiert \skript{8.1.2}.
+
+\subsection{Vorgehen und Aufbau}
+
+\Cref{sec:quellsysteme} entwirft die drei Quellsysteme und belegt anhand einer Checkliste (\cref{app:checkliste}), welches Integrationsproblem an welcher Stelle eingebaut ist. Die Beispieldaten werden nicht von Hand erfasst, sondern deterministisch per Python-Skript erzeugt (\cref{app:generator}); das Skript schreibt zusätzlich eine Sollwert-Tabelle, welcher reale Kunde unter welcher ID in welchem System steckt. Damit wird der Integrationserfolg messbar, statt nur plausibel. \Cref{sec:zielschema} definiert das Zielschema. \Cref{sec:integration} beschreibt die Umsetzung in Power Query: Staging je Quelle, Harmonisierung, die Kundenintegration als mehrstufige Kaskade aus Schlüssel-, E-Mail-, Adress- und Fuzzy-Abgleich, die Erfolgsmessung gegen die Sollwerte sowie die Faktenseite. \Cref{sec:zusammenfassung} fasst die Ergebnisse zusammen.
+
+\todo{Eigene Leistung kurz herausstellen: Generator, Sollwert-Messung, Messreihe mit 6 Iterationen -- das unterscheidet die Arbeit von einer reinen Klick-Dokumentation.}

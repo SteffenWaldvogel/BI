@@ -1,0 +1,302 @@
+% =====================================================================
+%  Portfolioleistung Business Intelligence – Thema 1.2
+%  Integration der Quellsysteme eines Dart-Händlers mit Excel Power Query
+%  DHBW Ravensburg, WWIBE124, Theoriephase 5 (Okt–Dez 2026)
+%
+%  Layout nach Handreichung WA v3 Kap. 3.4 (wie Projektarbeit 2): Times 12 pt,
+%  Ränder 2,5 / 2,0 / 2,5 / 2,5 cm, 1,5-zeilig; Tabellen/Abbildungen/Listings einzeilig.
+%  Keine Quellenbelege, kein Literaturverzeichnis, kein KI-Verzeichnis (Vorgabe Kirchberg).
+%  Aufbau: Abbildung (Screenshot) -> was wurde gemacht -> Entscheidung + Alternative.
+%  Overleaf: Compiler pdfLaTeX, Hauptdatei main.tex. Screenshots nach bilder/ legen.
+% =====================================================================
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\usepackage[ngerman]{babel}
+\usepackage[babel, german=quotes]{csquotes}
+\usepackage{graphicx}
+\graphicspath{{bilder/}}
+\usepackage{geometry}
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.0cm}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{enumitem}
+\setlist{noitemsep}
+\usepackage[font=small, labelfont=bf, labelsep=colon]{caption}
+\usepackage{listings}
+\input{code/lst-powerquery-m.tex}
+\usepackage[hidelinks]{hyperref}
+\usepackage[nameinlink, ngerman]{cleveref}
+
+\usepackage{etoolbox}
+\setstretch{1.5}
+\AtBeginEnvironment{table}{\setstretch{1.0}\selectfont}
+\AtBeginEnvironment{figure}{\setstretch{1.0}\selectfont}
+\AtBeginEnvironment{lstlisting}{\setstretch{1.0}\selectfont}
+\clubpenalty=10000
+\widowpenalty=10000
+
+% ---------- Hilfsmakros
+\newcommand{\todo}[1]{\textcolor{red!80!black}{\textbf{[TODO: #1]}}}
+\newcommand{\pq}[1]{\texttt{#1}}        % Power-Query-Bezeichner
+\newcommand{\quelle}[1]{\textsf{#1}}    % Quellsystem-Objekte
+\newcommand{\skript}[1]{(Skript Kap.~#1)}
+% \abb{datei}{Bildunterschrift}{label}{Breite}: zeigt bilder/datei.png, sonst einen Platzhalter mit dem Dateinamen
+\newcommand{\abb}[4]{%
+  \begin{figure}[H]\centering
+  \IfFileExists{bilder/#1.png}{\includegraphics[width=#4\textwidth]{#1.png}}%
+    {\fbox{\parbox{#4\textwidth}{\centering\vspace{1.2cm}\textcolor{gray}{Screenshot \texttt{bilder/#1.png}}\vspace{1.2cm}}}}
+  \caption{#2}\label{#3}\end{figure}}
+% Anhänge ohne Gliederungsnummer (HR 2.5/2.9)
+\newcounter{anhang}
+\crefname{anhang}{Anhang}{Anhänge}
+\Crefname{anhang}{Anhang}{Anhänge}
+\newcommand{\anhang}[2]{\clearpage\refstepcounter{anhang}%
+  \section*{Anhang \Alph{anhang}: #1}\label{#2}\addcontentsline{toc}{section}{Anhang \Alph{anhang}: #1}}
+
+\newcommand{\arbeitstitel}{Integration der Quellsysteme eines Dart-Händlers mit Excel Power Query}
+\newcommand{\abgabedatum}{27. November 2026}
+\hypersetup{pdftitle={\arbeitstitel}, pdfauthor={Steffen Waldvogel}}
+
+% =====================================================================
+\begin{document}
+
+% ---------- Deckblatt (ungezählt)
+\pagenumbering{alph}
+\thispagestyle{empty}
+\begin{flushright}\includegraphics[width=3.5cm]{dhbw_logo.png}\end{flushright}
+\vspace{2.5cm}
+\begin{center}
+  {\Large \textbf{\arbeitstitel}} \\[0.6cm]
+  {\large Fallbeispiel DartPoint GmbH -- Thema 1.2} \\[1.2cm]
+  {\large \textbf{PORTFOLIOLEISTUNG}} \\[0.4cm]
+  Schriftliche Ausarbeitung im Modul Business Intelligence \\[1cm]
+  des Studienganges Wirtschaftsinformatik: Business Engineering \\
+  an der Dualen Hochschule Baden-Württemberg Ravensburg \\[1.5cm]
+  von \\[0.8cm]
+  Steffen Waldvogel \\[1.5cm]
+  Ravensburg, \abgabedatum
+\end{center}
+\vfill
+\begin{tabular}{ll}
+Matrikelnummer, Kurs: & 3989184, WWIBE124 \\
+Fachsemester:         & 5. Semester \\
+Dualer Partner:       & Hokubema Maschinenbau GmbH, Sigmaringen \\
+Dozent:               & \todo{Prof. Dr. Kirchberg -- Titel/Vorname prüfen} \\
+\end{tabular}
+
+% ---------- Verzeichnisse (römisch)
+\newpage
+\pagenumbering{roman}
+\setcounter{page}{1}
+\tableofcontents
+\newpage
+\listoffigures
+\addcontentsline{toc}{section}{Abbildungsverzeichnis}
+% Tabellenverzeichnis nur bei >= 3 Tabellen (HR 2.7) – derzeit 3, also aktiv
+\listoftables
+\addcontentsline{toc}{section}{Tabellenverzeichnis}
+
+% =====================================================================
+% TEXTTEIL – Ziel 8–12 Seiten; bei vielen Abbildungen dürfen es mehr sein (Vorgabe Kirchberg)
+% =====================================================================
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\section{Einleitung}\label{sec:einleitung}
+
+Ein großer Händler für Dart-Zubehör setzt drei Systeme ein: eine ERP-Software für Bestellungen, Zahlungen und Lieferungen, einen Online-Shop und ein CRM. Aufgabe ist es, für diese drei Quellsysteme Tabellen zu entwerfen, die für Auswertungen von Verkäufern mit Bezug zu Kundenmerkmalen relevant sind, und sie mit Excel Power Query in einen gemeinsamen, integrierten Datenbestand zu überführen. Die Quellsysteme sind so zu entwerfen, dass alle im Skript genannten Integrationsprobleme auftreten und gelöst werden.
+
+Als Fallbeispiel dient die fiktive \textbf{DartPoint GmbH}, ein Großhändler mit Kunden in Deutschland, Österreich und der Schweiz. Sie beliefert Dartvereine, Fachhändler und Gastronomie über Außen- und Innendienst und verkauft an Privatkunden über einen eigenen Online-Shop. Die drei Systeme sind historisch gewachsen: ERP seit 2012 (Lexware-ähnlich, on-premise, Windows-1252-Export), Shop seit 2018 (Standardsystem, UTF-8, ISO-Datum), CRM seit 2022 (SaaS, GUIDs, US-Datum, Excel-Export). Die Heterogenität ist damit die realistische Folge von drei Werkzeugen aus drei Jahrzehnten.
+
+Der integrierte Datenbestand soll sechs Fragen beantworten, die jeweils Verkäufer und Kundenmerkmal verknüpfen: Umsatz je Verkäufer nach Kundentyp (F1), nach Land und Region (F2), Saisonverlauf (F3), Produktgruppen (F4), Kanalanteil Direkt vs.\ Shop bei betreuten Kunden (F5) sowie Zahlungs- und Lieferqualität je Verkäufer (F6).
+
+\Cref{sec:quellsysteme} entwirft die Quellsysteme und die Beispieldaten, \cref{sec:zielschema} das Zielschema. \Cref{sec:integration} zeigt die Umsetzung in Power Query Schritt für Schritt anhand von Screenshots: je Schritt, was gemacht wurde, warum so und welche Alternative verworfen wurde. Der Integrationserfolg wird nicht nur plausibilisiert, sondern gegen die bekannte Wahrheit der Datengenerierung gemessen (\cref{sec:erfolgsmessung}). \Cref{sec:zusammenfassung} fasst die Ergebnisse zusammen.
+
+% =====================================================================
+\section{Quellsysteme und Beispieldaten}\label{sec:quellsysteme}
+
+\subsection{Die drei Quellsysteme}
+
+\abb{quellen-ueberblick}{Die drei Quellsysteme der DartPoint GmbH mit Tabellen, Formaten und Schlüsseln}{fig:quellen}{0.95}
+% Vorschlag: Draw.io/PowerPoint-Grafik: drei Kästen ERP (KUNDE, VERTRETER, AUFTRAG, AUFTRAGSPOS, ZAHLUNG, LIEFERUNG, ARTIKEL),
+% Shop (customers, orders, order_items, products, shipping_methods), CRM (Accounts, Betreuer, Aktivitaet);
+% darunter je Format: .txt/1252/;/TT.MM.JJJJ/Dezimalkomma – .csv/UTF-8/,/ISO-UTC/Dezimalpunkt/brutto – .xlsx/MM/DD/YYYY/GUID
+
+\todo{Je System ein Absatz: Technik, Tabellen, und die drei bis vier markantesten eingebauten Konflikte -- ERP: KdNr numerisch, Straße+Hausnr in einem Feld, PLZ als Zahl (führende Null), Kundengruppe 1--4, Zahlungsziel -1 / 31.12.9999, Bemerkung mit Zeilenumbrüchen. Shop: address in einem Feld, is\_club statt Kundentyp, gender 1/2/0, Lieferart als eigene Tabelle, Preise brutto auch für CH. CRM: GUID, Firma ohne Präfix/e.V., Anrede-Varianten, ue/ü und Mojibake, ERP\_KdNr nur bei 60\,\% und mit Tippfehlern, Datum teils nur MM/YYYY.}
+
+\abb{quellen-beispielzeilen}{Beispielzeilen derselben Kundin in ERP, Shop und CRM -- drei Schreibweisen, drei Schlüssel}{fig:beispielzeilen}{0.95}
+% Screenshot: je eine Zeile aus KUNDE.txt (Editor), customers.csv, CRM Accounts für einen überlappenden Kunden
+
+\subsection{Überlappungen und Datengenerierung}
+
+\todo{Kurz: welche Objekte in welchen Systemen vorkommen (Überlappung, Teilmenge, disjunkt, Äquivalenz mit verschiedenen Schlüsseln -- Skript 8.2.3), dann die Entscheidung: Beispieldaten per Python-Skript mit festem Seed statt von Hand, weil (1) reproduzierbar, (2) Fehlerdichte skalierbar, (3) Sollwerte als Messlatte. Alternative: Daten per KI erzeugen lassen -- verworfen, weil dann keine Ground Truth existiert.}
+
+\begin{table}[H]
+  \centering\small
+  \caption{Verteilung der 200 eindeutigen Kunden auf die Quellsysteme}
+  \label{tab:verteilung}
+  \begin{tabular}{@{}lrl@{}}
+    \toprule
+    Präsenz & Anzahl & Kundentypen \\
+    \midrule
+    ERP + Shop + CRM & 45 & Vereine, Händler, Gastro \\
+    ERP + CRM & 20 & Vereine, Händler, Gastro \\
+    Shop + CRM & 30 & Vereine, Privat, Gastro \\
+    nur CRM (Leads) & 15 & Vereine, Händler, Gastro \\
+    nur Shop & 65 & Privat \\
+    nur ERP (Altkunden, gesperrt) & 25 & Vereine, Händler, Gastro \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+Daraus entstehen 93 ERP-Kunden (inkl.\ 3 Dubletten), 140 Shop-Kunden und 115 CRM-Accounts (inkl.\ 5 Dubletten). Von den 95 überlappenden Kunden haben 40\,\% eine identische Adresse, 40\,\% eine abweichende Schreibweise und 20\,\% sind umgezogen, wobei das CRM die jüngere Adresse führt.
+
+% =====================================================================
+\section{Zielschema}\label{sec:zielschema}
+
+\abb{zielschema}{Zielschema: Sternschema mit historisierter Kundenadresse und Schlüssel-Mapping}{fig:zielschema}{0.9}
+% Grafik: DIM_KUNDE, DIM_KUNDE_ADRESSE (GueltigVon/Bis, CurrentFlag), DIM_VERKAEUFER, DIM_PRODUKT, FAKT_VERKAUF, MAP_SCHLUESSEL
+
+\todo{Je Entscheidung zwei bis drei Sätze mit Alternative: (1) Surrogatschlüssel KundeKey + Mapping-Tabelle statt einen Quellschlüssel durchzureichen. (2) Adresse historisiert statt \enquote{jüngste gewinnt} -- verhindert, dass Umsatz vor dem Umzug der neuen Region zugeordnet wird. (3) Verkäufer am Auftrag, nicht am Kunden -- nur so ist F5 korrekt. (4) Lieferart als Attribut, nicht als Entität. (5) Leads als Kunden ohne Umsatz. (6) Shop-Aufträge nur aus einer Quelle, weil sie auch ins ERP importiert sind.}
+
+% =====================================================================
+\section{Umsetzung in Power Query}\label{sec:integration}
+
+\subsection{Aufbau der Abfragen}\label{sec:aufbau}
+
+\abb{pq-abhaengigkeiten}{Abfrageabhängigkeiten in Power Query: Rohdaten, Hilfsfunktionen, Harmonisierung (\_h), Kundenintegration (\_k), Zielschema, Prüfabfragen}{fig:abhaengigkeiten}{0.95}
+% Screenshot: Power-Query-Editor > Ansicht > Abfrageabhängigkeiten
+
+\todo{Erklären: Schichten wie im Staging-Ansatz; Rohdaten-Abfragen enthalten nur den Import; Mappings als eigene Tabellen (mapLand, mapKundentyp, mapRegion, mapMwSt) und Parameter (pSchwelle, pKursCHF) statt Werte im Code; Integrationsreihenfolge ERP $\rightarrow$ CRM $\rightarrow$ Shop, weil das ERP Stammdaten und Verkäufer führt (Alternative: n-är in einem Schritt -- verworfen, Fehler nicht lokalisierbar).}
+
+\subsection{Import und syntaktische Harmonisierung}\label{sec:syntax}
+
+\abb{pq-import-erp}{Import der ERP-Datei: Codepage 1252, Semikolon, Gebietsschema de-DE -- und das Problem eingebetteter Zeilenumbrüche}{fig:import}{0.9}
+% Screenshot: Csv.Document-Dialog bzw. Vorschau mit zerrissenen Zeilen (QuoteStyle.None) vs. korrekt (QuoteStyle.Csv): 124 Zeilen -> 90 Datensätze
+
+\todo{Was: Codepage, Trennzeichen, Dezimaltrenner, drei Datumsformate, UTC-Zeitzone. Entscheidung: Typumwandlung immer mit explizitem Gebietsschema, nie automatisch erkannt. Nachweis Zeilenumbrüche: 124 physische Zeilen, 90 Datensätze.}
+
+\abb{pq-fnclean}{Hilfsfunktion \pq{fnClean}: geschützte Leerzeichen, Doppel- und Nachlaufleerzeichen vor dem Matchschlüssel entfernen}{fig:fnclean}{0.85}
+
+\todo{Warum eine Funktion statt Trim je Spalte: 14 Textspalten im CRM allein; unsichtbare Zeichen (NBSP, Soft Hyphen) zerstören Joins. Nachweis: Matchtreffer mit und ohne fnClean. Mojibake-Rückübersetzung Ã¼ $\rightarrow$ ü.}
+
+\subsection{Kodierungen, Schema und Datenfehler}\label{sec:schema}
+
+\abb{pq-mapping}{Mapping-Tabellen statt verschachtelter Bedingungen: Länder (stark äquivalent) und Kundentyp (schwach äquivalent, kleinster gemeinsamer Nenner)}{fig:mapping}{0.9}
+% Screenshot: mapKundentyp mit den drei Quellkodierungen und dem Merge in CRM_h
+
+\todo{Was: J/N, true/false, X/leer $\rightarrow$ Boolean; Anrede-Varianten; NULL-Kodierungen -1 und 31.12.9999; is\_club $\rightarrow$ Kundentyp; Lieferart Tabelle $\rightarrow$ Spalte; Synonyme/Homonyme umbenennen (Status $\times$ 3). Entscheidung: Mapping-Tabellen, weil erweiterbar und im Text dokumentierbar; Alternative bedingte Spalte -- für Länder ok, für Kundentyp mit fünf Quellwerten unübersichtlich.}
+
+\abb{pq-strasse}{Straße und Hausnummer trennen und vertauschte Felder automatisch zurücktauschen}{fig:strasse}{0.9}
+% Screenshot: KUNDE_h mit Strasse.1/Strasse.2, Strasse_ok/Hausnr_ok
+
+\todo{Was: Teilen am letzten Leerzeichen; Regel \enquote{beginnt Straße mit Ziffer und Hausnummer nicht $\rightarrow$ tauschen}; Titel aus Name1; PLZ mit führender Null; Land aus PLZ-Länge ableiten; MM/YYYY mit Flag\_Datum\_ungenau statt stillschweigend 1. des Monats. Grenze: \enquote{5 Straße des 17. Juni} bleibt manuell.}
+
+\subsection{Kundenintegration als Kaskade}\label{sec:linkage}
+
+\abb{pq-kaskade}{Match-Kaskade in \pq{CRM\_k}: ERP-Schlüssel mit Namensprüfung, Adresse exakt, Fuzzy mit fachlicher Nachregel, neu}{fig:kaskade}{0.95}
+% Screenshot: Spalten Key_Schluessel, Key_Adr, Key_Fuzzy, Matchmethode in CRM_k; alternativ Gruppierung nach Matchmethode
+
+Die drei Quellen haben keinen gemeinsamen Schlüssel: ERP und CRM teilen \pq{ERP\_KdNr} nur bei 60\,\% der Accounts und teils fehlerhaft, Shop und CRM teilen die E-Mail, das ERP führt keine E-Mail. Je Quelle wird deshalb eine Kaskade durchlaufen, die den sichersten verfügbaren Abgleich zuerst versucht und die Matchmethode je Zeile protokolliert (\cref{tab:kaskade}).
+
+\begin{table}[H]
+  \centering\small
+  \caption{Match-Kaskade je Quelle und Trefferzahlen (Endstand)}
+  \label{tab:kaskade}
+  \begin{tabular}{@{}c>{\raggedright\arraybackslash}p{4.3cm}>{\raggedright\arraybackslash}p{4.6cm}>{\raggedright\arraybackslash}p{4.0cm}@{}}
+    \toprule
+    Stufe & Kriterium & CRM $\rightarrow$ ERP & Shop $\rightarrow$ ERP/CRM \\
+    \midrule
+    1 & ERP-Schlüssel + Namensprüfung & 38 Treffer, 1 Tippfehler abgewiesen & 24 Treffer \\
+    2 & E-Mail normalisiert & entfällt (ERP ohne E-Mail) & 51 Treffer (CRM) \\
+    3 & Adresse exakt über \pq{Matchkey} & 18 Treffer & 0 \\
+    4 & Fuzzy auf \pq{Name\_norm} + Nachregel & 5 Treffer & 0 \\
+    -- & neu (eigener \pq{KundeKey}) & 49 (15 Leads, 30 nur Shop+CRM, 4 Umzieher) & 65 (reine Privatkunden) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\todo{Entscheidungen: (1) Matchkey = Land+PLZ+Straße normiert+Hausnummer, ohne Namen -- aus PA1 übernommen. (2) Fremdschlüssel nicht blind übernehmen: Namensprüfung fängt den eingebauten Tippfehler (ERP\_KdNr zeigt auf einen anderen Kunden). (3) Dubletten im ERP: ältester Datensatz führend, beide KdNr auf einen Key.}
+
+\abb{pq-fuzzy}{Fuzzy-Merge liefert nur Kandidaten -- die fachliche Nachregel entscheidet}{fig:fuzzy}{0.9}
+% Screenshot: Table.FuzzyNestedJoin-Schritt mit expandierten Kandidaten und der Nachregel-Spalte
+
+\todo{Beobachtung: Fuzzy-Join vervielfacht Zeilen (122 statt 115) und liefert keinen Ähnlichkeitswert. Nachregel: Verein $\rightarrow$ nur identischer normierter Name (Ort steckt im Namen); Händler/Gastro $\rightarrow$ gleiche PLZ oder identischer Name bei gleichem Ort. Alternative \enquote{Schwellwert hochdrehen} -- verworfen, siehe Messung.}
+
+\subsection{Erfolgsmessung gegen die Sollwerte}\label{sec:erfolgsmessung}
+
+\abb{pq-check}{\pq{CHECK\_Sollwerte}: vergebene Keys gegen die bekannte Wahrheit -- zerrissene und verschmolzene Kunden}{fig:check}{0.9}
+
+Die Integration wird gemessen statt nur plausibilisiert: \pq{CHECK\_Sollwerte} vergleicht die vergebenen \pq{KundeKey}s mit der Sollwerttabelle der Datengenerierung und zählt \emph{zerrissene} Kunden (ein echter Kunde, mehrere Keys) und \emph{verschmolzene} Keys (ein Key, mehrere echte Kunden). \Cref{tab:messreihe} zeigt die Messreihe.
+
+\begin{table}[H]
+  \centering\small
+  \caption{Messreihe der Kundenintegration (200 Kunden, Fuzzy-Schwellwert 0,8 sofern nicht anders angegeben)}
+  \label{tab:messreihe}
+  \begin{tabular}{@{}c>{\raggedright\arraybackslash}p{7.2cm}rrc@{}}
+    \toprule
+    Nr. & Stand & zerrissen & verschmolzen & Fuzzy-Treffer \\
+    \midrule
+    1  & Kaskade mit Fuzzy auf Name+Land, PLZ-Regel außer Vereine & 5 & 12 & 19 \\
+    2  & Quelldaten korrigiert: Namen je Ort eindeutig & 7 & 8 & 13 \\
+    3a & Fuzzy nur bei gleicher PLZ oder (Verein und identischer Name) & 7 & 3 & 5 \\
+    3b & Verein: nur identischer Name; sonst gleiche PLZ oder gleicher Name und Ort & \textbf{4} & \textbf{0} & 5 \\
+    4  & wie 3b, Schwellwert 0,9 & 4 & 0 & 5 \\
+    5  & wie 3b, Schwellwert 0,7 & 4 & 0 & 5 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\todo{Drei Absätze: (1) Verschmelzungen in Messung 1/2 waren gleichnamige Vereine in verschiedenen Städten -- Fuzzy gewichtet alle Zeichen gleich, der Ortsanteil ist klein. (2) Precision vor Recall: die Regel, die Verschmelzungen verhindert, blockiert Umzüge; die 4 verbleibenden Zerreißungen sind Umzieher ohne Schlüssel und E-Mail und gehen bewusst in die Prüfliste, weil falsche Verschmelzungen in der Umsatzanalyse schwerer wiegen. (3) Messungen 4/5: der Schwellwert ist wirkungslos geworden -- der Fuzzy-Join ist nur noch Kandidatenlieferant, die Nachregel entscheidet. Gegenbeispiel SHOP\_k: mit einem verlässlichen gemeinsamen Attribut (E-Mail) kamen Adresse und Fuzzy nie zum Zug.}
+
+\subsection{Faktenseite und Auswertung}\label{sec:fakten}
+
+\abb{pq-fakt}{\pq{FAKT\_VERKAUF}: Positionen aus ERP und Shop mit Kanal, Netto-EUR, Lieferdauer und Zahlungsverzug}{fig:fakt}{0.95}
+
+\todo{Was: komposite Schlüssel verketten, Produktgruppe aus sprechendem Schlüssel und ArtNr$\leftrightarrow$SKU, CHF$\rightarrow$EUR, Brutto$\rightarrow$Netto je Land, Sets$\rightarrow$Stück, Filter (gesperrt, cancelled/refunded) mit Zählung, Auftrag $\rightarrow$ zum Datum gültige Adresse, Shop-Aufträge nur aus einer Quelle (ShopRef).}
+
+\abb{pivot-f1}{Auswertung F1: Umsatz je Verkäufer und Kundentyp (Pivot auf dem integrierten Bestand)}{fig:pivot1}{0.85}
+\abb{pivot-f5}{Auswertung F5: Kanalanteil Direkt vs.\ Shop je betreutem Kunden}{fig:pivot5}{0.85}
+% Vorgabe Kirchberg: "Verdeutlichen Sie den Integrationsablauf mit Beispieldaten" – mindestens zwei Pivots zeigen
+
+\todo{Je Pivot zwei Sätze: was sie zeigt und welche Integrationsleistung sie voraussetzt. Abschluss: Prüfliste mit Zählung (Umzieher ohne Schlüssel, PLZ-Land-Konflikte, ungültige PLZ/E-Mail) als bewusste Grenze zwischen automatisch und manuell.}
+
+% =====================================================================
+\section{Zusammenfassung}\label{sec:zusammenfassung}
+
+\todo{Eine halbe Seite: drei Quellsysteme mit absichtlich eingebauten Integrationsproblemen, per Skript mit Sollwerten erzeugt; Power-Query-Mappe mit Staging, Harmonisierung, vierstufiger Kaskade, Sternschema, Prüfabfragen. Ergebnis: 200 Kunden aus 348 Quelldatensätzen, 0 falsche Verschmelzungen, 4 bewusst getrennte Umzieher; alle sechs Fragen per Pivot beantwortbar. Zentrale Entscheidungen: Historisierung statt Priorisierung, Verkäufer am Auftrag, Precision vor Recall, Fuzzy nur als Kandidatenlieferant mit fachlicher Nachregel. Eigenleistung: Messreihe als Methode.}
+
+% =====================================================================
+% ANHANG – knapp (HR 2.9: nie größer als der Textteil)
+% =====================================================================
+\anhang{Zentrale Power-Query-Abfragen (M-Code)}{app:mcode}
+Der vollständige M-Code liegt in der Mappe; hier die Abfragen, die die Entscheidungen aus \cref{sec:integration} tragen.
+% Zeilennummern passen zu code/Section1.m (Stand 09.11.2026); bei Änderungen in der Mappe neu extrahieren.
+\lstinputlisting[language=PowerQueryM, caption={\pq{fnNormName}}, firstline=64, lastline=75]{code/Section1.m}
+\lstinputlisting[language=PowerQueryM, caption={\pq{CRM\_k}: Match-Kaskade}, firstline=225, lastline=265]{code/Section1.m}
+\lstinputlisting[language=PowerQueryM, caption={\pq{CHECK\_Sollwerte}: Erfolgsmessung}, firstline=327, lastline=352]{code/Section1.m}
+
+\anhang{Generator der Beispieldaten}{app:generator}
+\texttt{generate\_sources.py} erzeugt alle Quelldateien deterministisch (Seed 20261127) und schreibt die Sollwerte, die nur der Erfolgsmessung dienen.
+\lstinputlisting[language=Python, basicstyle=\ttfamily\scriptsize, caption={generate\_sources.py}]{code/generate_sources.py}
+
+% ---------- Ehrenwörtliche Erklärung (HR 2.12, Wortlaut vorgegeben, ohne Seitenzahl)
+\newpage
+\thispagestyle{empty}
+\section*{Ehrenwörtliche Erklärung}
+Ich versichere hiermit, dass ich die vorliegende Arbeit mit dem Thema \enquote{\arbeitstitel} selbständig verfasst und keine anderen als die angegebenen Quellen und Hilfsmittel benutzt habe. Ich versichere zudem, dass die eingereichte elektronische Fassung mit der gedruckten Fassung übereinstimmt.
+
+\vspace{2cm}
+\makebox[0.5\textwidth]{\hrulefill} \hfill \makebox[0.4\textwidth]{\hrulefill} \\
+Ort, Datum \hfill Unterschrift
+
+\end{document}
