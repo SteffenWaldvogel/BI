@@ -29,3 +29,6 @@ ERP-Aufträge 352 (davon 90 Shop-Importe mit ShopRef) · Shop-Orders 408
 Manuell entstandene Störungen: nachgestellte/doppelte/geschützte Leerzeichen in Firma, Straße, Adresse; Nur-Whitespace-Bemerkungen; E-Mail-Transportmüll (mailto:, "Name <mail>", GROSS, ;/. am Ende, (at))
 Vertauschte Straße/Hausnummer: ~3 % im ERP-Einzelfeld ("12 Goethestr."), 2 CRM-Accounts mit vertauschten Feldern
 ERP KUNDE.txt: 90 Datensätze auf ~124 physischen Zeilen – Freitextfeld Bemerkung enthält eingebettete Zeilenumbrüche (CRLF und LF)
+
+## Mappe auf einem anderen Rechner
+Die Quellpfade stecken in der Abfrage `pPfad` (Power-Query-Editor, ganz oben). Nach dem Klonen dort den lokalen Pfad des BI-Ordners (mit abschließendem Backslash) eintragen, dann „Alle aktualisieren“.

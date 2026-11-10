@@ -1,7 +1,9 @@
 section Section1;
 
+shared pPfad = "C:\Users\steff\DHBW\Semester 5 (Okt-Dez 2026)\04 Business Intelligence (Kirchberg)\BI\";
+
 shared KUNDE = let
-    Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\erp\KUNDE.txt"),[Delimiter=";", Columns=16, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+    Quelle = Csv.Document(File.Contents(pPfad & "quellen\erp\KUNDE.txt"),[Delimiter=";", Columns=16, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
     #"Höher gestufte Header" = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]),
     #"Ersetzter Wert" = Table.ReplaceValue(#"Höher gestufte Header","#(cr)#(lf)","|",Replacer.ReplaceText,{"Bemerkung"}),
     #"Gefilterte Zeilen1" = Table.SelectRows(#"Ersetzter Wert", each true),
@@ -12,14 +14,14 @@ in
     Zeilenvorschub_LF_ersetzt;
 
 shared customers = let
-    Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\shop\customers.csv"),[Delimiter=",", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+    Quelle = Csv.Document(File.Contents(pPfad & "quellen\shop\customers.csv"),[Delimiter=",", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),
     #"Höher gestufte Header" = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]),
     #"Geänderter Typ mit Gebietsschema" = Table.TransformColumnTypes(#"Höher gestufte Header", {{"created_at", type datetimezone}}, "de-DE")
 in
     #"Geänderter Typ mit Gebietsschema";
 
 shared Accounts = let
-    Quelle = Excel.Workbook(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\crm\CRM_Export.xlsx"), null, true),
+    Quelle = Excel.Workbook(File.Contents(pPfad & "quellen\crm\CRM_Export.xlsx"), null, true),
     Accounts_Sheet = Quelle{[Item="Accounts",Kind="Sheet"]}[Data],
     #"Höher gestufte Header" = Table.PromoteHeaders(Accounts_Sheet, [PromoteAllScalars=true]),
     Flag_Datum_ungenau = Table.AddColumn(#"Höher gestufte Header", "Flag_Datum_ungenau", each Text.Length(Text.From([Erstkontakt])) = 7, type logical),
@@ -327,7 +329,7 @@ in
 shared CHECK_Sollwerte = // CHECK_Sollwerte: Erfolgsmessung der Kundenintegration gegen die bekannte Wahrheit aus der Datengenerierung.
 // Zerrissen = ein echter Kunde hat mehrere KundeKeys. Falsch verschmolzen = ein KundeKey enthält mehrere echte Kunden.
 let
-    Roh = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\sollwerte\kunden_mapping.csv"), [Delimiter = ";", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Roh = Csv.Document(File.Contents(pPfad & "sollwerte\kunden_mapping.csv"), [Delimiter = ";", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
     Soll = Table.PromoteHeaders(Roh, [PromoteAllScalars = true]),
     Lang1 = Table.RenameColumns(Table.SelectRows(Table.SelectColumns(Table.AddColumn(Soll, "Quelle", each "ERP"), {"Quelle", "ERP_KdNr", "KundeKey", "Abweichung"}), each [ERP_KdNr] <> ""), {{"ERP_KdNr", "QuellID"}, {"KundeKey", "SollKey"}}),
     Lang2 = Table.RenameColumns(Table.SelectRows(Table.SelectColumns(Table.AddColumn(Soll, "Quelle", each "CRM"), {"Quelle", "CRM_ID", "KundeKey", "Abweichung"}), each [CRM_ID] <> ""), {{"CRM_ID", "QuellID"}, {"KundeKey", "SollKey"}}),
@@ -352,7 +354,7 @@ in
 
 shared CHECK_Detail = // CHECK_Detail: die konkreten Problemfälle aus der Erfolgsmessung – zerrissene Kunden und falsch verschmolzene Keys mit Namen.
 let
-    Roh = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\sollwerte\kunden_mapping.csv"), [Delimiter = ";", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Roh = Csv.Document(File.Contents(pPfad & "sollwerte\kunden_mapping.csv"), [Delimiter = ";", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
     Soll = Table.PromoteHeaders(Roh, [PromoteAllScalars = true]),
     Lang1 = Table.RenameColumns(Table.SelectRows(Table.SelectColumns(Table.AddColumn(Soll, "Quelle", each "ERP"), {"Quelle", "ERP_KdNr", "KundeKey", "Abweichung", "Kundentyp"}), each [ERP_KdNr] <> ""), {{"ERP_KdNr", "QuellID"}, {"KundeKey", "SollKey"}}),
     Lang2 = Table.RenameColumns(Table.SelectRows(Table.SelectColumns(Table.AddColumn(Soll, "Quelle", each "CRM"), {"Quelle", "CRM_ID", "KundeKey", "Abweichung", "Kundentyp"}), each [CRM_ID] <> ""), {{"CRM_ID", "QuellID"}, {"KundeKey", "SollKey"}}),
@@ -393,57 +395,57 @@ in
     Quelle;
 
 shared AUFTRAG = let
-    Quelle = let Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\erp\AUFTRAG.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"AuftragNr", type text}, {"KdNr", Int64.Type}, {"Datum", type date}, {"VertreterNr", type text}, {"Status", type text}, {"Waehrung", type text}, {"Lieferart", type text}, {"Zahlungsziel", Int64.Type}, {"ShopRef", type text}}, "de-DE"), LeerZuNull = Table.ReplaceValue(Typen, "", null, Replacer.ReplaceValue, {"VertreterNr", "ShopRef"}) in LeerZuNull
+    Quelle = let Quelle = Csv.Document(File.Contents(pPfad & "quellen\erp\AUFTRAG.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"AuftragNr", type text}, {"KdNr", Int64.Type}, {"Datum", type date}, {"VertreterNr", type text}, {"Status", type text}, {"Waehrung", type text}, {"Lieferart", type text}, {"Zahlungsziel", Int64.Type}, {"ShopRef", type text}}, "de-DE"), LeerZuNull = Table.ReplaceValue(Typen, "", null, Replacer.ReplaceValue, {"VertreterNr", "ShopRef"}) in LeerZuNull
 in
     Quelle;
 
 shared AUFTRAGSPOS = let
-    Quelle = let Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\erp\AUFTRAGSPOS.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"AuftragNr", type text}, {"Pos", Int64.Type}, {"ArtNr", type text}, {"Menge", Int64.Type}, {"Einheit", type text}, {"EPreisNetto", type number}}, "de-DE") in Typen
+    Quelle = let Quelle = Csv.Document(File.Contents(pPfad & "quellen\erp\AUFTRAGSPOS.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"AuftragNr", type text}, {"Pos", Int64.Type}, {"ArtNr", type text}, {"Menge", Int64.Type}, {"Einheit", type text}, {"EPreisNetto", type number}}, "de-DE") in Typen
 in
     Quelle;
 
 shared ZAHLUNG = let
-    Quelle = let Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\erp\ZAHLUNG.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"ZahlungNr", type text}, {"AuftragNr", type text}, {"Datum", type date}, {"Betrag", type number}, {"Zahlart", type text}}, "de-DE") in Typen
+    Quelle = let Quelle = Csv.Document(File.Contents(pPfad & "quellen\erp\ZAHLUNG.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"ZahlungNr", type text}, {"AuftragNr", type text}, {"Datum", type date}, {"Betrag", type number}, {"Zahlart", type text}}, "de-DE") in Typen
 in
     Quelle;
 
 shared LIEFERUNG = let
-    Quelle = let Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\erp\LIEFERUNG.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"LieferNr", type text}, {"AuftragNr", type text}, {"Versanddatum", type date}, {"Lieferart", type text}}, "de-DE") in Typen
+    Quelle = let Quelle = Csv.Document(File.Contents(pPfad & "quellen\erp\LIEFERUNG.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"LieferNr", type text}, {"AuftragNr", type text}, {"Versanddatum", type date}, {"Lieferart", type text}}, "de-DE") in Typen
 in
     Quelle;
 
 shared VERTRETER = let
-    Quelle = let Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\erp\VERTRETER.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"VertreterNr", type text}, {"Name", type text}, {"Gebiet", type text}, {"Austritt", type text}}) in Typen
+    Quelle = let Quelle = Csv.Document(File.Contents(pPfad & "quellen\erp\VERTRETER.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"VertreterNr", type text}, {"Name", type text}, {"Gebiet", type text}, {"Austritt", type text}}) in Typen
 in
     Quelle;
 
 shared ARTIKEL = let
-    Quelle = let Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\erp\ARTIKEL.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"ArtNr", type text}, {"Bezeichnung", type text}, {"EKPreis", type number}}, "de-DE") in Typen
+    Quelle = let Quelle = Csv.Document(File.Contents(pPfad & "quellen\erp\ARTIKEL.txt"), [Delimiter=";", Encoding=1252, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"ArtNr", type text}, {"Bezeichnung", type text}, {"EKPreis", type number}}, "de-DE") in Typen
 in
     Quelle;
 
 shared Betreuer = let
-    Quelle = let Quelle = Excel.Workbook(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\crm\CRM_Export.xlsx"), null, true), Blatt = Quelle{[Item="Betreuer", Kind="Sheet"]}[Data], Header = Table.PromoteHeaders(Blatt, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"Name", type text}, {"E-Mail", type text}, {"Rolle", type text}, {"Region", type text}}) in Typen
+    Quelle = let Quelle = Excel.Workbook(File.Contents(pPfad & "quellen\crm\CRM_Export.xlsx"), null, true), Blatt = Quelle{[Item="Betreuer", Kind="Sheet"]}[Data], Header = Table.PromoteHeaders(Blatt, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"Name", type text}, {"E-Mail", type text}, {"Rolle", type text}, {"Region", type text}}) in Typen
 in
     Quelle;
 
 shared orders = let
-    Quelle = let Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\shop\orders.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"order_id", type text}, {"customer_id", type text}, {"order_date", type datetimezone}, {"status", type text}, {"total_gross", type number}, {"shipping_method_id", Int64.Type}, {"coupon_code", type text}}, "en-US"), LeerZuNull = Table.ReplaceValue(Typen, "", null, Replacer.ReplaceValue, {"coupon_code"}) in LeerZuNull
+    Quelle = let Quelle = Csv.Document(File.Contents(pPfad & "quellen\shop\orders.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"order_id", type text}, {"customer_id", type text}, {"order_date", type datetimezone}, {"status", type text}, {"total_gross", type number}, {"shipping_method_id", Int64.Type}, {"coupon_code", type text}}, "en-US"), LeerZuNull = Table.ReplaceValue(Typen, "", null, Replacer.ReplaceValue, {"coupon_code"}) in LeerZuNull
 in
     Quelle;
 
 shared order_items = let
-    Quelle = let Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\shop\order_items.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"order_id", type text}, {"line_no", Int64.Type}, {"sku", type text}, {"qty", Int64.Type}, {"unit_price_gross", type number}}, "en-US") in Typen
+    Quelle = let Quelle = Csv.Document(File.Contents(pPfad & "quellen\shop\order_items.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"order_id", type text}, {"line_no", Int64.Type}, {"sku", type text}, {"qty", Int64.Type}, {"unit_price_gross", type number}}, "en-US") in Typen
 in
     Quelle;
 
 shared products = let
-    Quelle = let Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\shop\products.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"sku", type text}, {"name", type text}, {"category", type text}}) in Typen
+    Quelle = let Quelle = Csv.Document(File.Contents(pPfad & "quellen\shop\products.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"sku", type text}, {"name", type text}, {"category", type text}}) in Typen
 in
     Quelle;
 
 shared shipping_methods = let
-    Quelle = let Quelle = Csv.Document(File.Contents("C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\quellen\shop\shipping_methods.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"id", Int64.Type}, {"name", type text}}) in Typen
+    Quelle = let Quelle = Csv.Document(File.Contents(pPfad & "quellen\shop\shipping_methods.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]), Header = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]), Typen = Table.TransformColumnTypes(Header, {{"id", Int64.Type}, {"name", type text}}) in Typen
 in
     Quelle;
 
@@ -483,9 +485,32 @@ in
     Quelle;
 
 shared FAKT_VERKAUF = let
-    Quelle = let C = Table.Combine({FAKT_ERP, FAKT_SHOP}), MAPt = Table.Buffer(Table.TransformColumns(MAP_SCHLUESSEL, {{"KundeKey", each Text.From(_), type text}})), J1 = Table.NestedJoin(C, {"Quelle", "QuellID"}, MAPt, {"Quelle", "QuellID"}, "M", JoinKind.LeftOuter), E1 = Table.ExpandTableColumn(J1, "M", {"KundeKey"}), DKt = Table.Buffer(Table.TransformColumns(DIM_KUNDE, {{"KundeKey", each Text.From(_), type text}})), J2 = Table.NestedJoin(E1, {"KundeKey"}, DKt, {"KundeKey"}, "K", JoinKind.LeftOuter), E2 = Table.ExpandTableColumn(J2, "K", {"Kundentyp"}), DAt = Table.Buffer(Table.TransformColumns(DIM_KUNDE_ADRESSE, {{"KundeKey", each Text.From(_), type text}})), J3 = Table.NestedJoin(E2, {"KundeKey"}, DAt, {"KundeKey"}, "A", JoinKind.LeftOuter), Ad = Table.AddColumn(J3, "Adresse", each let d = [Auftragsdatum], t = Table.SelectRows([A], (r) => r[GueltigVon] <= d and (r[GueltigBis] = null or d <= r[GueltigBis])) in if Table.IsEmpty(t) then null else t{0}), E3 = Table.ExpandRecordColumn(Ad, "Adresse", {"LandISO", "Region", "PLZ"}, {"LandISO", "Region", "PLZ"}), R1 = Table.RemoveColumns(E3, {"A"}), Y = Table.AddColumn(R1, "Jahr", each Date.Year([Auftragsdatum]), Int64.Type), Qn = Table.AddColumn(Y, "Quartal", each "Q" & Text.From(Date.QuarterOfYear([Auftragsdatum])), type text), JQ = Table.AddColumn(Qn, "JahrQuartal", each Text.From([Jahr]) & "-" & [Quartal], type text), Mo = Table.AddColumn(JQ, "Monat", each Date.Month([Auftragsdatum]), Int64.Type), Sa = Table.AddColumn(Mo, "S", each fnSaison([Auftragsdatum])), ES = Table.ExpandRecordColumn(Sa, "S", {"Saison", "Saisonjahr"}), PRt = Table.Buffer(DIM_PRODUKT), J4 = Table.NestedJoin(ES, {"ArtNr"}, PRt, {"ArtNr"}, "P", JoinKind.LeftOuter), E4 = Table.ExpandTableColumn(J4, "P", {"ProduktKey", "Produktgruppe"}), Sel = Table.SelectColumns(E4, {"KundeKey", "Kundentyp", "LandISO", "Region", "PLZ", "VerkaeuferKey", "Kanal", "Quelle", "AuftragID", "Pos", "Auftragsdatum", "Jahr", "Quartal", "JahrQuartal", "Monat", "Saison", "Saisonjahr", "ProduktKey", "Produktgruppe", "Status", "Lieferart", "MengeStk", "NettoEUR", "Lieferdauer_Tage", "Zahlungsverzug_Tage"}), Typ = Table.TransformColumnTypes(Sel, {{"Saison", type text}, {"Saisonjahr", type text}, {"LandISO", type text}, {"Region", type text}, {"PLZ", type text}}) in Typ
+    C = Table.Combine({FAKT_ERP, FAKT_SHOP}),
+    MAPt = Table.Buffer(Table.TransformColumns(MAP_SCHLUESSEL, {{"KundeKey", each Text.From(_), type text}})),
+    J1 = Table.NestedJoin(C, {"Quelle", "QuellID"}, MAPt, {"Quelle", "QuellID"}, "M", JoinKind.LeftOuter),
+    E1 = Table.ExpandTableColumn(J1, "M", {"KundeKey"}),
+    DKt = Table.Buffer(Table.TransformColumns(DIM_KUNDE, {{"KundeKey", each Text.From(_), type text}})),
+    J2 = Table.NestedJoin(E1, {"KundeKey"}, DKt, {"KundeKey"}, "K", JoinKind.LeftOuter),
+    // Stamm_VertreterNr = betreuender Vertreter laut Kundenstamm (nur ERP-Kunden), unabhaengig vom Verkaeufer des Auftrags -> F5 Kanalanteil
+    E2 = Table.ExpandTableColumn(J2, "K", {"Kundentyp", "VertreterNr"}, {"Kundentyp", "Stamm_VertreterNr"}),
+    DAt = Table.Buffer(Table.TransformColumns(DIM_KUNDE_ADRESSE, {{"KundeKey", each Text.From(_), type text}})),
+    J3 = Table.NestedJoin(E2, {"KundeKey"}, DAt, {"KundeKey"}, "A", JoinKind.LeftOuter),
+    Ad = Table.AddColumn(J3, "Adresse", each let d = [Auftragsdatum], t = Table.SelectRows([A], (r) => r[GueltigVon] <= d and (r[GueltigBis] = null or d <= r[GueltigBis])) in if Table.IsEmpty(t) then null else t{0}),
+    E3 = Table.ExpandRecordColumn(Ad, "Adresse", {"LandISO", "Region", "PLZ"}, {"LandISO", "Region", "PLZ"}),
+    R1 = Table.RemoveColumns(E3, {"A"}),
+    Y = Table.AddColumn(R1, "Jahr", each Date.Year([Auftragsdatum]), Int64.Type),
+    Qn = Table.AddColumn(Y, "Quartal", each "Q" & Text.From(Date.QuarterOfYear([Auftragsdatum])), type text),
+    JQ = Table.AddColumn(Qn, "JahrQuartal", each Text.From([Jahr]) & "-" & [Quartal], type text),
+    Mo = Table.AddColumn(JQ, "Monat", each Date.Month([Auftragsdatum]), Int64.Type),
+    Sa = Table.AddColumn(Mo, "S", each fnSaison([Auftragsdatum])),
+    ES = Table.ExpandRecordColumn(Sa, "S", {"Saison", "Saisonjahr"}),
+    PRt = Table.Buffer(DIM_PRODUKT),
+    J4 = Table.NestedJoin(ES, {"ArtNr"}, PRt, {"ArtNr"}, "P", JoinKind.LeftOuter),
+    E4 = Table.ExpandTableColumn(J4, "P", {"ProduktKey", "Produktgruppe"}),
+    Sel = Table.SelectColumns(E4, {"KundeKey", "Kundentyp", "Stamm_VertreterNr", "LandISO", "Region", "PLZ", "VerkaeuferKey", "Kanal", "Quelle", "AuftragID", "Pos", "Auftragsdatum", "Jahr", "Quartal", "JahrQuartal", "Monat", "Saison", "Saisonjahr", "ProduktKey", "Produktgruppe", "Status", "Lieferart", "MengeStk", "NettoEUR", "Lieferdauer_Tage", "Zahlungsverzug_Tage"}),
+    Typ = Table.TransformColumnTypes(Sel, {{"Saison", type text}, {"Saisonjahr", type text}, {"LandISO", type text}, {"Region", type text}, {"PLZ", type text}, {"Stamm_VertreterNr", type text}})
 in
-    Quelle;
+    Typ;
 
 shared CHECK_Fakten = let
     Quelle = let F = Table.Buffer(FAKT_VERKAUF), FE = Table.Buffer(FAKT_ERP), FS = Table.Buffer(FAKT_SHOP), VK = Table.Buffer(DIM_VERKAEUFER), dupAuftr = Table.RowCount(Table.SelectRows(Table.Group(Table.Distinct(Table.SelectColumns(F, {"AuftragID", "Quelle"})), {"AuftragID"}, {{"n", Table.RowCount}}), each [n] > 1)), Storno = Table.RowCount(Table.SelectRows(orders, each [status] = "cancelled" or [status] = "refunded")), Importiert = Table.RowCount(Table.SelectRows(AUFTRAG, each [ShopRef] <> null)), Pruef = #table({"Pruefung", "Soll", "Ist"}, {{"Zeilen FAKT_ERP = AUFTRAGSPOS", Table.RowCount(AUFTRAGSPOS), Table.RowCount(FE)}, {"Auftraege ERP", 354, Table.RowCount(Table.Distinct(Table.SelectColumns(FE, {"AuftragID"})))}, {"Bestellungen Shop gesamt", 384, Table.RowCount(orders)}, {"Shop storniert/erstattet (gefiltert)", null, Storno}, {"Shop im ERP importiert (Anti-Join)", 78, Importiert}, {"Bestellungen in FAKT_SHOP", 384 - Storno - Importiert, Table.RowCount(Table.Distinct(Table.SelectColumns(FS, {"AuftragID"})))}, {"AuftragID in beiden Quellen", 0, dupAuftr}, {"KundeKey null", 0, Table.RowCount(Table.SelectRows(F, each [KundeKey] = null))}, {"ProduktKey null", 0, Table.RowCount(Table.SelectRows(F, each [ProduktKey] = null))}, {"Region null", 0, Table.RowCount(Table.SelectRows(F, each [Region] = null))}, {"Verkaeufer unbekannt", 0, Table.RowCount(Table.SelectRows(F, each not List.Contains(VK[VerkaeuferKey], [VerkaeuferKey])))}, {"Zeilen FAKT_VERKAUF", Table.RowCount(FE) + Table.RowCount(FS), Table.RowCount(F)}, {"Summe NettoEUR ERP", null, Number.Round(List.Sum(FE[NettoEUR]), 2)}, {"Summe NettoEUR Shop", null, Number.Round(List.Sum(FS[NettoEUR]), 2)}}), OK = Table.AddColumn(Pruef, "OK", each if [Soll] = null then null else [Soll] = [Ist], type logical) in OK

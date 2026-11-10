@@ -33,6 +33,8 @@
 \usepackage[font=small, labelfont=bf, labelsep=colon]{caption}
 \usepackage{listings}
 \input{code/lst-powerquery-m.tex}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, fit, backgrounds}
 \usepackage[hidelinks]{hyperref}
 \usepackage[nameinlink, ngerman]{cleveref}
 
@@ -166,6 +168,8 @@ Daraus entstehen 93 ERP-Kunden (inkl.\ 3 Dubletten), 140 Shop-Kunden und 115 CRM
 \abb{zielschema}{Zielschema: Sternschema mit historisierter Kundenadresse und Schlüssel-Mapping}{fig:zielschema}{0.9}
 % Grafik: DIM_KUNDE, DIM_KUNDE_ADRESSE (GueltigVon/Bis, CurrentFlag), DIM_VERKAEUFER, DIM_PRODUKT, FAKT_VERKAUF, MAP_SCHLUESSEL
 
+\abb{dim-adresse}{\pq{DIM\_KUNDE\_ADRESSE}: Kunde 43 mit zwei Adressversionen -- Gültigkeitszeitraum statt Entscheidung, welche Quelle recht hat}{fig:adresse}{1.0}
+
 \todo{Je Entscheidung zwei bis drei Sätze mit Alternative: (1) Surrogatschlüssel KundeKey + Mapping-Tabelle statt einen Quellschlüssel durchzureichen. (2) Adresse historisiert statt \enquote{jüngste gewinnt} -- verhindert, dass Umsatz vor dem Umzug der neuen Region zugeordnet wird. (3) Verkäufer am Auftrag, nicht am Kunden -- nur so ist F5 korrekt. (4) Lieferart als Attribut, nicht als Entität. (5) Leads als Kunden ohne Umsatz. (6) Shop-Aufträge nur aus einer Quelle, weil sie auch ins ERP importiert sind.}
 
 % =====================================================================
@@ -173,10 +177,61 @@ Daraus entstehen 93 ERP-Kunden (inkl.\ 3 Dubletten), 140 Shop-Kunden und 115 CRM
 
 \subsection{Aufbau der Abfragen}\label{sec:aufbau}
 
-\abb{pq-abhaengigkeiten}{Abfrageabhängigkeiten in Power Query: Rohdaten, Hilfsfunktionen, Harmonisierung (\_h), Kundenintegration (\_k), Zielschema, Prüfabfragen}{fig:abhaengigkeiten}{0.95}
-% Screenshot: Power-Query-Editor > Ansicht > Abfrageabhängigkeiten
+\begin{figure}[H]\centering\small
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[>=Latex, x=1cm, y=1cm,
+  box/.style={draw, rounded corners=1pt, fill=white, minimum height=7mm, inner sep=3pt, font=\ttfamily\scriptsize, align=center},
+  layer/.style={draw=gray!60, fill=gray!8, rounded corners=2pt, inner sep=3pt},
+  lab/.style={font=\sffamily\scriptsize\bfseries, text=gray!70!black, anchor=east, align=right}]
+  % Zeile 1: Rohdaten und Hilfen
+  \node[box] (k) at (0,0) {KUNDE, AUFTRAG, \dots};
+  \node[box] (c) at (3.6,0) {customers, orders, \dots};
+  \node[box] (a) at (7.2,0) {Accounts, Betreuer};
+  \node[box, fill=gray!15] (h) at (10.6,0) {fnClean, fnNorm*, mapLand,\\mapKundentyp, pPfad, pSchwelle};
+  % Zeile 2: Harmonisierung
+  \node[box] (kh) at (0,-1.4) {KUNDE\_h};
+  \node[box] (sh) at (3.6,-1.4) {SHOP\_h};
+  \node[box] (ch) at (7.2,-1.4) {CRM\_h};
+  % Zeile 3: Kundenintegration
+  \node[box] (kk) at (0,-2.8) {KUNDE\_k,\\ERP\_Dubletten};
+  \node[box] (sk) at (3.6,-2.8) {SHOP\_k};
+  \node[box] (ck) at (7.2,-2.8) {CRM\_k};
+  \node[box] (map) at (10.6,-2.8) {MAP\_SCHLUESSEL};
+  % Zeile 4: Zielschema
+  \node[box] (dk) at (0,-4.3) {DIM\_KUNDE,\\DIM\_KUNDE\_ADRESSE};
+  \node[box] (dp) at (3.6,-4.3) {DIM\_PRODUKT,\\DIM\_VERKAEUFER};
+  \node[box] (fv) at (7.2,-4.3) {FAKT\_ERP + FAKT\_SHOP\\$\rightarrow$ FAKT\_VERKAUF};
+  % Zeile 5: Prüfung
+  \node[box, fill=gray!15] (cs) at (0,-5.7) {CHECK\_Sollwerte};
+  \node[box, fill=gray!15] (cf) at (7.2,-5.7) {CHECK\_Fakten};
+  \node[box, fill=gray!15] (pv) at (10.6,-5.7) {Pivots P1--P6};
+  % Kanten
+  \draw[->] (k) -- (kh); \draw[->] (c) -- (sh); \draw[->] (a) -- (ch);
+  \draw[->] (kh) -- (kk); \draw[->] (sh) -- (sk); \draw[->] (ch) -- (ck);
+  \draw[->] (kk) -- node[above, font=\tiny] {Basis} (sk);
+  \draw[->] (kk.south east) to[out=-20, in=200] (ck.south west);
+  \draw[->] (ck) -- (sk);
+  \draw[->] (sk) -- (dp); \draw[->] (kk) -- (dk); \draw[->] (ck.east) -- (map.west);
+  \draw[->] (map) -- (fv); \draw[->] (dk) -- (fv); \draw[->] (dp) -- (fv);
+  \draw[->] (dk) -- (cs); \draw[->] (fv) -- (cf); \draw[->] (fv) -- (pv);
+  \begin{scope}[on background layer]
+    \node[layer, fit=(k)(c)(a)(h)] (L1) {};
+    \node[layer, fit=(kh)(sh)(ch)] (L2) {};
+    \node[layer, fit=(kk)(sk)(ck)(map)] (L3) {};
+    \node[layer, fit=(dk)(dp)(fv)] (L4) {};
+    \node[layer, fit=(cs)(cf)(pv)] (L5) {};
+  \end{scope}
+  \node[lab] at (-1.75,0) {Rohdaten,\\Hilfen};
+  \node[lab] at (-1.75,-1.4) {Harmoni-\\sierung};
+  \node[lab] at (-1.75,-2.8) {Kunden-\\integration};
+  \node[lab] at (-1.75,-4.3) {Ziel-\\schema};
+  \node[lab] at (-1.75,-5.7) {Prüfung};
+\end{tikzpicture}}
+\caption{Schichten der Abfragen in der Mappe (vereinfachte Abhängigkeiten; die Editor-Ansicht \enquote{Abfrageabhängigkeiten} ist mit 45 Knoten nicht lesbar)}
+\label{fig:abhaengigkeiten}
+\end{figure}
 
-\todo{Erklären: Schichten wie im Staging-Ansatz; Rohdaten-Abfragen enthalten nur den Import; Mappings als eigene Tabellen (mapLand, mapKundentyp, mapRegion, mapMwSt) und Parameter (pSchwelle, pKursCHF) statt Werte im Code; Integrationsreihenfolge ERP $\rightarrow$ CRM $\rightarrow$ Shop, weil das ERP Stammdaten und Verkäufer führt (Alternative: n-är in einem Schritt -- verworfen, Fehler nicht lokalisierbar).}
+\todo{Erklären: Schichten wie im Staging-Ansatz; Rohdaten-Abfragen enthalten nur den Import; Mappings als eigene Tabellen (mapLand, mapKundentyp, mapRegion, mapMwSt) und Parameter (pSchwelle, pKursCHF, pPfad für den Quellordner -- damit läuft die Mappe auf jedem Rechner nach Änderung einer Zeile) statt Werte im Code; Integrationsreihenfolge ERP $\rightarrow$ CRM $\rightarrow$ Shop, weil das ERP Stammdaten und Verkäufer führt (Alternative: n-är in einem Schritt -- verworfen, Fehler nicht lokalisierbar).}
 
 \subsection{Import und syntaktische Harmonisierung}\label{sec:syntax}
 
@@ -185,7 +240,17 @@ Daraus entstehen 93 ERP-Kunden (inkl.\ 3 Dubletten), 140 Shop-Kunden und 115 CRM
 
 \todo{Was: Codepage, Trennzeichen, Dezimaltrenner, drei Datumsformate, UTC-Zeitzone. Entscheidung: Typumwandlung immer mit explizitem Gebietsschema, nie automatisch erkannt. Nachweis Zeilenumbrüche: 124 physische Zeilen, 90 Datensätze.}
 
-\abb{pq-fnclean}{Hilfsfunktion \pq{fnClean}: geschützte Leerzeichen, Doppel- und Nachlaufleerzeichen vor dem Matchschlüssel entfernen}{fig:fnclean}{0.85}
+\begin{lstlisting}[language=PowerQueryM, caption={Hilfsfunktion \pq{fnClean}: unsichtbare Zeichen und Mehrfach-Leerzeichen entfernen}, label={lst:fnclean}]
+(s as nullable text) as nullable text =>
+let
+    t0 = if s = null then null else Text.Clean(s),
+    t1 = if t0 = null then null else Text.Replace(t0, Character.FromNumber(160), " "),
+    t2 = if t1 = null then null else Text.Remove(t1, {Character.FromNumber(173), Character.FromNumber(8203)}),
+    t3 = if t2 = null then null else Text.Combine(List.Select(Text.Split(t2, " "), each _ <> ""), " "),
+    t4 = if t3 = "" then null else t3
+in
+    t4
+\end{lstlisting}
 
 \todo{Warum eine Funktion statt Trim je Spalte: 14 Textspalten im CRM allein; unsichtbare Zeichen (NBSP, Soft Hyphen) zerstören Joins. Nachweis: Matchtreffer mit und ohne fnClean. Mojibake-Rückübersetzung Ã¼ $\rightarrow$ ü.}
 
@@ -234,7 +299,7 @@ Die drei Quellen haben keinen gemeinsamen Schlüssel: ERP und CRM teilen \pq{ERP
 
 \subsection{Erfolgsmessung gegen die Sollwerte}\label{sec:erfolgsmessung}
 
-\abb{pq-check}{\pq{CHECK\_Sollwerte}: vergebene Keys gegen die bekannte Wahrheit -- zerrissene und verschmolzene Kunden}{fig:check}{0.9}
+\abb{pq-check}{\pq{CHECK\_Sollwerte}: vergebene Keys gegen die bekannte Wahrheit -- zerrissene und verschmolzene Kunden}{fig:check}{0.55}
 
 Die Integration wird gemessen statt nur plausibilisiert: \pq{CHECK\_Sollwerte} vergleicht die vergebenen \pq{KundeKey}s mit der Sollwerttabelle der Datengenerierung und zählt \emph{zerrissene} Kunden (ein echter Kunde, mehrere Keys) und \emph{verschmolzene} Keys (ein Key, mehrere echte Kunden). \Cref{tab:messreihe} zeigt die Messreihe.
 
@@ -264,8 +329,10 @@ Die Integration wird gemessen statt nur plausibilisiert: \pq{CHECK\_Sollwerte} v
 
 \todo{Was: komposite Schlüssel verketten, Produktgruppe aus sprechendem Schlüssel und ArtNr$\leftrightarrow$SKU, CHF$\rightarrow$EUR, Brutto$\rightarrow$Netto je Land, Sets$\rightarrow$Stück, Filter (gesperrt, cancelled/refunded) mit Zählung, Auftrag $\rightarrow$ zum Datum gültige Adresse, Shop-Aufträge nur aus einer Quelle (ShopRef).}
 
+\abb{check-fakten}{\pq{CHECK\_Fakten}: Soll-Ist-Prüfung der Faktenseite -- Zeilenzahlen, Anti-Join, fehlende Schlüssel, Umsatzsummen je Quelle}{fig:checkfakten}{0.6}
+
 \abb{pivot-f1}{Auswertung F1: Umsatz je Verkäufer und Kundentyp (Pivot auf dem integrierten Bestand)}{fig:pivot1}{0.85}
-\abb{pivot-f5}{Auswertung F5: Kanalanteil Direkt vs.\ Shop je betreutem Kunden}{fig:pivot5}{0.85}
+\abb{pivot-f5}{Auswertung F5: Kanalanteil Direkt vs.\ Shop je betreutem Kunden}{fig:pivot5}{0.7}
 % Vorgabe Kirchberg: "Verdeutlichen Sie den Integrationsablauf mit Beispieldaten" – mindestens zwei Pivots zeigen
 
 \todo{Je Pivot zwei Sätze: was sie zeigt und welche Integrationsleistung sie voraussetzt. Abschluss: Prüfliste mit Zählung (Umzieher ohne Schlüssel, PLZ-Land-Konflikte, ungültige PLZ/E-Mail) als bewusste Grenze zwischen automatisch und manuell.}
@@ -281,9 +348,9 @@ Die Integration wird gemessen statt nur plausibilisiert: \pq{CHECK\_Sollwerte} v
 \anhang{Zentrale Power-Query-Abfragen (M-Code)}{app:mcode}
 Der vollständige M-Code liegt in der Mappe; hier die Abfragen, die die Entscheidungen aus \cref{sec:integration} tragen.
 % Zeilennummern passen zu code/Section1.m (Stand 09.11.2026); bei Änderungen in der Mappe neu extrahieren.
-\lstinputlisting[language=PowerQueryM, caption={\pq{fnNormName}}, firstline=64, lastline=75]{code/Section1.m}
-\lstinputlisting[language=PowerQueryM, caption={\pq{CRM\_k}: Match-Kaskade}, firstline=225, lastline=265]{code/Section1.m}
-\lstinputlisting[language=PowerQueryM, caption={\pq{CHECK\_Sollwerte}: Erfolgsmessung}, firstline=327, lastline=352]{code/Section1.m}
+\lstinputlisting[language=PowerQueryM, caption={\pq{fnNormName}}, firstline=66, lastline=77]{code/Section1.m}
+\lstinputlisting[language=PowerQueryM, caption={\pq{CRM\_k}: Match-Kaskade}, firstline=227, lastline=267]{code/Section1.m}
+\lstinputlisting[language=PowerQueryM, caption={\pq{CHECK\_Sollwerte}: Erfolgsmessung}, firstline=329, lastline=354]{code/Section1.m}
 
 \anhang{Generator der Beispieldaten}{app:generator}
 \texttt{generate\_sources.py} erzeugt alle Quelldateien deterministisch (Seed 20261127) und schreibt die Sollwerte, die nur der Erfolgsmessung dienen.
