@@ -80,3 +80,41 @@ Präfixfehler wie ursprünglich in fnNormName. Folge: „TSV Steeldarters Augsbu
 dieselbe Name_norm in derselben Stadt, obwohl der Generator das verhindern soll. In Messung 3b harmlos (10206 hat ERP-Schlüssel im CRM,
 10381 ist reiner ERP-Altkunde), aber ein realistischer Grenzfall für Kap. 8: zwei Vereine mit gleichem Namensstamm in einer Stadt
 sind über Namen allein nicht trennbar → Prüfliste.
+
+## Faktenseite (CHECK_Fakten, 10.11.2026, Mappe nach Laden aller Zieltabellen)
+
+| Prüfung | Soll | Ist | OK |
+| --- | --- | --- | --- |
+| Zeilen FAKT_ERP = AUFTRAGSPOS | 1094 | 1094 | ja |
+| Aufträge ERP | 354 | 354 | ja |
+| Bestellungen Shop gesamt | 384 | 384 | ja |
+| Shop storniert/erstattet (gefiltert) | – | 52 | – |
+| Shop im ERP importiert (Anti-Join) | 78 | 78 | ja |
+| Bestellungen in FAKT_SHOP | 254 | 254 | ja |
+| AuftragID in beiden Quellen | 0 | 0 | ja |
+| KundeKey / ProduktKey / Region null | 0 | 0 | ja |
+| Verkäufer unbekannt | 0 | 0 | ja |
+| Zeilen FAKT_VERKAUF | 1869 | 1869 | ja |
+| Summe NettoEUR ERP | – | 345.310,99 | – |
+| Summe NettoEUR Shop | – | 135.176,59 | – |
+
+Geladene Zieltabellen: FAKT_VERKAUF 1.869 (im Datenmodell), DIM_KUNDE 204 (= 200 Kunden + 4 bewusst getrennte Umzieher),
+DIM_KUNDE_ADRESSE 225 (historisiert), DIM_PRODUKT 25, DIM_VERKAEUFER 8 (7 Vertreter + ONLINE), CHECK_Sollwerte 24, CHECK_Fakten 14.
+Befund Ladezeit: FAKT_VERKAUF mit „Dem Datenmodell hinzufügen" ca. 7 min (Tabelle + Modell = zwei Auswertungen der Fuzzy-Kaskade);
+die Dimensionen danach je unter 1 min. Ohne Table.Buffer wäre die Kaskade je Join erneut ausgewertet worden (siehe Doc Faktenseite).
+
+## Pivots P1–P6 (10.11.2026) – Plausibilitätsbefunde
+
+- P1 Verkäufer × Kundentyp: Privat-Umsatz (55.278 €) liegt vollständig bei ONLINE; Gesamt 480.487,58 € = ERP + Shop aus CHECK_Fakten.
+- P2 Verkäufer × Land/Region: V04 nur CH, V05 nur AT, V03 nur Ost, V01 nur Süd – Gebietsregel kommt durch; ONLINE in allen Regionen.
+- P3 Saison: Sommerpause schwächste Saison (2023/24: 34,5 T€ von 252 T€), Hauptsaison Nov–Jan am stärksten; Daten reichen bis Saison 2024/25 (Sep–Nov 2024).
+- P4 Produktgruppen: Vereine mit hohen Stückzahlen bei Flights/Shafts (Sets × 10 umgerechnet).
+- P5 Kanalanteil: erste Fassung Verkäufer × Kanal war trivial (ONLINE = 100 % online, weil VerkaeuferKey am Auftrag hängt).
+  Korrektur: FAKT_VERKAUF um `Stamm_VertreterNr` (VertreterNr aus DIM_KUNDE, nur ERP-Kunden) erweitert → Anteil Shop am Umsatz der
+  betreuten Kunden: V01 25 %, V02 29 %, V03 29 %, V04 16 %, V05 22 %; nicht betreute Kunden (Leer) 100 % online. Das ist F5.
+  Entscheidung für die Arbeit: Verkäufer am Auftrag (Provision) UND Stamm-Vertreter am Kunden (Betreuung) sind zwei verschiedene Fragen,
+  deshalb beide Spalten in der Faktentabelle.
+- P6 (über Datenmodell, diskrete Anzahl): 608 Aufträge = 354 ERP + 254 Shop; Ø Lieferdauer 5,7 Tage, Ø Zahlungsverzug −1,2 Tage
+  (ONLINE −14: Shop-Importe im ERP sind vorausbezahlt); ONLINE Ø Lieferdauer 2,5 Tage.
+- Hinweis: durch P6 liegt FAKT_VERKAUF doppelt im Datenmodell („FAKT_VERKAUF 1"); unschädlich, bei Gelegenheit im Datenmodell löschen.
+- Offen: leeres Blatt SHOP_h löschen; Section1.m in latex/code neu extrahieren (FAKT_VERKAUF geändert).
