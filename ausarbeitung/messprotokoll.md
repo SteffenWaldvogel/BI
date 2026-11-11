@@ -118,3 +118,20 @@ die Dimensionen danach je unter 1 min. Ohne Table.Buffer wäre die Kaskade je Jo
   (ONLINE −14: Shop-Importe im ERP sind vorausbezahlt); ONLINE Ø Lieferdauer 2,5 Tage.
 - Hinweis: durch P6 liegt FAKT_VERKAUF doppelt im Datenmodell („FAKT_VERKAUF 1"); unschädlich, bei Gelegenheit im Datenmodell löschen.
 - Offen: leeres Blatt SHOP_h löschen; Section1.m in latex/code neu extrahieren (FAKT_VERKAUF geändert).
+
+## Dashboard (Blatt `Dashboard`)
+
+Sechs PivotCharts (14 x 8 cm, 3x2-Raster, eine Bildschirmseite bei 100 %), je Frage ein Diagrammtyp nach Skript Kap. 4.3 (Aussage als Titel, Feldschaltflächen ausgeblendet, keine 3D-Effekte):
+
+| Frage | Pivot | Diagrammtyp | Anpassung |
+|---|---|---|---|
+| F1 | P1_Verkaeufer_Kundentyp | gestapelte Säulen | – |
+| F2 | P2_Verkaeufer_Region | gestapelte Balken | Region aus Spalten entfernt (nur Land) |
+| F3 | P3_Saison | Linie mit Datenpunkten | VerkaeuferKey entfernt (Gesamtverlauf), Legende entfernt |
+| F4 | neue Pivot P4!N7 (Produktgruppe × NettoEUR) | Kreis | Beschriftung Rubrik + Prozent, Legende entfernt |
+| F5 | P5_Kanalanteil | gestapelte Balken (Werte bereits % Zeile) | – |
+| F6 | P6_Liefer_Zahlung (Datenmodell) | gruppierte Säulen | Anzahl Aufträge aus Werten entfernt (Skalierung) |
+
+Anordnung per VBA-Direktfenster: `For i = 1 To 6: Set c = Sheets("Dashboard").ChartObjects(i): c.Width = 400: c.Height = 230: c.Left = 8 + ((i - 1) Mod 3) * 408: c.Top = 30 + ((i - 1) \ 3) * 238: Next`.
+Kein Datenschnitt: P6 und die F4-Pivot hängen an anderen Caches (Datenmodell bzw. eigener Cache), ein gemeinsamer Verkäufer-Filter wäre nur für P1/P2/P3/P5 möglich.
+Screenshot: `ausarbeitung/latex/bilder/dashboard.png`.
