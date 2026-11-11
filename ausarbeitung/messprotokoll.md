@@ -135,3 +135,10 @@ Sechs PivotCharts (14 x 8 cm, 3x2-Raster, eine Bildschirmseite bei 100 %), je Fr
 Anordnung per VBA-Direktfenster: `For i = 1 To 6: Set c = Sheets("Dashboard").ChartObjects(i): c.Width = 400: c.Height = 230: c.Left = 8 + ((i - 1) Mod 3) * 408: c.Top = 30 + ((i - 1) \ 3) * 238: Next`.
 Kein Datenschnitt: P6 und die F4-Pivot hängen an anderen Caches (Datenmodell bzw. eigener Cache), ein gemeinsamer Verkäufer-Filter wäre nur für P1/P2/P3/P5 möglich.
 Screenshot: `ausarbeitung/latex/bilder/dashboard.png`.
+
+## Abbildungen Quellen/Zielschema (11.11.)
+
+- `quellen-ueberblick` und `zielschema` als TikZ direkt in main.tex (kein Screenshot nötig, bleibt editierbar).
+- `quellen-beispielzeilen` als Tabelle 1 mit Kunde 7 der Sollwerte (Petra Richter, Dart-Lounge Wien): ERP 10219 / Shop C-00114 / CRM-GUID, drei Schreibweisen der Straße, Land A/AT/Österreich, Kundentyp 3/is_club=false/Gastronomie, E-Mail-Groß-/Kleinschreibung, Zahlungsziel -1.
+- Anhang B: nur noch vier Auszüge aus generate_sources.py (Seed/Fehlerquote, Kunden+Verteilung, Schreibweisen, Sollwerte) statt 423 Zeilen; das vollständige Listing scheiterte außerdem an Mojibake-Zeichen außerhalb Latin-1 in `mojibake()` (listings/inputenc).
+- Testkompilat mit Ersatzpaketen (mathptmx, babel english): 22 Seiten inkl. Deckblatt/Verzeichnisse/Anhang, 0 Fehler. Overleaf-ZIP neu gebaut.

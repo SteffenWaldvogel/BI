@@ -34,7 +34,7 @@
 \usepackage{listings}
 \input{code/lst-powerquery-m.tex}
 \usepackage{tikz}
-\usetikzlibrary{positioning, arrows.meta, fit, backgrounds}
+\usetikzlibrary{positioning, arrows.meta, fit, backgrounds, calc}
 \usepackage[hidelinks]{hyperref}
 \usepackage[nameinlink, ngerman]{cleveref}
 
@@ -129,15 +129,69 @@ Der integrierte Datenbestand soll sechs Fragen beantworten, die jeweils Verkäuf
 
 \subsection{Die drei Quellsysteme}
 
-\abb{quellen-ueberblick}{Die drei Quellsysteme der DartPoint GmbH mit Tabellen, Formaten und Schlüsseln}{fig:quellen}{0.95}
-% Vorschlag: Draw.io/PowerPoint-Grafik: drei Kästen ERP (KUNDE, VERTRETER, AUFTRAG, AUFTRAGSPOS, ZAHLUNG, LIEFERUNG, ARTIKEL),
-% Shop (customers, orders, order_items, products, shipping_methods), CRM (Accounts, Betreuer, Aktivitaet);
-% darunter je Format: .txt/1252/;/TT.MM.JJJJ/Dezimalkomma – .csv/UTF-8/,/ISO-UTC/Dezimalpunkt/brutto – .xlsx/MM/DD/YYYY/GUID
+\begin{figure}[H]\centering\small
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[x=1cm, y=1cm,
+  sys/.style={draw, rounded corners=2pt, fill=white, inner sep=5pt, text width=4.9cm, align=left, font=\scriptsize, anchor=north},
+  tech/.style={draw=gray!60, fill=gray!8, rounded corners=2pt, inner sep=4pt, text width=4.9cm, align=left, font=\scriptsize, anchor=north},
+  ref/.style={<->, gray, dashed}]
+  \node[sys] (erp) at (0,0) {%
+    \textbf{\sffamily ERP (Lexware-Typ, seit 2012)}\\[2pt]
+    \pq{KUNDE} (KdNr, Firma, Name1, Vorname, Strasse, PLZ, Ort, Land, Kundengruppe, VertreterNr, Zahlungsziel, Gesperrt, Bemerkung)\\
+    \pq{VERTRETER} (VertreterNr, Name, Gebiet, Austritt)\\
+    \pq{AUFTRAG} (AuftragNr, KdNr, Datum, VertreterNr, Status, Waehrung, Lieferart, ShopRef)\\
+    \pq{AUFTRAGSPOS} (AuftragNr, Pos, ArtNr, Menge, Einheit, EPreisNetto)\\
+    \pq{ZAHLUNG}, \pq{LIEFERUNG}, \pq{ARTIKEL}};
+  \node[sys] (shop) at (5.6,0) {%
+    \textbf{\sffamily Online-Shop (seit 2018)}\\[2pt]
+    \pq{customers} (customer\_id, email, first\_name, last\_name, gender, address, country, is\_club, newsletter, created\_at, erp\_customer\_no, company)\\
+    \pq{orders} (order\_id, customer\_id, order\_date, status, total\_gross, shipping\_method\_id)\\
+    \pq{order\_items} (order\_id, line\_no, sku, qty, unit\_price\_gross)\\
+    \pq{products} (sku, name, category)\\
+    \pq{shipping\_methods} (id, name)};
+  \node[sys] (crm) at (11.2,0) {%
+    \textbf{\sffamily CRM (SaaS, seit 2022)}\\[2pt]
+    \pq{Accounts} (AccountId, Firma, Anrede, Titel, Vorname, Nachname, Strasse, Hausnr, PLZ, Ort, Land, Kundentyp, Segment, Betreuer, ERP\_KdNr, Erstkontakt, Newsletter, Status, LetzteAenderung, E-Mail)\\
+    \pq{Betreuer} (Name, E-Mail, Rolle, Region)\\
+    \pq{Aktivitaet} (ActivityId, AccountId, Typ, Datum, Betreuer)};
+  \node[tech] (erpt) at (0,-4.7) {%
+    \textbf{.txt}, Windows-1252, Semikolon, CRLF\\ Datum TT.MM.JJJJ, Dezimalkomma\\ Preise netto, Währung je Auftrag\\ Schlüssel: KdNr numerisch, VertreterNr, ArtNr sprechend\\ Vollabzug ohne Änderungsdatum};
+  \node[tech] (shopt) at (5.6,-4.7) {%
+    \textbf{.csv}, UTF-8, Komma, LF\\ Datum ISO 8601 UTC, Dezimalpunkt\\ Preise brutto, immer EUR (auch CH)\\ Schlüssel: customer\_id alphanumerisch, sku numerisch\\ created\_at/updated\_at vorhanden};
+  \node[tech] (crmt) at (11.2,-4.7) {%
+    \textbf{.xlsx}, ein Blatt je Tabelle\\ Datum MM/DD/YYYY, teils nur MM/YYYY\\ keine Preise, Freitext vom Vertrieb\\ Schlüssel: AccountId als GUID, Betreuer per Name\\ LetzteAenderung je Account};
+  % Querverweise unterhalb
+  \draw[ref] (erpt.south) to[out=-90, in=-90, looseness=0.5] node[below, font=\tiny, align=center, pos=0.5] {Shop.erp\_customer\_no (40\,\%)} (shopt.south);
+  \draw[ref] (shopt.south) to[out=-90, in=-90, looseness=0.5] node[below, font=\tiny, align=center, pos=0.5] {E-Mail (Shop $\leftrightarrow$ CRM)} (crmt.south);
+  \draw[ref] (erpt.south west) ++(0.3,0) to[out=-90, in=-90, looseness=0.35] node[below, font=\tiny, align=center, pos=0.5] {CRM.ERP\_KdNr (60\,\%, mit Tippfehlern)} ($(crmt.south east)+(-0.3,0)$);
+\end{tikzpicture}}
+\caption{Die drei Quellsysteme der DartPoint GmbH: Tabellen, Formate und die einzigen vorhandenen Querverweise}
+\label{fig:quellen}
+\end{figure}
 
 \todo{Je System ein Absatz: Technik, Tabellen, und die drei bis vier markantesten eingebauten Konflikte -- ERP: KdNr numerisch, Straße+Hausnr in einem Feld, PLZ als Zahl (führende Null), Kundengruppe 1--4, Zahlungsziel -1 / 31.12.9999, Bemerkung mit Zeilenumbrüchen. Shop: address in einem Feld, is\_club statt Kundentyp, gender 1/2/0, Lieferart als eigene Tabelle, Preise brutto auch für CH. CRM: GUID, Firma ohne Präfix/e.V., Anrede-Varianten, ue/ü und Mojibake, ERP\_KdNr nur bei 60\,\% und mit Tippfehlern, Datum teils nur MM/YYYY.}
 
-\abb{quellen-beispielzeilen}{Beispielzeilen derselben Kundin in ERP, Shop und CRM -- drei Schreibweisen, drei Schlüssel}{fig:beispielzeilen}{0.95}
-% Screenshot: je eine Zeile aus KUNDE.txt (Editor), customers.csv, CRM Accounts für einen überlappenden Kunden
+\begin{table}[H]
+  \centering\scriptsize
+  \caption{Dieselbe Kundin in den drei Quellsystemen (Kunde 7 der Sollwerte): drei Schlüssel, drei Schreibweisen, drei Kodierungen}
+  \label{tab:beispielzeilen}
+  \begin{tabular}{@{}l>{\ttfamily}p{3.6cm}>{\ttfamily}p{4.2cm}>{\ttfamily}p{4.2cm}@{}}
+    \toprule
+    Feld & \normalfont ERP \quelle{KUNDE} & \normalfont Shop \quelle{customers} & \normalfont CRM \quelle{Accounts} \\
+    \midrule
+    Schlüssel & 10219 & C-00114 & 966dac65-\dots\ (GUID) \\
+    Verweis & -- & erp\_customer\_no = (leer) & ERP\_KdNr = (leer) \\
+    Firma & Dart-Lounge & Dart-Lounge & Dart-Lounge \\
+    Name & Richter; Petra & Petra; Richter; gender=2 & Frau; Petra; Richter \\
+    Adresse & Seestr. 88a & "See-Straße 88a, 1010 Wien" & See-Str.; 88a \\
+    PLZ / Ort & 1010; Wien & (in address) & 1010; Wien \\
+    Land & A & AT & Österreich \\
+    Kundentyp & Kundengruppe = 3 & is\_club = false & Gastronomie \\
+    E-Mail & -- & petra.richter24@t-online.de & PETRA.RICHTER24@T-ONLINE.DE \\
+    Sonstiges & Zahlungsziel = -1 & created\_at = ISO/UTC & Erstkontakt = 10/05/2021 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \subsection{Überlappungen und Datengenerierung}
 
@@ -165,8 +219,59 @@ Daraus entstehen 93 ERP-Kunden (inkl.\ 3 Dubletten), 140 Shop-Kunden und 115 CRM
 % =====================================================================
 \section{Zielschema}\label{sec:zielschema}
 
-\abb{zielschema}{Zielschema: Sternschema mit historisierter Kundenadresse und Schlüssel-Mapping}{fig:zielschema}{0.9}
-% Grafik: DIM_KUNDE, DIM_KUNDE_ADRESSE (GueltigVon/Bis, CurrentFlag), DIM_VERKAEUFER, DIM_PRODUKT, FAKT_VERKAUF, MAP_SCHLUESSEL
+\begin{figure}[H]\centering\small
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[x=1cm, y=1cm, >=Latex,
+  ent/.style={draw, rounded corners=2pt, fill=white, inner sep=4pt, text width=3.6cm, align=left, font=\scriptsize},
+  fact/.style={ent, fill=gray!12, text width=4.2cm},
+  key/.style={font=\scriptsize\bfseries}]
+  \node[fact] (f) at (0,0) {%
+    \textbf{\sffamily FAKT\_VERKAUF} (1 Zeile je Position)\\[2pt]
+    \textbf{KundeKey, VerkaeuferKey, ProduktKey}\\
+    AuftragID, Pos, Quelle (ERP/Shop), Kanal (Direkt/Online)\\
+    Auftragsdatum, Jahr, Quartal, Monat, Saison, Saisonjahr\\
+    LandISO, Region, PLZ \textit{(zum Auftragsdatum)}\\
+    Kundentyp, Stamm\_VertreterNr, Produktgruppe\\
+    Status, Lieferart, MengeStk, NettoEUR\\
+    Lieferdauer\_Tage, Zahlungsverzug\_Tage};
+  \node[ent, anchor=south] (k) at (-5.6,0.4) {%
+    \textbf{\sffamily DIM\_KUNDE}\\[2pt]
+    \textbf{KundeKey} (Surrogat)\\
+    Firma, Anrede, Titel, Vorname, Nachname\\
+    Kundentyp (Verein/Händler/Gastro/Privat)\\
+    LandISO, Newsletter, Erstkontakt, Kontaktstatus (Kunde/Lead/gesperrt)\\
+    VertreterNr, Betreuer\\
+    ERP\_KdNr, ShopID, AccountId, Quellen, AnzahlQuellen};
+  \node[ent, anchor=north] (a) at (-5.6,-0.4) {%
+    \textbf{\sffamily DIM\_KUNDE\_ADRESSE} (historisiert)\\[2pt]
+    \textbf{KundeKey, Version}\\
+    Strasse, Hausnr, PLZ, Ort, LandISO, Region\\
+    GueltigVon, GueltigBis, CurrentFlag};
+  \node[ent, anchor=south] (v) at (5.6,0.4) {%
+    \textbf{\sffamily DIM\_VERKAEUFER}\\[2pt]
+    \textbf{VerkaeuferKey} (= VertreterNr, \enquote{ONLINE} als Pseudo-Verkäufer)\\
+    Nachname, Vorname, Rolle (Außen-/Innendienst/Online)\\
+    Gebiet, Region, E-Mail, Austritt, Aktiv};
+  \node[ent, anchor=north] (p) at (5.6,-0.4) {%
+    \textbf{\sffamily DIM\_PRODUKT}\\[2pt]
+    \textbf{ProduktKey}\\
+    ArtNr (ERP), Shop\_sku, Bezeichnung, Shop\_name\\
+    Produktgruppe, EKPreis\\
+    Flag\_Gruppe\_abweichend, Flag\_ohne\_Shop};
+  \node[ent, fill=gray!8, above=7mm of k] (m) {%
+    \textbf{\sffamily MAP\_SCHLUESSEL}\\[2pt]
+    Quelle, \textbf{QuellID} $\rightarrow$ \textbf{KundeKey}\\
+    Matchmethode (ERP-Schlüssel / E-Mail / Adresse / Fuzzy / Dublette)};
+  \draw[->] (k.east) -- node[sloped, above, font=\tiny] {1 : n} (f.north west);
+  \draw[->] (v.west) -- node[sloped, above, font=\tiny] {1 : n} (f.north east);
+  \draw[->] (p.west) -- node[sloped, above, font=\tiny] {1 : n} (f.south east);
+  \draw[->] (k) -- node[right, font=\tiny] {1 : n (Versionen)} (a);
+  \draw[->, dashed] (a.east) -- node[sloped, below, font=\tiny, fill=white, inner sep=1pt] {Adresse zum Auftragsdatum} (f.south west);
+  \draw[->, dashed] (m) -- node[right, font=\tiny] {n : 1} (k);
+\end{tikzpicture}}
+\caption{Zielschema: Sternschema mit historisierter Kundenadresse und Schlüssel-Mapping (fett: Schlüssel)}
+\label{fig:zielschema}
+\end{figure}
 
 \abb{dim-adresse}{\pq{DIM\_KUNDE\_ADRESSE}: Kunde 43 mit zwei Adressversionen -- Gültigkeitszeitraum statt Entscheidung, welche Quelle recht hat}{fig:adresse}{1.0}
 
@@ -358,7 +463,11 @@ Der vollständige M-Code liegt in der Mappe; hier die Abfragen, die die Entschei
 
 \anhang{Generator der Beispieldaten}{app:generator}
 \texttt{generate\_sources.py} erzeugt alle Quelldateien deterministisch (Seed 20261127) und schreibt die Sollwerte, die nur der Erfolgsmessung dienen.
-\lstinputlisting[language=Python, basicstyle=\ttfamily\scriptsize, caption={generate\_sources.py}]{code/generate_sources.py}
+Das vollständige Skript (423 Zeilen) liegt im Abgabe-Ordner; hier die Stellen, die den Entwurf tragen: Seed und skalierbare Fehlerquote, die Kundenverteilung auf die Systeme, die systemspezifischen Schreibweisen und das Schreiben der Sollwerte.
+\lstinputlisting[language=Python, basicstyle=\ttfamily\scriptsize, caption={generate\_sources.py: Seed und Fehlerquote}, firstline=19, lastline=21]{code/generate_sources.py}
+\lstinputlisting[language=Python, basicstyle=\ttfamily\scriptsize, caption={generate\_sources.py: Kunden und Verteilung auf die Quellsysteme}, firstline=81, lastline=111]{code/generate_sources.py}
+\lstinputlisting[language=Python, basicstyle=\ttfamily\scriptsize, caption={generate\_sources.py: Schreibweisen je System}, firstline=142, lastline=168]{code/generate_sources.py}
+\lstinputlisting[language=Python, basicstyle=\ttfamily\scriptsize, caption={generate\_sources.py: Sollwerte (Ground Truth)}, firstline=410, lastline=416]{code/generate_sources.py}
 
 % ---------- Ehrenwörtliche Erklärung (HR 2.12, Wortlaut vorgegeben, ohne Seitenzahl)
 \newpage
