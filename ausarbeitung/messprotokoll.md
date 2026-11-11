@@ -142,3 +142,54 @@ Screenshot: `ausarbeitung/latex/bilder/dashboard.png`.
 - `quellen-beispielzeilen` als Tabelle 1 mit Kunde 7 der Sollwerte (Petra Richter, Dart-Lounge Wien): ERP 10219 / Shop C-00114 / CRM-GUID, drei Schreibweisen der Straße, Land A/AT/Österreich, Kundentyp 3/is_club=false/Gastronomie, E-Mail-Groß-/Kleinschreibung, Zahlungsziel -1.
 - Anhang B: nur noch vier Auszüge aus generate_sources.py (Seed/Fehlerquote, Kunden+Verteilung, Schreibweisen, Sollwerte) statt 423 Zeilen; das vollständige Listing scheiterte außerdem an Mojibake-Zeichen außerhalb Latin-1 in `mojibake()` (listings/inputenc).
 - Testkompilat mit Ersatzpaketen (mathptmx, babel english): 22 Seiten inkl. Deckblatt/Verzeichnisse/Anhang, 0 Fehler. Overleaf-ZIP neu gebaut.
+
+## Datenstand v3 (11.11.2026): Fehlerbilder aus PA1 und ServiceTool, max. 500 Kundensätze
+
+Generator erweitert: 285 eindeutige Kunden -> 499 Kundensätze (ERP 134, Shop 201, CRM 164), 478 ERP-Aufträge, 549 Shop-Bestellungen.
+Neu: `sollwerte/fehler_log.csv` als zweite Ground Truth (Quelle; Tabelle; ID; Fehlertyp) - 318 eingebaute Fehler. Damit ist neben der Kundenzuordnung auch die Erkennungsquote der Prüfregeln messbar.
+Präfixfehler in `_nkey` (tsv/sv) korrigiert. Die Mappe ist auf diesem Datenstand NOCH NICHT nachgezogen; Messreihe 1-5 gilt für Datenstand v2.
+
+| Fehlertyp | Fälle |
+|---|---|
+| E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at)) | 42 |
+| Telefon mit Text | 27 |
+| Land-Variante | 20 |
+| Sammel-E-Mail (zwei Kunden, ein Postfach) | 20 |
+| gleiche Adresse wie anderer Kunde (Vereinsheim) | 20 |
+| PLZ als Zahl (Excel-Artefakt) | 14 |
+| Mojibake (Zeichensatzfehler beim Export) | 12 |
+| Datum ungenau (nur MM/YYYY) | 12 |
+| Groß-/Kleinschreibung | 12 |
+| PLZ mit Länderpräfix | 10 |
+| Dublette im CRM | 7 |
+| Betreuer nicht auflösbar (Fremdschlüssel per Name) | 7 |
+| Feldlänge: Name abgeschnitten | 7 |
+| Privatkunde nur im Firmenfeld | 6 |
+| Land fehlt | 6 |
+| Platzhalter statt leer | 6 |
+| Tippfehler im Namen | 6 |
+| Gutschrift (negative Menge) | 5 |
+| PLZ im Ortsfeld | 5 |
+| J/N-Feld mit Fremdwert | 5 |
+| Zahlungsziel als Text | 5 |
+| Felder vertauscht (Straße/Hausnr) | 4 |
+| Testkunde | 4 |
+| Position ohne Auftrag (Waise) | 4 |
+| Dublette im ERP | 4 |
+| Versand vor Auftrag | 4 |
+| E-Mail mit Leerzeichen | 4 |
+| Bemerkung im E-Mail-Feld | 4 |
+| zwei E-Mails in einem Feld | 4 |
+| PLZ passt nicht zum Land | 3 |
+| PLZ fehlt | 3 |
+| Fremdschlüssel ERP_KdNr mit Tippfehler | 3 |
+| Sperrvermerk im Firmenfeld | 3 |
+| Shop-Auftrag doppelt importiert | 3 |
+| Postfach im Straßenfeld | 3 |
+| Hausnummer vor Straße | 3 |
+| Hausnummer-Bereich | 3 |
+| PLZ als Zahl (Excel-Artefakt, führende Null fehlt) | 2 |
+| Ansprechpartner im Firmenfeld | 2 |
+| E-Mail ohne @ | 2 |
+| PLZ ungültig | 1 |
+| Sperrvermerk nur im Freitext | 1 |

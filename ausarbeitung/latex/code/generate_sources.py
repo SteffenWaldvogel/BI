@@ -20,6 +20,8 @@ SEED = 20261127
 random.seed(SEED)
 FEHLERQUOTE = 1.0   # Skalierung aller "manuellen" Fehler (1.0 = Standard, 2.0 = doppelt so viele, 0 = keine)
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "quellen")
+FEHLER_LOG = []   # zweite Ground Truth: welcher eingebaute Fehler steckt in welchem Quelldatensatz
+def log(quelle, tabelle, id_, typ): FEHLER_LOG.append((quelle, tabelle, str(id_), typ))
 
 # ---------------------------------------------------------------- Stammdaten-Bausteine
 VERTRETER = [  # VertreterNr, Nachname, Vorname, Rolle, ERP-Gebiet (PLZ-Präfixe), CRM-Region, Austritt
@@ -101,19 +103,19 @@ def neuer_kunde(key, typ, praesenz):
                 newsletter=random.random() < 0.55, abweichung="identisch", umzug=None)
 
 VERTEILUNG = [  # (Präsenz, Anzahl, Typverteilung)
-    ("ERP+SHOP+CRM", 45, ["Verein"]*5 + ["Händler"]*3 + ["Gastro"]*2),
-    ("ERP+CRM",      20, ["Verein"]*4 + ["Händler"]*4 + ["Gastro"]*2),
-    ("SHOP+CRM",     30, ["Verein"]*6 + ["Privat"]*3 + ["Gastro"]*1),
-    ("CRM",          15, ["Verein"]*5 + ["Händler"]*3 + ["Gastro"]*2),       # Leads
-    ("SHOP",         65, ["Privat"]*10),
-    ("ERP",          25, ["Verein"]*3 + ["Händler"]*4 + ["Gastro"]*3),       # Altkunden, gesperrt
+    ("ERP+SHOP+CRM", 64, ["Verein"]*5 + ["Händler"]*3 + ["Gastro"]*2),
+    ("ERP+CRM",      28, ["Verein"]*4 + ["Händler"]*4 + ["Gastro"]*2),
+    ("SHOP+CRM",     43, ["Verein"]*6 + ["Privat"]*3 + ["Gastro"]*1),
+    ("CRM",          21, ["Verein"]*5 + ["Händler"]*3 + ["Gastro"]*2),       # Leads
+    ("SHOP",         93, ["Privat"]*10),
+    ("ERP",          36, ["Verein"]*3 + ["Händler"]*4 + ["Gastro"]*3),       # Altkunden, gesperrt
 ]
 KUNDEN = []
 k = 0
 _namen_je_ort = set()   # (normalisierter Name, Ort) muss eindeutig sein – zwei gleichnamige Vereine/Kneipen in derselben Stadt sind unrealistisch
 def _nkey(c):
     base = (c["firma"] or c["nachname"]).lower()
-    for w in ["sv ","tsv ","dc ","sc "," e.v."," e. v."," gmbh"," e.k."," ohg"]: base = base.replace(w, " ")
+    for w in ["tsv ","sv ","dc ","sc "," e.v."," e. v."," gmbh"," e.k."," ohg"]: base = base.replace(w, " ")
     return (base.replace(" ", ""), c["ort"])
 for praesenz, n, typen in VERTEILUNG:
     for _ in range(n):
@@ -166,6 +168,23 @@ def firma_crm(c):
         f = f.replace(" e.V.","").replace(" e. V.","")
     return f
 
+# Gleiche Adresse, verschiedene Kunden (PA1: Sammeladressen/Filialen): Verein hat sein Vereinsheim in der Gaststätte
+VEREINSHEIM = []
+_gastro = [c for c in KUNDEN if c["typ"]=="Gastro" and not c["umzug"]]
+_frei = [c for c in KUNDEN if c["typ"]=="Verein" and not c["umzug"]]
+for g in _gastro:
+    kand = [v for v in _frei if v["ort"]==g["ort"]]
+    if kand and len(VEREINSHEIM) < 8:
+        v = kand[0]; _frei.remove(v)
+        v["strasse"], v["hnr"], v["plz"] = g["strasse"], g["hnr"], g["plz"]
+        VEREINSHEIM.append((g, v))
+# Sammel-E-Mail (ServiceTool: gleiche E-Mail bei verschiedenen Kunden): zwei Kunden teilen sich ein Postfach
+SAMMELMAIL = []
+_mp = [c for c in KUNDEN if "SHOP" in c["praesenz"] and "CRM" in c["praesenz"] and c["typ"]!="Privat" and not c["umzug"]]
+random.shuffle(_mp)
+for a, b in zip(_mp[0:5], _mp[5:10]):
+    b["email"] = a["email"]; SAMMELMAIL.append((a, b))
+
 # ---------------------------------------------------------------- IDs vergeben
 erp_nr = 10200; shop_nr = 100; crm_ids = {}
 for c in KUNDEN:
@@ -173,6 +192,13 @@ for c in KUNDEN:
     if "ERP"  in c["praesenz"]: erp_nr += random.randint(1,4); c["erp"] = erp_nr
     if "SHOP" in c["praesenz"]: shop_nr += random.randint(1,3); c["shop"] = f"C-{shop_nr:05d}"
     if "CRM"  in c["praesenz"]: c["crm"] = str(uuid.UUID(int=random.getrandbits(128)))
+
+for g, v in VEREINSHEIM:
+    for q, t, kk in (("ERP","KUNDE","erp"),("Shop","customers","shop"),("CRM","Accounts","crm")):
+        if v[kk]: log(q, t, v[kk], "gleiche Adresse wie anderer Kunde (Vereinsheim)")
+for a, b in SAMMELMAIL:
+    for x in (a, b):
+        log("Shop","customers",x["shop"],"Sammel-E-Mail (zwei Kunden, ein Postfach)"); log("CRM","Accounts",x["crm"],"Sammel-E-Mail (zwei Kunden, ein Postfach)")
 
 def d_de(d):  return d.strftime("%d.%m.%Y")
 def d_us(d):  return d.strftime("%m/%d/%Y")
@@ -250,6 +276,26 @@ for c in KUNDEN:
                 verzug = random.choices([0,0,0,3,8,15,30],[40,20,10,10,10,6,4])[0]
                 erp_zahlung.append([f"Z{anr}", anr, d_de(t+timedelta(days=ziel+verzug)), dez(netto), random.choice(["UE","UE","LS","BAR"])])
 
+# ---------------------------------------------------------------- Fehler in den Bewegungsdaten
+_gs = random.sample([x for x in erp_auftraege if not x[8] and x[4]=="R"], 5)          # Gutschrift: negative Menge, Status G
+for a in _gs:
+    for p in erp_pos:
+        if p[0]==a[0]: p[3] = -abs(p[3])
+    a[4] = "G"; log("ERP","AUFTRAG",a[0],"Gutschrift (negative Menge)")
+_gsn = {a[0] for a in _gs}
+erp_zahlung = [z for z in erp_zahlung if z[1] not in _gsn]; erp_lieferung = [l for l in erp_lieferung if l[1] not in _gsn]
+for l in random.sample(erp_lieferung, 4):                                              # Versanddatum vor Auftragsdatum
+    a = next(x for x in erp_auftraege if x[0]==l[1]); d = datetime.strptime(a[2], "%d.%m.%Y").date()
+    l[2] = d_de(d - timedelta(days=random.randint(3,30))); log("ERP","LIEFERUNG",l[0],"Versand vor Auftrag")
+for i in range(4):                                                                     # Waise: Position ohne Auftrag
+    erp_pos.append([f"2023-9{i:04d}", 1, random.choice(PRODUKTE)[0], random.randint(1,5), "Stk", dez(9.9)])
+    log("ERP","AUFTRAGSPOS",f"2023-9{i:04d}","Position ohne Auftrag (Waise)")
+for a in random.sample([x for x in erp_auftraege if x[8]], 3):                         # Shop-Auftrag doppelt ins ERP importiert
+    auftrag_nr[2024]+=1; anr = f"2024-{auftrag_nr[2024]:05d}"; dup = list(a); dup[0] = anr; erp_auftraege.append(dup)
+    for p in [p for p in erp_pos if p[0]==a[0]]:
+        q = list(p); q[0] = anr; erp_pos.append(q)
+    log("ERP","AUFTRAG",anr,"Shop-Auftrag doppelt importiert")
+
 # Exporte sind nach Schlüssel sortiert, wie ein echter Systemexport
 erp_auftraege.sort(key=lambda r: r[0]); erp_pos.sort(key=lambda r: (r[0], r[1]))
 erp_zahlung.sort(key=lambda r: r[1]); erp_lieferung.sort(key=lambda r: r[1])
@@ -296,24 +342,58 @@ def w_erp(name, header, rows):
     with open(os.path.join(OUT,"erp",name+".txt"), "w", encoding="cp1252", newline="") as f:
         wr = csv.writer(f, delimiter=";", lineterminator="\r\n"); wr.writerow(header); wr.writerows(rows)
 os.makedirs(os.path.join(OUT,"erp"), exist_ok=True)
+# Fehlerbilder aus der Praxis (PA1 Kriterienkatalog, ServiceTool): richtiger Wert im falschen Feld, Text statt Wert
+ERP_FELDLAENGE = 30   # Firmenfeld im ERP begrenzt: längere Namen werden beim Speichern abgeschnitten
+LAND_VAR_ERP = {"DE":["DE","Deutschland","Deutsch","BRD"], "AT":["AT","AUT","Österreich"], "CH":["Schweiz","SUI"]}
+LAND_VAR_CRM = {"DE":["DE","Germany","Deutschl.","D"], "AT":["Oesterreich","AT","Austria"], "CH":["CH","Switzerland"]}
+SPERRVERMERK = ["*INSOLVENT*", "GESPERRT", "NICHT VERWENDEN", "*** gesperrt lt. GF ***"]
+def tel_text(t): return t + random.choice([" -16 Hr. Vogel", " (Durchwahl 22)", " Fr. Maier vormittags", " oder mobil"])
+def tippfehler(s):   # Buchstabendreher
+    i = random.randint(1, max(1, len(s)-3)); return s[:i] + s[i+1] + s[i] + s[i+2:]
 kunden_erp = []
 for c in KUNDEN:
     if not c["erp"]: continue
+    E = lambda typ: log("ERP", "KUNDE", c["erp"], typ)
     gesperrt = c["praesenz"]=="ERP"
     plz = str(int(c["plz"]))  # Zahl: führende Null geht verloren (Dresden 01067 -> 1067)
     name1 = (c["titel"]+" " if c["titel"] else "") + c["nachname"]
-    if f(0.02): plz = random.choice([plz[:-1], plz + "0", plz[:2] + "O" + plz[3:]])   # ungültig: zu kurz, zu lang, Buchstabe O statt 0
-    kunden_erp.append([c["erp"], stoer_ws(c["firma"]), name1, c["vorname"], strasse_erp(c), plz, c["ort"],
-                       {"DE":"D","AT":"A","CH":"CH"}[c["land"]], {"Verein":1,"Händler":2,"Gastro":3,"Privat":4}[c["typ"]],
-                       vertreter_fuer(c["land"], c["plz"]), random.choice([30,30,14,60,-1]), d_de(c["erst"]),
-                       "J" if c["newsletter"] else "N", "J" if gesperrt else "N",
-                       d_de(date(2023,random.randint(6,12),28)) if gesperrt else "31.12.9999", random.choice(BEMERKUNGEN + ["   ", " "]), telefon(c["land"])])
-# 3 Dubletten im ERP: gleicher Kunde zweimal angelegt (anderer Mitarbeiter, andere Schreibweise), neue KdNr
-for row in random.sample(kunden_erp, 3):
+    ort = c["ort"]; firma = c["firma"]; strasse = strasse_erp(c); vorname = c["vorname"]
+    land = {"DE":"D","AT":"A","CH":"CH"}[c["land"]]
+    if strasse[:1].isdigit(): E("Hausnummer vor Straße")
+    if f(0.02): plz = random.choice([plz[:-1], plz + "0", plz[:2] + "O" + plz[3:]]); E("PLZ ungültig")   # zu kurz, zu lang, Buchstabe O statt 0
+    elif f(0.06): plz = land + "-" + c["plz"]; E("PLZ mit Länderpräfix")
+    elif f(0.03): ort = c["plz"] + " " + ort; plz = ""; E("PLZ im Ortsfeld")
+    if f(0.08): land = random.choice(LAND_VAR_ERP[c["land"]]); E("Land-Variante")
+    if "+" in c["praesenz"] and len(firma) > 8 and f(0.04): firma = tippfehler(firma); E("Tippfehler im Namen")
+    if f(0.03): firma = firma + " / " + random.choice(["Hr.","Fr."]) + " " + c["nachname"]; E("Ansprechpartner im Firmenfeld")
+    if len(firma) > ERP_FELDLAENGE: firma = firma[:ERP_FELDLAENGE]; E("Feldlänge: Name abgeschnitten")
+    if f(0.02): strasse = "Postfach " + str(random.randint(1000,9999)); E("Postfach im Straßenfeld")
+    elif not strasse[:1].isdigit() and f(0.03): strasse = strasse + random.choice(["-"+str(random.randint(2,9)), " + "+str(random.randint(2,9)), "/1"]); E("Hausnummer-Bereich")
+    ziel = random.choice([30,30,14,60,-1])
+    if ziel > 0 and f(0.05): ziel = random.choice([f"{ziel} Tage", f"{ziel}T netto", f"{ziel} Tg."]); E("Zahlungsziel als Text")
+    nl = "J" if c["newsletter"] else "N"
+    if f(0.03): nl = random.choice(["X","?","j","ja"]); E("J/N-Feld mit Fremdwert")
+    if f(0.03): vorname = random.choice(["-","k.A.","?","xxx"]); E("Platzhalter statt leer")
+    tel = telefon(c["land"])
+    if f(0.08): tel = tel_text(tel); E("Telefon mit Text")
+    bem = random.choice(BEMERKUNGEN + ["   ", " "])
+    if not gesperrt and f(0.04): bem = random.choice(SPERRVERMERK); E("Sperrvermerk nur im Freitext")
+    kunden_erp.append([c["erp"], stoer_ws(firma), name1, vorname, strasse, plz, ort,
+                       land, {"Verein":1,"Händler":2,"Gastro":3,"Privat":4}[c["typ"]],
+                       vertreter_fuer(c["land"], c["plz"]), ziel, d_de(c["erst"]),
+                       nl, "J" if gesperrt else "N",
+                       d_de(date(2023,random.randint(6,12),28)) if gesperrt else "31.12.9999", bem, tel])
+# 4 Dubletten im ERP: gleicher Kunde zweimal angelegt (anderer Mitarbeiter, andere Schreibweise), neue KdNr
+for row in random.sample(kunden_erp, 4):
     erp_nr += 1; dup = list(row); dup[0] = erp_nr
     dup[1] = dup[1].replace("e.V.", "").replace("e. V.", "").strip(); dup[4] = dup[4].replace("str.", "straße").replace("Str.", "Straße")
     dup[11] = d_de(date(2024, random.randint(1,12), random.randint(1,28)))
-    kunden_erp.append(dup)
+    kunden_erp.append(dup); log("ERP", "KUNDE", erp_nr, "Dublette im ERP (führend: " + str(row[0]) + ")")
+# Testkunden, die nie gelöscht wurden
+for nm in ["Testkunde", "TEST bitte nicht löschen"]:
+    erp_nr += 1
+    kunden_erp.append([erp_nr, nm, "Test", "Test", "Teststr. 1", "12345", "Teststadt", "D", 4, "I01", 30, d_de(date(2022,1,1)), "N", "N", "31.12.9999", "", ""])
+    log("ERP", "KUNDE", erp_nr, "Testkunde")
 w_erp("KUNDE", ["KdNr","Firma","Name1","Vorname","Strasse","PLZ","Ort","Land","Kundengruppe","VertreterNr","Zahlungsziel","Anlagedatum","Newsletter","Gesperrt","GesperrtBis","Bemerkung","Telefon"], kunden_erp)
 w_erp("VERTRETER", ["VertreterNr","Name","Gebiet","Austritt"], [[v[0], f"{v[1]}, {v[2]}", v[4], v[6]] for v in VERTRETER])
 w_erp("AUFTRAG", ["AuftragNr","KdNr","Datum","VertreterNr","Status","Waehrung","Lieferart","Zahlungsziel","ShopRef"], erp_auftraege)
@@ -332,11 +412,22 @@ for c in KUNDEN:
     if not c["shop"]: continue
     gender = {"m":1,"w":2}[c["geschlecht"]] if random.random()<0.85 else 0
     erp_ref = str(c["erp"]) if c["erp"] and random.random()<0.4 else ""
+    S = lambda typ: log("Shop", "customers", c["shop"], typ)
     mail = stoer_mail(c["email"], c["vorname"], c["nachname"])
-    if f(0.02): mail = mail.replace("@", random.choice(["", "#", " at "]))        # ungültig: kein @
-    cust.append([c["shop"], mail, c["vorname"], c["nachname"], gender, stoer_ws(strasse_shop(c), 0.0, 0.08), c["land"],
+    if mail != c["email"]: S("E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))")
+    if f(0.02): mail = c["email"].replace("@", random.choice(["", "#", " at "])); S("E-Mail ohne @")
+    elif f(0.04): mail = c["email"] + random.choice(["; ", ", ", " / "]) + "buero." + c["email"]; S("zwei E-Mails in einem Feld")
+    elif f(0.03): mail = c["email"].replace("@", " @ "); S("E-Mail mit Leerzeichen")
+    elif f(0.02): mail = random.choice(["keine Mails!", "nix gefunden", "tel. bestellen", "-"]); S("Bemerkung im E-Mail-Feld")
+    vn, nn = c["vorname"], c["nachname"]
+    if f(0.05): nn = random.choice([nn.upper(), nn.lower()]); S("Groß-/Kleinschreibung")
+    tel = telefon(c["land"]) if f(0.6) else ""
+    if tel and f(0.06): tel = tel_text(tel); S("Telefon mit Text")
+    cust.append([c["shop"], mail, vn, nn, gender, stoer_ws(strasse_shop(c), 0.0, 0.08), c["land"],
                  "true" if c["typ"]=="Verein" else "false", "true" if c["newsletter"] else "false",
-                 d_iso(datetime.combine(c["erst"],datetime.min.time())+timedelta(hours=random.randint(7,23))), erp_ref, c["firma"] if c["typ"]!="Privat" else "", telefon(c["land"]) if f(0.6) else ""])
+                 d_iso(datetime.combine(c["erst"],datetime.min.time())+timedelta(hours=random.randint(7,23))), erp_ref, c["firma"] if c["typ"]!="Privat" else "", tel])
+cust.append(["C-99999", "test@test.de", "Test", "Test", 0, "Teststr. 1, 12345 Teststadt", "DE", "false", "false", "2022-01-01T10:00:00Z", "", "", ""])
+log("Shop", "customers", "C-99999", "Testkunde")
 w_shop("customers", ["customer_id","email","first_name","last_name","gender","address","country","is_club","newsletter","created_at","erp_customer_no","company","phone"], cust)
 w_shop("orders", ["order_id","customer_id","order_date","status","total_gross","shipping_method_id","coupon_code"], shop_orders)
 w_shop("order_items", ["order_id","line_no","sku","qty","unit_price_gross"], shop_items)
@@ -356,7 +447,9 @@ for c in KUNDEN:
     anrede = {"m":"Herr","w":"Frau"}[c["geschlecht"]]
     if random.random() < 0.08: anrede = "Frau" if anrede=="Herr" else "Herr"   # Widerspruch zum Shop
     if random.random() < 0.05: anrede = ""
+    C = lambda typ: log("CRM", "Accounts", c["crm"], typ)
     if anrede and f(0.10): anrede = random.choice(ANREDE_VAR[anrede])          # Hr./Herrn/HERR
+    if f(0.03): anrede = random.choice(["k.A.", "-", "?"]); C("Platzhalter statt leer")
     strasse, hnr = strasse_crm(c)
     ort = src["ort"] + (f" ({random.choice(['Zentrum','West','Altstadt','Industriegebiet'])})" if random.random()<0.10 else "")
     typ = c["typ"]
@@ -366,35 +459,51 @@ for c in KUNDEN:
     erp_ref = ""
     if c["erp"] and random.random()<0.6:
         erp_ref = str(c["erp"] + (random.choice([1,-1,10]) if random.random()<0.05 else 0))  # 5 % Tippfehler
+        if erp_ref != str(c["erp"]): C("Fremdschlüssel ERP_KdNr mit Tippfehler")
     vnr = vertreter_fuer(c["land"], c["plz"])
     if vnr=="V01": vnr = "V02"   # CRM wurde nach Kellers Austritt umgehängt
     aend = src["datum"] if c["umzug"] else date(2022,6,1)+timedelta(days=random.randint(0,800))
     strasse = stoer_ws(strasse, 0.05, 0.0, 0.05)
-    nachname = name_crm(c); firma = firma_crm(c)
-    if f(0.05): nachname, firma = mojibake(nachname), mojibake(firma)         # Zeichensatzfehler beim Export
+    nachname = name_crm(c); firma = firma_crm(c); vorname = c["vorname"]
+    if c["typ"]=="Privat" and f(0.30): firma, vorname, nachname = f"{c['nachname']} {c['vorname']}", "", ""; C("Privatkunde nur im Firmenfeld")
+    if any(ch in nachname + firma for ch in "äöüßÄÖÜ") and f(0.30):
+        nachname, firma = mojibake(nachname), mojibake(firma); C("Mojibake (Zeichensatzfehler beim Export)")
+    if status=="Kunde" and f(0.03): firma = (firma or nachname) + " (" + random.choice(["INSOLVENT","GESPERRT","nicht verwenden"]) + ")"; C("Sperrvermerk im Firmenfeld")
     land_txt = {"DE":"Deutschland","AT":"Österreich","CH":"Schweiz"}[c["land"]]
     plz_txt = src["plz"]
-    if f(0.03): land_txt = ""                                                   # fehlender Wert
-    if f(0.02): plz_txt = ""
+    if f(0.03): land_txt = ""; C("Land fehlt")
+    elif f(0.10): land_txt = random.choice(LAND_VAR_CRM[c["land"]]); C("Land-Variante")
+    if f(0.02): plz_txt = ""; C("PLZ fehlt")
+    elif f(0.05): plz_txt = {"DE":"D","AT":"A","CH":"CH"}[c["land"]] + "-" + plz_txt; C("PLZ mit Länderpräfix")
+    elif f(0.10): plz_txt = int(plz_txt); C("PLZ als Zahl (Excel-Artefakt, führende Null fehlt)" if src["plz"].startswith("0") else "PLZ als Zahl (Excel-Artefakt)")
     erst_txt = d_us(c["erst"])
-    if f(0.05): erst_txt = c["erst"].strftime("%m/%Y")                          # Genauigkeit: nur Monat/Jahr
-    row = [c["crm"], stoer_ws(firma, 0.08, 0.0, 0.07), anrede, c["titel"], c["vorname"], nachname, strasse, hnr, plz_txt, ort,
+    if f(0.05): erst_txt = c["erst"].strftime("%m/%Y"); C("Datum ungenau (nur MM/YYYY)")
+    betreuer = betreuer_name[vnr]
+    if f(0.05): betreuer = random.choice([betreuer.replace("u", "ue", 1) if "u" in betreuer else betreuer.upper(), betreuer.split()[0][0] + ". " + betreuer.split()[1], betreuer.upper()]); C("Betreuer nicht auflösbar (Fremdschlüssel per Name)")
+    mail = stoer_mail(c["email"], c["vorname"], c["nachname"])
+    if mail != c["email"]: C("E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))")
+    tel = telefon(c["land"]) if f(0.8) else ""
+    if tel and f(0.06): tel = tel_text(tel); C("Telefon mit Text")
+    row = [c["crm"], stoer_ws(firma, 0.08, 0.0, 0.07), anrede, c["titel"], vorname, nachname, strasse, hnr, plz_txt, ort,
            land_txt, typ, random.choice("ABBCCC"),
-           betreuer_name[vnr], erp_ref, erst_txt, "X" if c["newsletter"] else "", status, d_us(aend), stoer_mail(c["email"], c["vorname"], c["nachname"]),
-           telefon(c["land"]) if f(0.8) else ""]
+           betreuer, erp_ref, erst_txt, "X" if c["newsletter"] else "", status, d_us(aend), mail,
+           tel]
     accounts.append(row)
 # 5 % Dubletten: gleicher Kunde, zweiter Vertreter, leicht andere Schreibweise, ohne ERP_KdNr
 for row in random.sample(accounts, max(1, len(accounts)//20)):
     dup = list(row); dup[0] = str(uuid.UUID(int=random.getrandbits(128)))
     dup[1] = dup[1].replace("GmbH","").strip(); dup[6] = dup[6].replace("straße","str.").replace("Straße","Str.")
     dup[13] = random.choice([betreuer_name["I01"], betreuer_name["I02"]]); dup[14] = ""; dup[12] = "C"
-    accounts.append(dup)
+    accounts.append(dup); log("CRM", "Accounts", dup[0], "Dublette im CRM")
 # 2 Accounts mit vertauschten Feldern Strasse <-> Hausnr (Fehlbelegung bei manueller Erfassung)
-for row in random.sample(accounts, 2):
-    row[6], row[7] = row[7], row[6]
+for row in random.sample(accounts, 4):
+    row[6], row[7] = row[7], row[6]; log("CRM", "Accounts", row[0], "Felder vertauscht (Straße/Hausnr)")
 # 2 Accounts mit PLZ aus dem falschen Land (Plausibilitätsprüfung)
-for row in random.sample(accounts, 2):
-    row[8] = "88212" if row[10]!="Deutschland" else "8001"
+for row in random.sample(accounts, 3):
+    row[8] = "88212" if row[10]!="Deutschland" else "8001"; log("CRM", "Accounts", row[0], "PLZ passt nicht zum Land")
+_tid = str(uuid.UUID(int=random.getrandbits(128)))
+accounts.append([_tid, "Testfirma", "", "", "Test", "Test", "Teststr.", "1", "12345", "Teststadt", "Deutschland", "Privat", "C", betreuer_name["I01"], "", "01/01/2022", "", "Kunde", "01/01/2022", "test@test.de", ""])
+log("CRM", "Accounts", _tid, "Testkunde")
 random.shuffle(accounts)
 for r in accounts: ws.append(r)
 ws2 = wb.create_sheet("Betreuer"); ws2.append(["Name","E-Mail","Rolle","Region"])
@@ -414,10 +523,15 @@ with open(os.path.join(os.path.dirname(OUT),"sollwerte","kunden_mapping.csv"), "
     for c in KUNDEN:
         wr.writerow([c["key"], c["praesenz"], c["typ"], c["land"], c["erp"] or "", c["shop"] or "", c["crm"] or "", c["abweichung"],
                      d_de(c["umzug"]["datum"]) if c["umzug"] else ""])
+with open(os.path.join(os.path.dirname(OUT),"sollwerte","fehler_log.csv"), "w", encoding="utf-8", newline="") as fl:
+    wr = csv.writer(fl, delimiter=";"); wr.writerow(["Quelle","Tabelle","ID","Fehlertyp"]); wr.writerows(sorted(FEHLER_LOG))
 with open(os.path.join(os.path.dirname(OUT),"sollwerte","parameter.json"), "w", encoding="utf-8") as f:
     json.dump({"seed":SEED, "fehlerquote":FEHLERQUOTE, "kunden":len(KUNDEN), "verteilung":{p:n for p,n,_ in VERTEILUNG},
                "erp_auftraege":len(erp_auftraege), "shop_orders":len(shop_orders), "crm_accounts":len(accounts),
                "crm_dubletten":len(accounts)-sum(1 for c in KUNDEN if c["crm"]), "chf_kurs_eur":CHF_KURS, "mwst":MWST}, f, indent=2, ensure_ascii=False)
 
 print(f"Kunden: {len(KUNDEN)} | ERP-Kunden {len(kunden_erp)} | Shop-Kunden {len(cust)} | CRM-Accounts {len(accounts)} (davon Dubletten {len(accounts)-sum(1 for c in KUNDEN if c['crm'])})")
+from collections import Counter
+print(f"Kundensätze gesamt: {len(kunden_erp)+len(cust)+len(accounts)} | eingebaute Fehler laut Log: {len(FEHLER_LOG)}")
+for (typ, q), n in sorted(Counter((t, q) for q, _, _, t in FEHLER_LOG).items()): print(f"  {n:3d}  {q:4s}  {typ}")
 print(f"ERP-Aufträge {len(erp_auftraege)} ({sum(1 for a in erp_auftraege if a[8])} Shop-Importe) | Shop-Orders {len(shop_orders)} | Positionen ERP {len(erp_pos)} / Shop {len(shop_items)}")

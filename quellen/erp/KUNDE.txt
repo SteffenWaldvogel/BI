@@ -1,121 +1,192 @@
 KdNr;Firma;Name1;Vorname;Strasse;PLZ;Ort;Land;Kundengruppe;VertreterNr;Zahlungsziel;Anlagedatum;Newsletter;Gesperrt;GesperrtBis;Bemerkung;Telefon
-10204;TSV Dartsport Ravensburg e. V.;Meyer;Daniel;Lindenweg 5a;88212;Ravensburg;D;1;V02;30;04.01.2023;J;N;31.12.9999;Liefert nur Di/Do;0751/88421
-10206;TSV Steeldarters Augsburg e.V.;Koch;Jonas;Lindenweg 14;86150;Augsburg;D;1;V02;14;26.05.2019;N;N;31.12.9999;Liefert nur Di/Do;0751/78372
-10208;SC Bulls Eye Tübingen;Schneider;Max;Ringstr. 80;72072;Tübingen;D;1;V01;-1;15.06.2023;J;N;31.12.9999;;0049 751 41138
-10211;Dartfreunde Bern e.V.;Lange;Patrick;Schillerstr. 13;3011;Bern;CH;1;V04;60;04.01.2020;N;N;31.12.9999;Rechnung an Zentrale;071/45609
-10213;Dartsport Stuttgart e.V.  ;Schulz;Anna;Marktstr. 38;70173;Stuttgart;D;1;V02;-1;03.03.2021;J;N;31.12.9999;;(0751) 21701
-10216;DC Black Arrows Dresden e.V.;Meyer;Tobias;Goethestr. 54;1067;Dresden;D;1;V03;-1;28.03.2023;J;N;31.12.9999;Skonto 2 % vereinbart;0049 751 74098
-10219;Dart-Lounge;Richter;Petra;Seestr. 88a;1010;Wien;A;3;V05;-1;05.10.2021;N;N;31.12.9999;;05574.36132
-10222;TSV Steeldarters Innsbruck e. V.;Köhler;Jonas;Lindenweg 60;6020;Innsbruck;A;1;V05;30;14.06.2023;N;N;31.12.9999;;05574/23006
-10226;SV Flight Club Luzern e.V.;Koch;Claudia;Bergstr. 47a;6003;Luzern;CH;1;V04;-1;03.08.2023;J;N;31.12.9999; ;0041 71 41497
-10227;SC Bulls Eye Nürnberg  ;Dr. Weber;Jonas;Hauptstr. 18;90402;Nürnberg;D;1;V02;30;27.07.2023;N;N;31.12.9999;;+4975147817
-10231;SC Dartfreunde Graz e. V.;Schmidt;Max;Bahnhofstr. 104;8010;Graz;A;1;V05;30;26.05.2021;N;N;31.12.9999;Skonto 2 % vereinbart;05574.97814
-10234;Zum Bulls Eye;Wolf;Anna;Schillerstr. 100a;5020;Salzburg;A;3;V05;60;27.09.2022;N;N;31.12.9999;Skonto 2 % vereinbart;05574.93938
-10237;Dart-Shop GmbH;Neumann;Anna;Bergstr. 109b;3011;Bern;CH;2;V04;30;27.06.2019;J;N;31.12.9999;;(071) 33606
-10238;SV Dart Devils Friedrichshafen;Meyer;Stefan;Schillerstr. 15;88045;Friedrichshafen;D;1;V02;30;17.05.2021;J;N;31.12.9999;Liefert nur Di/Do;0751/81333
-10239;TSV Black Arrows München e.V.;Schulz;Daniel;Goethestr. 12;80331;München;D;1;V02;60;29.03.2019;N;N;31.12.9999;;0751/97583
-10241;SC Red Dragons Dresden;Braun;Lena;Am Sportplatz 65;1067;Dresden;D;1;V03;-1;25.10.2019;J;N;31.12.9999;;(0751) 73261
-10244;Triple 20 Rostock e.V.;Schröder;Nina;Hauptstr. 80a;18055;Rostock;D;1;V03;14;10.06.2020;N;N;31.12.9999;Liefert nur Di/Do;(0751) 82554
-10246;Dart-Shop GmbH;König;Michael;Goethestr. 95;8010;Graz;A;2;V05;60;28.06.2021;J;N;31.12.9999;"Turnierausstattung 2024
-Sonderpreise Flights";0043 5574 79140
-10248;Gasthaus Weber;Weber;Sarah;Schillerstr. 35a;88212;Ravensburg;D;3;V02;30;02.05.2023;N;N;31.12.9999;Rechnung an Zentrale;0049 751 84872
-10251;Red Dragons Friedrichshafen e.V.;König;Sabine;Bergstr. 24;88045;Friedrichshafen;D;1;V02;30;17.08.2020;J;N;31.12.9999;;0751.56619
-10252;SV Triple 20 Zürich e. V. ;Herrmann;Jonas;Zeppelinstr. 46;8001;Zürich;CH;1;V04;30;14.10.2020;J;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
-alte Rechnungen noch an alte Adresse";0041 71 38260
-10253;DC Black Arrows Bregenz;Hoffmann;Tobias;Schillerstr. 89;6900;Bregenz;A;1;V05;30;26.09.2019;J;N;31.12.9999;;05574/25847
-10257;Zum Bulls Eye;Dr. Wagner;Julia;Zeppelinstr. 2b;3011;Bern;CH;3;V04;30;09.05.2020;J;N;31.12.9999; ;071.79254
-10261;Freizeit-Center GmbH;Köhler;Katharina;Am Sportplatz 118;88212;Ravensburg;D;2;V02;14;21.02.2021;N;N;31.12.9999;Rechnung an Zentrale;0751.22468
-10265;TSV Black Arrows Augsburg e. V.;Schneider;Markus;Gartenstr. 2b;86150;Augsburg;D;1;V02;60;15.06.2022;J;N;31.12.9999;;0751.64417
-10268;Zum Bulls Eye;Schulz;Lukas;Bahnhofstr. 56;6108;Halle (Saale);D;3;V03;60;18.08.2019;N;N;31.12.9999; ;0751/65501
-10271;SC Flight Club Leipzig;Richter;Jonas;Seestr. 49;4109;Leipzig;D;1;V03;30;09.08.2020;N;N;31.12.9999;;0751.62802
-10272;Gasthaus Schmidt;Schmidt;Jonas;Am Sportplatz 6b;18055;Rostock;D;3;V03;60;14.10.2021;J;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
-alte Rechnungen noch an alte Adresse";0751/41681
-10273;Dart Store GmbH;Hofmann;Tobias;Industriestr. 67;88212;Ravensburg;D;2;V02;-1;19.11.2021;J;N;31.12.9999; ;0751.50791
-10276;Spielwaren Schneider GmbH;Schneider;Claudia;Kirchplatz 19;88212;Ravensburg;D;2;V02;60;22.08.2020;J;N;31.12.9999;   ;0049 751 54805
-10278;Dart-Lounge;Dr. Bauer;Claudia;Bahnhofstr. 18;80331;München;D;3;V02;14;20.01.2021;N;N;31.12.9999;Liefert nur Di/Do;(0751) 49877
-10279;Dart Devils Nürnberg e. V.;Dr. Wagner;Jonas;Am Sportplatz 67;90402;Nürnberg;D;1;V02;30;09.01.2020;N;N;31.12.9999;Rechnung an Zentrale;0751.88293
-10282;Pub Triple Twenty;Schmidt;Claudia;Gartenstr. 19;88212;Ravensburg;D;3;V02;14;21.12.2022;N;N;31.12.9999;"Anlieferung nur vormittags
+10202;TSV Dartsport Ravensburg e. V.;Meyer;Daniel;Lindenweg 76a;;88212 Ravensburg;D;1;V02;60;04.01.2023;J;N;31.12.9999;;0751.44317
+10206;TSV  Steeldarters Augsburg e.V.;Koch;Jonas;Lindenweg 14;86150;Augsburg;DE;1;V02;60;26.05.2019;N;N;31.12.9999;;0751/49234
+10207;SC Bulls Eye Tübingen;Schneider;k.A.;Ringstr. 80;;72072 Tübingen;D;1;V02;60;15.06.2023;J;N;31.12.9999;;(0751) 77763
+10209;Dartfreunde Bern e.V.;Lange;Patrick;Zeppelinstr. 2b;3011;Bern;CH;1;V04;30;04.01.2020;N;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
+alte Rechnungen noch an alte Adresse";071.74378
+10213;Dartsport Stuttgart e.V.;Schulz;Anna;Kirchplatz 50;70173;Stuttgart;D;1;V02;-1;03.03.2021;J;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";0049 751 84321
+10216;DC Black Arrows Dresden e.V.;Meyer;Tobias;Goethestr. 54;1067;Dresden;D;1;V03;14;28.03.2023;J;N;31.12.9999;Rechnung an Zentrale;0751/98174 Fr. Maier vormittags
+10220;Dart-Lounge;Richter;Petra;Postfach 4362;1010;Wien;AUT;3;V05;30;05.10.2021;N;N;31.12.9999;;05574.56822
+10222;TSV Steeldarters Innsbruck e. ;Köhler;Jonas;Lindenweg 60;6020;Innsbruck;A;1;V05;14;14.06.2023;N;N;31.12.9999;Rechnung an Zentrale;+43557475714 -16 Hr. Vogel
+10224;SV Flight Club Luzern e.V. ;Koch;Claudia;Bahnhofstr. 3;60030;Luzern;CH;1;V04;14;03.08.2023;J;N;31.12.9999;;+417123068 oder mobil
+10228;SC  Bulls Eye Nürnberg;Dr. Weber;Jonas;Hauptstr. 18;90402;Nürnberg;D;1;V02;14;27.07.2023;N;N;31.12.9999;Rechnung an Zentrale;0751.44819
+10230;SC Dartfreunde Graz e. V.  ;Schmidt;Max;Bahnhofstr. 104;8010;Graz;A;1;V05;30;26.05.2021;N;N;31.12.9999;;05574/41960 (Durchwahl 22)
+10233;Zum Bulls Eye;Wolf;Anna;Schillerstr. 100a;5020;Salzburg;A;3;V05;30;27.09.2022;N;N;31.12.9999;"Anlieferung nur vormittags
 Ansprechpartner: Hr. Vogel
-Tel. 0751/12345";(0751) 65635
-10284;Freizeit-Center;Wagner;Claudia;Hauptstr. 96b;8010;Graz;A;2;V05;-1;21.04.2021;J;N;31.12.9999;;0043 5574 78033
-10286;SV Black Arrows Halle (Saale) e. V.;Hoffmann;Jana;Lindenweg 62;6108;Halle (Saale);D;1;V03;30;31.12.2022;N;N;31.12.9999; ;0049 751 88529
-10289;SV Steeldarters Berlin e. V.;Zimmermann;Anna;Hauptstr. 27b;10115;Berlin;D;1;V03;30;04.04.2019;J;N;31.12.9999;Rechnung an Zentrale;(0751) 31220
-10292;Pub Triple Twenty ;Dr. Schwarz;Felix;Kirchplatz 50;7017;Stuttgart;D;3;V01;30;04.12.2019;N;N;31.12.9999; ;0751/28342
-10294;Flight Club Berlin;Weber;Markus;Hauptstr. 55;10115;Berlin;D;1;V03;60;31.03.2020;J;N;31.12.9999;   ;(0751) 52972
-10296;Sporthaus Weber GmbH ;Weber;Patrick;Industriestr. 70;70173;Stuttgart;D;2;V02;30;30.09.2022;J;N;31.12.9999;"Turnierausstattung 2024
-Sonderpreise Flights";(0751) 40909
-10299;Kneipe zum Anker;Koch;Claudia;Hauptstr. 26;79098;Freiburg;D;3;V02;30;13.05.2021;J;N;31.12.9999;;0751.22517
-10303;Dart-Shop GmbH;Köhler;Stefan;Zeppelinstr. 66a;8033;München;D;2;V02;30;23.10.2019;N;N;31.12.9999;"Vereinsvorsitz wechselt jährlich;
-Kontakt über Kassenwart";0751/47200
-10305;Dart-Shop OHG;Lehmann;Daniel;Mozartstr. 14b;72072;Tübingen;D;2;V01;60;16.01.2022;N;N;31.12.9999;Liefert nur Di/Do;(0751) 73503
-10309;SV Dartfreunde Freiburg e. V.;Köhler;Lukas;Industriestr. 59;79098;Freiburg;D;1;V02;-1;11.12.2019;J;N;31.12.9999;Skonto 2 % vereinbart;0049 751 70587
-10312;Bistro Köhler;Köhler;Lukas;Lindenweg 76a;88212;Ravensburg;D;3;V02;-1;04.03.2022;J;N;31.12.9999;Skonto 2 % vereinbart;0751/50136
-10314;SC Dartsport Leipzig e.V.;Klein;Petra;Mozartstr. 13;4109;Leipzig;D;1;V03;-1;18.12.2023;N;N;31.12.9999;;0751.29536
-10318;Freizeit-Center e.K.;Dr. Herrmann;Tobias;Schillerstr. 86;86150;Augsburg;D;2;V02;-1;20.03.2021;N;N;31.12.9999;;(0751) 42273
-10321;Kneipe zum Anker;Hoffmann;Katharina;Mozartstr. 37;10115;Berlin;D;3;V03;30;11.06.2023;J;N;31.12.9999;;+4975173337
-10325;Spielwaren Köhler OHG ;Köhler;Petra;119 Ringstr.;88250;Weingarten;D;2;V02;30;25.12.2022;N;N;31.12.9999; ;0049 751 61620
-10329;Kneipe zum Anker;Zimmermann;Julia;Bahnhofstr. 3;6003;Luzern;CH;3;V04;14;13.03.2019;J;N;31.12.9999;"Turnierausstattung 2024
-Sonderpreise Flights";0041 71 69117
-10331;SV Dart Devils Leipzig;Krüger;Sabine;40 Schillerstr.;4109;Leipzig;D;1;V03;-1;19.05.2021;N;N;31.12.9999;Skonto 2 % vereinbart;+4975168884
-10334;Dart Store GmbH ;Werner;Markus;Schillerstr. 63;79098;Freiburg;D;2;V02;-1;14.06.2019;N;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
-alte Rechnungen noch an alte Adresse";0049 751 92971
-10337;Dartwelt GmbH;Krause;Felix;Industriestr. 117;88045;Friedrichshafen;D;2;V02;30;13.01.2020;J;N;31.12.9999;"Vereinsvorsitz wechselt jährlich;
-Kontakt über Kassenwart";0049 751 61508
-10339;Kneipe zum Anker;Schmidt;Jana;Bergstr. 37;3011;Bern;CH;3;V04;60;31.01.2023;J;N;31.12.9999;"Anlieferung nur vormittags
+Tel. 0751/12345";+43557432843
+10234;Dart-Shop GmbH;Neumann;Anna;Bergstr. 109b;3011;Bern;CH;2;V04;14;27.06.2019;J;N;31.12.9999; ;0041 71 27504
+10236;SV Dart Devils Friedrichshafen;Meyer;Stefan;15 Schillerstr.;88045;Friedrichshafen;D;1;V02;30;17.05.2021;J;N;31.12.9999;;0751.37981
+10237;TSV Black Arrows München e.V.;Schulz;Daniel;Bahnhofstr. 18;80331;München;D;1;V02;30;29.03.2019;N;N;31.12.9999;;0751/34351
+10241;SC Red Dragons Dresden;Braun;Lena;Am Sportplatz 65;1067;Dresden;D;1;V03;30;25.10.2019;J;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
+alte Rechnungen noch an alte Adresse";(0751) 45328
+10242;Triple 20 Rostock e.V.;Schröder;Nina;Hauptstr. 80a;18055;Rostock;D;1;V03;30;10.06.2020;N;N;31.12.9999;Skonto 2 % vereinbart;0751.69287
+10243;Dart-Shop GmbH;König;Michael;Goethestr. 95;8010;Graz;A;2;V05;30;28.06.2021;J;N;31.12.9999;"Anlieferung nur vormittags
 Ansprechpartner: Hr. Vogel
-Tel. 0751/12345";071/27293
-10340;Sport Lehmann GmbH;Lehmann;Max;Mozartstr. 110;30110;Bern;CH;2;V04;-1;06.04.2020;N;N;31.12.9999;"Vereinsvorsitz wechselt jährlich;
-Kontakt über Kassenwart";+417190603
-10343;SV Dart Devils St. Gallen e. V.;Krause;Nina;Seestr. 71b;9000;St. Gallen;CH;1;V04;60;13.10.2021;J;N;31.12.9999; ;071/62192
-10344;Dart-Lounge;Hoffmann;Felix;Industriestr. 68b;6900;Bregenz;A;3;V05;30;13.12.2023;J;N;31.12.9999;;05574.47317
-10345;Treffpunkt 180 Bregenz e.V. ;Braun;Michael;Lindenweg 85b;6900;Bregenz;A;1;V05;30;05.04.2023;J;N;31.12.9999;;(05574) 84717
-10349;Dart-Lounge;Werner;Katharina;35b Marktstr.;8001;Zürich;CH;3;V04;60;11.09.2021;N;N;31.12.9999;Liefert nur Di/Do;(071) 32331
-10352;Gasthaus Schwarz;Schwarz;Claudia;Seestr. 81a;72072;Tübingen;D;3;V02;30;23.02.2022;J;N;31.12.9999;;0751/26639
-10353;Bistro Krüger;Krüger;Max;Zeppelinstr. 83;90402;Nürnberg;D;3;V02;60;25.12.2019;J;N;31.12.9999;"Anlieferung nur vormittags
+Tel. 0751/12345";05574/39479
+10247;Gasthaus Weber;Weber;Sarah;Schillerstr. 35a;88212;Ravensburg;D;3;V02;30;02.05.2023;N;N;31.12.9999; ;0049 751 26665 -16 Hr. Vogel
+10249;Red Dragons Friedrichshafen e. ;König;Sabine;Bergstr. 24;88045;Friedrichshafen;D;1;V02;30;17.08.2020;J;N;31.12.9999;"Vereinsvorsitz wechselt jährlich;
+Kontakt über Kassenwart";0751/67178
+10250;SV Triple 20 Zürich e. V.  ;Herrmann;Jonas;Zeppelinstr. 46;CH-8001;Zürich;CH;1;V04;30;14.10.2020;J;N;31.12.9999;   ;+417137813 -16 Hr. Vogel
+10254;DC Black Arrows Bregenz;Hoffmann;Tobias;Schillerstr. 89;6900;Bregenz;A;1;V05;30;26.09.2019;J;N;31.12.9999;   ;0043 5574 85439
+10255;Zum Bulls Eye;Dr. Wagner;Julia;Zeppelinstr. 2b;3011;Bern;CH;3;V04;14;09.05.2020;J;N;31.12.9999;;071.75524
+10258;Freizeit-Center GmbH;Köhler;Katharina;Am Sportplatz 118;88212;Ravensburg;D;2;V02;60;21.02.2021;N;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";0751.33364
+10261;TSV Black Arrows Augsburg e. V;Schneider;Markus;Gartenstr. 2b;86150;Augsburg;D;1;V02;-1;15.06.2022;J;N;31.12.9999; ;0751/28928
+10264;Zum Bulls Eye;Schulz;Lukas;Bahnhofstr. 56;6108;Halle (Saale);D;3;V03;30;18.08.2019;N;N;31.12.9999;;0751/55996
+10268;SC Flight Club Leipzig;Richter;Jonas;Seestr. 49;4109;Leipzig;Deutschland;1;V03;-1;09.08.2020;N;N;31.12.9999;;(0751) 47845
+10269;Gasthaus Schmidt;Schmidt;Jonas;Am Sportplatz 6b;18055;Rostock;D;3;V03;30;14.10.2021;J;N;31.12.9999;"Vereinsvorsitz wechselt jährlich;
+Kontakt über Kassenwart";0751/75801
+10270;Dart Store GmbH;Hofmann;Tobias;Industriestr. 67;88212;Ravensburg;D;2;V02;30;19.11.2021;J;N;31.12.9999;Rechnung an Zentrale;0049 751 71928
+10274;Spielwaren Schneider GmbH;Schneider;Claudia;Kirchplatz 19;88212;Ravensburg;D;2;V02;14;22.08.2020;J;N;31.12.9999;Rechnung an Zentrale;0751/41380
+10275;Dar-tLounge;Dr. Bauer;Claudia;18 Bahnhofstr.;80331;München;D;3;V02;60;20.01.2021;j;N;31.12.9999;   ;0751/77093
+10277;Drat Devils Nürnberg e. V.;Dr. Wagner;Jonas;Am Sportplatz 67;90402;Nürnberg;D;1;V02;14;09.01.2020;N;N;31.12.9999;Skonto 2 % vereinbart;0049 751 91893
+10279;Pub Triple Twenty;Schmidt;Claudia;Gartenstr. 19;88212;Ravensburg;D;3;V02;30;21.12.2022;N;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
+alte Rechnungen noch an alte Adresse";0751.81383
+10280;Freizeit-Center;Wagner;Claudia;Hauptstr. 96b;A-8010;Graz;A;2;V05;60;21.04.2021;J;N;31.12.9999;   ;(05574) 36016
+10283;SV Black Arrows Halle (Saale)   ;Hoffmann;Jana;Lindenweg 62;6108;Halle (Saale);D;1;V03;60;31.12.2022;N;N;31.12.9999;;(0751) 98164
+10286;SV Steeldarters Berlin e. V. /;Zimmermann;Anna;Mozartstr. 37;10115;Berlin;D;1;V03;-1;04.04.2019;J;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";0751.23111
+10287;Pub Triple Twenty ;Dr. Schwarz;Felix;Kirchplatz 50;70173;Stuttgart;D;3;V02;14;04.12.2019;N;N;31.12.9999;Rechnung an Zentrale;+4975170071
+10289;Flight Club Berlin  ;Weber;Markus;Hauptstr. 55;10115;Berlin;Deutschland;1;V03;30;31.03.2020;J;N;31.12.9999;;0049 751 95870 Fr. Maier vormittags
+10291;Sporthaus Weber GmbH;Weber;Patrick;Industriestr. 70;70173;Stuttgart;D;2;V02;60;30.09.2022;J;N;31.12.9999;"Anlieferung nur vormittags
 Ansprechpartner: Hr. Vogel
-Tel. 0751/12345";+4975176477
-10355;TSV Dart Devils Augsburg;Hofmann;Patrick;Bergstr. 39;86150;Augsburg;D;1;V02;30;09.10.2022;J;N;31.12.9999;"Vereinsvorsitz wechselt jährlich;
-Kontakt über Kassenwart";0049 751 75825
-10358;Dartwelt OHG;Köhler;Claudia;Schillerstr. 5b;72072;Tübingen;D;2;V01;14;25.05.2023;J;N;31.12.9999;"Turnierausstattung 2024
-Sonderpreise Flights";0751.89293
-10360;Freizeit-Center OHG  ;Hoffmann;Lisa;Schillerstr. 52;10115;Berlin;D;2;V03;30;24.01.2020;N;N;31.12.9999;;0751/61243
-10361;TSV Triple 20 Bregenz  ;Schwarz;Jana;Bahnhofstr. 78;6900;Bregenz;A;1;V05;30;06.07.2022;J;N;31.12.9999;"Anlieferung nur vormittags
+Tel. 0751/12345";0751.40439
+10293;Kniepe zum Anker;Koch;-;Hauptstr. 26;79098;Freiburg;D;3;V02;30;13.05.2021;J;N;31.12.9999;;0751.59379
+10296;Dart-Shop GmbH;Köhler;Stefan;Zeppelinstr. 66a;80331;München;D;2;V02;30;23.10.2019;N;N;31.12.9999;;+4975193873
+10299;Datr-Shop OHG;Lehmann;Daniel;Mozartstr. 14b;72072;Tübingen;D;2;V01;14;16.01.2022;N;N;31.12.9999;"Anlieferung nur vormittags
 Ansprechpartner: Hr. Vogel
-Tel. 0751/12345";+43557425953
-10363;Dart-Shop e.K.;Krause;Markus;Lindenweg 113;6108;Halle (Saale);D;2;V03;30;15.09.2022;N;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
-alte Rechnungen noch an alte Adresse";0751.86029
-10367;Dart-Shop GmbH;Braun;Jana;57 Mozartstr.;8001;Zürich;CH;2;V04;30;01.03.2020;J;J;28.08.2023;;071.58908
-10368;Treffpunkt 180 Luzern e.V.;Wagner;Lukas;Goethestr. 72;6003;Luzern;CH;1;V04;-1;02.02.2019;N;J;28.10.2023;Liefert nur Di/Do;0041 71 51772
-10372;Sporthaus Weber OHG;Weber;Julia;Zeppelinstr. 53;4109;Leipzig;D;2;V03;30;22.05.2021;J;J;28.11.2023;Skonto 2 % vereinbart;0751/79696
-10376;Bistro Lange;Lange;Lukas;Am Sportplatz 50;8400;Winterthur;CH;3;V04;30;09.09.2021;J;J;28.06.2023;"Vereinsvorsitz wechselt jährlich;
-Kontakt über Kassenwart";071/34106
-10377;DC Red Dragons Wien e.V.;Neumann;Florian;Ringstr. 5;1010;Wien;A;1;V05;60;15.03.2020;J;J;28.10.2023;;+43557493235
-10381;DC Steeldarters Augsburg e.V.;Köhler;Max;Am Sportplatz 102a;86150;Augsburg;D;1;V02;30;02.11.2020;N;J;28.12.2023;;0751.44655
-10383;Treffpunkt 180 Bern e. V.;Zimmermann;Andreas;Lindenweg 57b;3011;Bern;CH;1;V04;60;08.06.2020;N;J;28.09.2023;Liefert nur Di/Do;+417187271
-10387;Dart-Shop e.K.;Becker;Lisa;Lindenweg 24;90402;Nürnberg;D;2;V02;30;31.05.2020;J;J;28.08.2023;;0751/57907
-10389;Dart-Shop e.K.;Hoffmann;Andreas;Marktstr. 67a;1010;Wien;A;2;V05;30;28.10.2020;J;J;28.12.2023;Rechnung an Zentrale;0043 5574 52980
-10391;SC Red Dragons Graz e.V.;Wolf;Jonas;Mozartstr. 25;8010;Graz;A;1;V05;-1;31.12.2020;N;J;28.08.2023;"Vereinsvorsitz wechselt jährlich;
-Kontakt über Kassenwart";05574.95845
-10392;Dartwelt e.K.;Richter;Laura;Hauptstr. 101;90402;Nürnberg;D;2;V02;30;01.03.2022;J;J;28.11.2023;Liefert nur Di/Do;0751/72770
-10395;Dart-Shop GmbH ;Becker;Felix;Zeppelinstr. 70;1067;Dresden;D;2;V03;14;08.09.2022;N;J;28.09.2023;Rechnung an Zentrale;+4975179716
-10397;Pub Triple Twenty;Dr. Müller;Anna;Kirchplatz 69;6900;Bregenz;A;3;V05;-1;03.02.2019;J;J;28.06.2023;Liefert nur Di/Do;05574/50169
-10400;Zum Bulls Eye;Hoffmann;Tobias;Ringstr. 6;88250;Weingarten;D;3;V02;30;09.04.2021;J;J;28.08.2023; ;0751/59854
-10403;TSV Dartsport Freiburg e.V.;Schneider;Andreas;Industriestr. 37b;79098;Freiburg;D;1;V01;30;25.07.2019;N;J;28.10.2023;"Turnierausstattung 2024
-Sonderpreise Flights";+4975190080
-10405;DC Steeldarters St. Gallen e. V.;Dr. Schröder;Sabine;Mozartstr. 8;9000;St. Gallen;CH;1;V04;14;12.08.2022;N;J;28.12.2023;"Vereinsvorsitz wechselt jährlich;
-Kontakt über Kassenwart";(071) 30512
-10406;Dart Store;Hoffmann;Sarah;Seestr. 44b;88250;Weingarten;D;2;V02;30;02.02.2019;N;J;28.09.2023;"Turnierausstattung 2024
-Sonderpreise Flights";+4975137871
-10407;Spielwaren Müller OHG;Müller;Patrick;Kirchplatz 64a;88212;Ravensburg;D;2;V02;-1;25.10.2019;J;J;28.11.2023;Skonto 2 % vereinbart;0751.73534
-10408;Sport Werner OHG;Werner;Claudia;Marktstr. 49a;89073;Ulm;D;2;V02;30;31.12.2023;J;J;28.11.2023;"Achtung: neue Adresse ab 01/2024
-alte Rechnungen noch an alte Adresse";0751/68199
-10410;Bistro Braun;Braun;Stefan;Schillerstr. 56;1010;Wien;A;3;V05;30;20.06.2019;J;J;28.12.2023;;+43557438271
-10411;Flight Club Halle (Saale);Lange;Sabine;Goethestr. 113;6108;Halle (Saale);D;1;V03;30;14.06.2022;N;J;28.12.2023;Rechnung an Zentrale;0751.47185
-10413;DC Bulls Eye Ulm e.V.;Dr. Schneider;Lisa;Gartenstr. 53a;89073;Ulm;D;1;V02;30;28.09.2021;J;J;28.07.2023;;0049 751 36554
-10414;Gasthaus Braun;Dr. Braun;Max;Bergstr. 81a;6900;Bregenz;A;3;V05;30;14.07.2022;N;J;28.06.2023;;(05574) 54063
-10415;Dart Store ;Dr. Richter;Sabine;Kirchplatz 66;88045;Friedrichshafen;D;2;V02;30;26.05.2022;N;J;28.12.2023;   ;+4975164958
-10419;Zum Bulls Eye  ;Schwarz;Julia;Kirchplatz 72a;86150;Augsburg;D;3;V02;-1;22.05.2023;J;J;28.06.2023;;+4975162849
-10420;Dart-Shop OHG;Lehmann;Daniel;Mozartstraße 14b;72072;Tübingen;D;2;V01;60;07.06.2024;N;N;31.12.9999;Liefert nur Di/Do;(0751) 73503
-10421;Sport Werner OHG;Werner;Claudia;Marktstraße 49a;89073;Ulm;D;2;V02;30;02.12.2024;J;J;28.11.2023;"Achtung: neue Adresse ab 01/2024
-alte Rechnungen noch an alte Adresse";0751/68199
-10422;Zum Bulls Eye;Schwarz;Julia;Kirchplatz 72a;86150;Augsburg;D;3;V02;-1;08.03.2024;J;J;28.06.2023;;+4975162849
+Tel. 0751/12345";0751.89673
+10303;SV Dartfreunde Freiburg e. V.;Köhler;Lukas;59 Industriestr.;79098;Freiburg;D;1;V01;30;11.12.2019;J;N;31.12.9999;Liefert nur Di/Do;(0751) 65200
+10306;Bistro Köhler;Köhler;Lukas;Lindenweg 76a;88212;Ravensburg;D;3;V02;30T netto;04.03.2022;J;N;31.12.9999;   ;+4975159154
+10308;SC Dartsport Leipzig e.V.;Klein;Petra;Mozartstr. 13;4109;Leipzig;D;1;V03;14;18.12.2023;ja;N;31.12.9999;;0049 751 22212 oder mobil
+10312;Freizeit-Center e.K.;Dr. Herrmann;Tobias;Schillerstr. 86;;86150 Augsburg;D;2;V02;30 Tg.;20.03.2021;N;N;31.12.9999;;+4975189101
+10313;Kneipe zum Anker;Hoffmann;Katharina;Mozartstr. 37;10115;Berlin;D;3;V03;30;11.06.2023;J;N;31.12.9999;Liefert nur Di/Do;0751.58109
+10314;Spielwaren Köhler OHG;Köhler;Petra;Ringstr. 119;88250;Weingarten;D;2;V02;30;25.12.2022;N;N;31.12.9999;;+4975199850
+10315;Kneipe zum Anker;Zimmermann;Julia;Bahnhofstr. 3;CH-6003;Luzern;CH;3;V04;30;13.03.2019;J;N;31.12.9999;"Anlieferung nur vormittags
+Ansprechpartner: Hr. Vogel
+Tel. 0751/12345";071.29808
+10317;SV  Dart Devils Leipzig;Krüger;Sabine;Schillerstr. 40;4109;Leipzig;D;1;V03;30;19.05.2021;N;N;31.12.9999;Skonto 2 % vereinbart;0049 751 93963
+10321;Dart Store GmbH  ;Werner;Markus;Schillerstr. 63;79098;Freiburg;D;2;V01;30T netto;14.06.2019;N;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";0751.30822
+10322;Dartwelt GmbH;Krause;Felix;Industriestr. 117;88045;Friedrichshafen;D;2;V02;30;13.01.2020;J;N;31.12.9999;   ;+4975177325
+10323;Kneipe zum Anker;Schmidt;Jana;Bergstr. 37;;3011 Bern;CH;3;V04;60;31.01.2023;J;N;31.12.9999;;(071) 97691
+10326;Sport  Lehmann GmbH;Lehmann;Max;Mozartstr. 110;3011;Bern;CH;2;V04;14;06.04.2020;N;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
+alte Rechnungen noch an alte Adresse";+417164256
+10330;SV Dart Devils St. Gallen e. V;Krause;Nina;Seestr. 71b;9000;St. Gallen;CH;1;V04;30;13.10.2021;J;N;31.12.9999;"Anlieferung nur vormittags
+Ansprechpartner: Hr. Vogel
+Tel. 0751/12345";071/98732
+10331;Dart-Lounge;Hoffmann;Felix;Industriestr. 68b;6900;Bregenz;A;3;V05;30;13.12.2023;J;N;31.12.9999;"Vereinsvorsitz wechselt jährlich;
+Kontakt über Kassenwart";05574.26748 -16 Hr. Vogel
+10332;Treffpunkt  180 Bregenz e.V.;Braun;-;Lindenweg 85b;6900;Bregenz;A;1;V05;30;05.04.2023;J;N;31.12.9999;Liefert nur Di/Do;0043 5574 25197
+10333;Dart-Lounge;Werner;Katharina;Marktstr. 35b;CH-8001;Zürich;Schweiz;3;V04;14;11.09.2021;N;N;31.12.9999;;(071) 90055
+10334;Gasthaus Schwarz;Schwarz;Claudia;Seestr. 81a;72072;Tübingen;Deutschland;3;V02;-1;23.02.2022;J;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";0751/36832
+10335;Bistro Krüger;Krüger;Max;Postfach 8989;90402;Nürnberg;D;3;V02;30;25.12.2019;J;N;31.12.9999;Rechnung an Zentrale;(0751) 72957
+10337;TSV Dart Devils Augsburg;Hofmann;Patrick;Bergstr. 39;86150;Augsburg;BRD;1;V02;-1;09.10.2022;J;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";0751.74034
+10339;Dartwelt OHG;Köhler;Claudia;Schillerstr. 5b;72072;Tübingen;D;2;V01;-1;25.05.2023;J;N;31.12.9999;"Anlieferung nur vormittags
+Ansprechpartner: Hr. Vogel
+Tel. 0751/12345";+4975189657 -16 Hr. Vogel
+10343;Freizeit-Center OHG;Hoffmann;Lisa;Schillerstr. 52;10115;Berlin;D;2;V03;30;24.01.2020;N;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";(0751) 74949
+10345;TSVT riple 20 Bregenz;Schwarz;Jana;Bahnhofstr. 78;6900;Bregenz;AUT;1;V05;-1;06.07.2022;J;N;31.12.9999; ;(05574) 93234
+10348;Dart-Shop e.K.;Krause;Markus;Lindenweg 113;6108;Halle (Saale);D;2;V03;30;15.09.2022;N;N;31.12.9999;;(0751) 29560
+10351;DC Red Dragons Berlin e.V.;Schneider;Max;Schillerstr. 32;10115;Berlin;D;1;V03;60;07.12.2021;J;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
+alte Rechnungen noch an alte Adresse";0049 751 55389
+10353;Pub Tripl eTwenty;Richter;Andreas;Marktstr. 24a;79098;Freiburg;D;3;V02;-1;13.03.2022;J;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";0751/27288
+10357;Zum Bulls Eye;Weber;Julia;Goethestr. 79/1;80331;München;D;3;V02;14;27.07.2021;J;N;31.12.9999;"Vereinsvorsitz wechselt jährlich;
+Kontakt über Kassenwart";0751/35474
+10358;TSV Dartfreunde Berlin e.V.;Schröder;Sabine;Lindenweg 30;10115;Berlin;D;1;V03;-1;31.03.2019;J;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
+alte Rechnungen noch an alte Adresse";+4975137407
+10361;DC Dartfreunde Leipzig e.V. ;Hoffmann;Lena;Am Sportplatz 35;4109;Leipzig;D;1;V03;30;31.08.2023;J;N;31.12.9999;;(0751) 84446
+10365;Steeldarters Dresden;Neumann;Daniel;Postfach 2794;1067;Dresden;D;1;V03;14;31.03.2022;N;N;31.12.9999;*** gesperrt lt. GF ***;(0751) 80521
+10369;Bulls Eye München e.V.;Braun;Lukas;Ringstr. 27;80331;München;D;1;V02;14;05.01.2023;J;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";0751.64659
+10371;Spielwaren Wolf OHG;Wolf;Markus;Mozartstr. 65/1;80331;München;D;2;V02;-1;12.12.2023;J;N;31.12.9999;"Vereinsvorsitz wechselt jährlich;
+Kontakt über Kassenwart";+4975190682
+10374;Freizeit-Center OHG;Schröder;Felix;Zeppelinstr. 105;4109;Leipzig;D;2;V03;60;05.09.2019;N;N;31.12.9999;Liefert nur Di/Do;0751.30043
+10377;Sportsbar 180  ;Bauer;k.A.;Seestr. 3;D-86150;Augsburg;D;3;V02;-1;02.01.2021;j;N;31.12.9999;;0751/98557
+10381;DC Dartsport Weingarten e.V.;Lange;Felix;Kirchplatz 71a;88250;Weingarten;D;1;V02;60;05.08.2023;N;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
+alte Rechnungen noch an alte Adresse";+4975168951
+10385;Kneipe zum Anker;Koch;Markus;Bahnhofstr. 100;4051;Basel;CH;3;V04;14;13.07.2022;J;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";0041 71 86128
+10389;Sporthaus Koch e.K.;Koch;Lisa;Gartenstr. 47a;9000;St. Gallen;CH;2;V04;14;24.10.2023;J;N;31.12.9999;;0041 71 51391
+10390;SV Black Arrows Tübingen e. V.;Klein;Max;Hauptstr. 94;72072;Tübingen;D;1;V02;30;27.06.2020;J;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
+alte Rechnungen noch an alte Adresse";0751.54157
+10393;Freizeit-Center GmbH;Becker;Florian;Bahnhofstr. 20a;4051;Basel;CH;2;V04;30;29.06.2022;N;N;31.12.9999;"Vereinsvorsitz wechselt jährlich;
+Kontakt über Kassenwart";071/67298
+10397;Dart Store e.K.;Klein;Lisa;Kirchplatz 69a;6108;Halle (Saale);D;2;V03;14;30.12.2020;J;N;31.12.9999;Liefert nur Di/Do;0049 751 33306
+10398;Spielwaren Neumann GmbH;Neumann;Anna;Seestr. 69a;8010;Graz;A;2;V05;14;26.05.2021;J;N;31.12.9999;;(05574) 63920
+10401;SV Dartsport Bregenz e.V.;Dr. Schulz;Florian;Ringstr. 110;6900;Bregenz;A;1;V05;30;02.06.2023;N;N;31.12.9999;Rechnung an Zentrale;(05574) 79146
+10404;Sportsbar 180;Fischer;Jonas;Goethestr. 45a;6020;Innsbruck;A;3;V05;60;03.08.2022;N;N;31.12.9999;Liefert nur Di/Do;0043 5574 82850
+10406;SC  Dartfreunde Tübingen e.V.;Dr. Hoffmann;Anna;Bergstr. 87a;72072;Tübingen;D;1;V02;30;12.03.2021;J;N;31.12.9999;   ;0751.87278
+10409;Dart Store GmbH  ;Weber;Laura;Bergstr. 27a;9000;St. Gallen;CH;2;V04;30;20.05.2022;N;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";071.24692
+10411;Freizeit-Center e.K.;Wagner;Jonas;Kirchplatz 71;70173;Stuttgart;D;2;V01;30;27.06.2021;J;N;31.12.9999;;0049 751 59003
+10414;Dartwelt GmbH;Bauer;Laura;Ringstr. 22;6108;Halle (Saale);D;2;V03;14;25.11.2022;J;N;31.12.9999; ;0751.40099
+10418;Dartwelt GmbH;König;Nina;Gartenstr. 97b;79098;Freiburg;D;2;V01;60;16.07.2021;N;N;31.12.9999;"Turnierausstattung 2024
+Sonderpreise Flights";0751.82701
+10420;Dartwelt  / Hr. Becker;Becker;Markus;Marktstr. 101;3011;Bern;CH;2;V04;14;03.08.2022;N;N;31.12.9999;Liefert nur Di/Do;(071) 59728
+10421;Flight Club Weingarten e.V.;Schulz;Lukas;Goethestr. 48;88250;Weingarten;D;1;V02;30;13.04.2020;J;N;31.12.9999;;+4975133318
+10422;DC Dartsport Friedrichshafen e;Hoffmann;Laura;Mozartstr. 59a;88045;Friedrichshafen;D;1;V02;-1;27.11.2019;N;N;31.12.9999;;+4975126691
+10423;Dart Store e.K.;Jäger;Claudia;Hauptstr. 112a;6900;Bregenz;A;2;V05;14;02.08.2020;N;J;28.07.2023;"Vereinsvorsitz wechselt jährlich;
+Kontakt über Kassenwart";05574.34563
+10427;Sporthaus Müller;Müller;Felix;Goethestr. 90a;90402;Nürnberg;D;2;V02;-1;30.08.2022;J;J;28.07.2023;;+4975157057
+10429;Freizeit-Center GmbH;Schmidt;Jana;Ringstr. 74;8001;Zürich;CH;2;V04;30;23.07.2022;J;J;28.06.2023;"Vereinsvorsitz wechselt jährlich;
+Kontakt über Kassenwart";0041 71 61983 -16 Hr. Vogel
+10430;Sport Wagner GmbH;Dr. Wagner;Tobias;Goethestr. 45b/1;4109;Leipzig;D;2;V03;60;11.02.2021;N;J;28.12.2023; ;(0751) 94918
+10434;Sporthaus Klein e.K.;Klein;Jana;Mozartstr. 41a;88045;Friedrichshafen;D;2;V02;60;23.06.2021;J;J;28.11.2023;;(0751) 33853
+10436;SC Dart Devils Ravensburg;Schneider;Claudia;Bergstr. 46;88212;Ravensburg;D;1;V02;30;24.06.2019;X;J;28.08.2023;"Turnierausstattung 2024
+Sonderpreise Flights";+4975124533
+10438;SV Flight Club Ravensburg;Hoffmann;Tobias;Zeppelinstr. 65;88212;Ravensburg;D;1;V02;14;14.02.2019;J;J;28.10.2023;"Achtung: neue Adresse ab 01/2024
+alte Rechnungen noch an alte Adresse";0751.42066
+10441;SV Red Dragons Tübingen e. V.;Herrmann;Lisa;Gartenstr. 118;72072;Tübingen;D;1;V02;30;28.04.2022;N;J;28.08.2023;"Turnierausstattung 2024
+Sonderpreise Flights";+4975151938
+10445;SC Black Arrows Luzern e. V.;Braun;Andreas;Kirchplatz 22a;6003;Luzern;CH;1;V04;30;18.10.2020;N;J;28.09.2023;"Anlieferung nur vormittags
+Ansprechpartner: Hr. Vogel
+Tel. 0751/12345";071.98014
+10448;Dartwelt;Müller;Patrick;Industriestr. 72;8400;Winterthur;CH;2;V04;-1;23.04.2022;N;J;28.08.2023;Skonto 2 % vereinbart;071/89491
+10449;Sporthaus Braun OHG;Braun;Anna;Ringstr. 39;5020;Salzburg;A;2;V05;60;29.04.2020;N;J;28.12.2023;   ;05574/85818
+10452;SC Bulls Eye Leipzig e.V.;Krause;Lukas;Schillerstr. 103b;4109;Leipzig;D;1;V03;14;07.04.2021;J;J;28.12.2023; ;0049 751 73227
+10454;Black Arrows Freiburg e. V.;Wagner;Nina;Hauptstr. 26;79098;Freiburg;D;1;V02;-1;26.02.2023;J;J;28.10.2023;Rechnung an Zentrale;(0751) 44858 -16 Hr. Vogel
+10456;SV Treffpunkt 180 Wien  ;Krüger;Stefan;Bergstr. 33b;1010;Wien;A;1;V05;30;09.09.2023;J;J;28.10.2023;   ;+43557496744
+10459;Zum Bulls Eye;Jäger;Anna;Zeppelinstr. 41;86150;Augsburg;D;3;V02;60;22.04.2020;N;J;28.12.2023;;(0751) 54224
+10461;Sporthaus Neumann e.K.;Dr. Neumann;Jonas;Gartenstr. 113b;6003;Luzern;CH;2;V04;30T netto;05.08.2021;N;J;28.06.2023;;+417182827
+10465;Sport Zimmermann GmbH;Zimmermann;Julia;Ringstr. 66a;90402;Nürnberg;D;2;V02;60;18.07.2021;N;J;28.07.2023;;(0751) 80442
+10468;Zum Bulls Eye;König;Felix;Marktstr. 106;72072;Tübingen;D;3;V01;60;09.04.2021;J;J;28.09.2023;;0049 751 66282
+10469;Dart Devils Bern e.V.;Lehmann;Katharina;Bahnhofstr. 1;3011;Bern;CH;1;V04;30;20.01.2022;J;J;28.12.2023;;071/58402
+10470;Bistro Krause;Krause;Lena;Kirchplatz 8a;3011;Bern;CH;3;V04;-1;16.08.2019;N;J;28.10.2023;;(071) 91767
+10471;Freizeit-Center e.K.;Schwarz;Max;Bahnhofstr. 70a;1010;Wien;A;2;V05;14;29.09.2019;J;J;28.08.2023;Rechnung an Zentrale;05574/97055
+10472;Dart-Shop e.K.;Lehmann;Florian;Mozartstr. 5a;79098;Freiburg;D;2;V01;30;01.05.2019;N;J;28.11.2023; ;(0751) 99290
+10473;SV Triple 20 Linz e. V.;Zimmermann;Jana;Gartenstr. 15;4020;Linz;A;1;V05;14T netto;23.07.2023;N;J;28.06.2023; ;05574/55694
+10477;SV Black Arrows Ulm ;Schröder;Lisa;Bergstr. 108;89073;Ulm;D;1;V02;14;29.12.2019;ja;J;28.08.2023;"Anlieferung nur vormittags
+Ansprechpartner: Hr. Vogel
+Tel. 0751/12345";0751.84452
+10481;Sportsbar 180;Werner;Sarah;Zeppelinstr. 55;4020;Linz;A;3;V05;60;30.04.2020;J;J;28.08.2023;"Achtung: neue Adresse ab 01/2024
+alte Rechnungen noch an alte Adresse";+43557483016
+10485;Steeldarters Ulm e.V. ;König;Sabine;Bahnhofstr. 36;D-89073;Ulm;D;1;V02;30;31.12.2019;N;J;28.07.2023;"Anlieferung nur vormittags
+Ansprechpartner: Hr. Vogel
+Tel. 0751/12345";0751/48536
+10489;Dartwelt GmbH;Werner;Daniel;Hauptstr. 38a;4109;Leipzig;D;2;V03;14;01.08.2021;J;J;28.11.2023;   ;0049 751 29771
+10490;Bistro Braun ;Braun;Daniel;Hauptstr. 74;88250;Weingarten;D;3;V02;60;23.11.2022;J;J;28.10.2023;;0751/36172
+10492;Dart-Lounge;Wolf;Andreas;Lindenweg 85;;01067 Dresden;D;3;V03;60;25.07.2019;N;J;28.10.2023;   ;0751/46304
+10495;Dartwelt;Neumann;Petra;Ringstr. 82b;88212;Ravensburg;D;2;V02;-1;10.04.2021;J;J;28.09.2023;;0751/48076 oder mobil
+10499;SV Triple 20 Winterthur e.V.;Wagner;Claudia;Goethestr. 30a;8400;Winterthur;CH;1;V04;60;14.09.2021;J;J;28.08.2023;;+417149671
+10500;Triple 20 Berlin;Neumann;Katharina;Goethestr. 96b;10115;Berlin;D;1;V03;30;07.05.2023;N;J;28.11.2023;;+4975161063
+10504;Treffpunkt 180 Augsburg;Jäger;Sabine;Industriestr. 86;86150;Augsburg;D;1;V02;60;06.02.2021;N;J;28.10.2023;"Vereinsvorsitz wechselt jährlich;
+Kontakt über Kassenwart";0751/49712
+10505;Spielwaren Schmidt GmbH;Schmidt;Markus;Hauptstr. 67;6108;Halle (Saale);D;2;V03;14;20.05.2019;J;J;28.07.2023;   ;0751/30762
+10506;SC Dartfreunde Bregenz e. V.;Dr. Koch;Petra;Gartenstr. 95a;6900;Bregenz;AUT;1;V05;14;23.10.2020;J;J;28.09.2023;"Turnierausstattung 2024
+Sonderpreise Flights";(05574) 43189
+10510;Sportsbar 180;Schröder;Lena;Industriestr. 92b;D-01067;Dresden;D;3;V03;-1;02.10.2023;N;J;28.06.2023;"Anlieferung nur vormittags
+Ansprechpartner: Hr. Vogel
+Tel. 0751/12345";+4975193245
+10511;Kneipe zum Anker;Schmidt;Jana;Bergstraße 37;;3011 Bern;CH;3;V04;60;27.02.2024;J;N;31.12.9999;;(071) 97691
+10512;SC  Bulls Eye Nürnberg;Dr. Weber;Jonas;Hauptstraße 18;90402;Nürnberg;D;1;V02;14;15.08.2024;N;N;31.12.9999;Rechnung an Zentrale;0751.44819
+10513;Pub Triple Twenty;Schmidt;Claudia;Gartenstraße 19;88212;Ravensburg;D;3;V02;30;10.04.2024;N;N;31.12.9999;"Achtung: neue Adresse ab 01/2024
+alte Rechnungen noch an alte Adresse";0751.81383
+10514;SC Flight Club Leipzig;Richter;Jonas;Seestraße 49;4109;Leipzig;Deutschland;1;V03;-1;14.05.2024;N;N;31.12.9999;;(0751) 47845
+10515;Testkunde;Test;Test;Teststr. 1;12345;Teststadt;D;4;I01;30;01.01.2022;N;N;31.12.9999;;
+10516;TEST bitte nicht löschen;Test;Test;Teststr. 1;12345;Teststadt;D;4;I01;30;01.01.2022;N;N;31.12.9999;;

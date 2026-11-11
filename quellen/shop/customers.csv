@@ -1,141 +1,202 @@
 customer_id,email,first_name,last_name,gender,address,country,is_club,newsletter,created_at,erp_customer_no,company,phone
-C-00102,daniel.meyer53@t-online.de,Daniel,Meyer,1,"Lindenweg 5a, 88212 Ravensburg",DE,true,true,2023-01-04T16:00:00Z,10204,TSV Dartsport Ravensburg e. V.,0049 751 55196
-C-00104,jonas.koch4@t-online.de,Jonas,Koch,1,"Lindenweg 14, 86150 Augsburg",DE,true,false,2019-05-26T16:00:00Z,,TSV Steeldarters Augsburg e.V.,
-C-00105,max.schneider90@gmx.de,Max,Schneider,1,"Ring-Straße  80, 72072 Tübingen",DE,true,true,2023-06-15T18:00:00Z,,SC Bulls Eye Tübingen,+4975171286
-C-00106,patrick.lange85@gmail.com,Patrick,Lange,1,"Schillerstraße 13, 3011 Bern",CH,true,false,2020-01-04T23:00:00Z,,Dartfreunde Bern e.V.,071/71394
-C-00108,anna.schulz51@gmx.de,Anna,Schulz,2,"Marktstraße 38, 70173 Stuttgart",DE,true,true,2021-03-03T22:00:00Z,10213,Dartsport Stuttgart e.V.,
-C-00111,tobias.meyer60@outlook.com,Tobias,Meyer,1,"Goethestraße 54, 01067 Dresden",DE,true,true,2023-03-28T18:00:00Z,10216,DC Black Arrows Dresden e.V.,
-C-00114,petra.richter24@t-online.de,Petra,Richter,2,"See-Straße 88a, 1010 Wien",AT,false,false,2021-10-05T12:00:00Z,,Dart-Lounge,05574.29749
-C-00115,jonas.koehler36@gmail.com,Jonas,Köhler,0,"Lindenweg 60, 6020 Innsbruck",AT,true,false,2023-06-14T08:00:00Z,,TSV Steeldarters Innsbruck e. V.,+43557460654
-C-00117,claudia.koch97@t-online.de,Claudia,Koch,2,"Berg-Straße 47a, 6003 Luzern",CH,true,true,2023-08-03T17:00:00Z,10226,SV Flight Club Luzern e.V.,071.38799
-C-00118,jonas.weber96@web.de,Jonas,Weber,1,"Haupt-Straße 18, 90402 Nürnberg",DE,true,false,2023-07-27T23:00:00Z,10227,SC Bulls Eye Nürnberg,
-C-00120,max.schmidt56@outlook.com,Max,Schmidt,1,"Bahnhof-Straße 104, 8010 Graz",AT,true,false,2021-05-26T22:00:00Z,,SC Dartfreunde Graz e. V.,05574.88867
-C-00122,anna.wolf27@web.de,Anna,Wolf,2,"Schillerstraße 100a, 5020 Salzburg",AT,false,false,2022-09-27T23:00:00Z,10234,Zum Bulls Eye,05574.28140
-C-00125,ANNA.NEUMANN62@OUTLOOK.COM,Anna,Neumann,0,"Bergstraße 109b, 3011 Bern",CH,false,true,2019-06-27T19:00:00Z,,Dart-Shop GmbH,
-C-00127,STEFAN.MEYER79@OUTLOOK.COM,Stefan,Meyer,1,"Schillerstraße 15, 88045 Friedrichshafen",DE,true,true,2021-05-17T23:00:00Z,,SV Dart Devils Friedrichshafen,0049 751 63509
-C-00130,daniel.schulz80@web.de,Daniel,Schulz,1,"Goethestraße 12, 80331 München",DE,true,false,2019-03-29T14:00:00Z,10239,TSV Black Arrows München e.V.,
-C-00131,lena.braun45@t-online.de,Lena,Braun,2,"Am Sportplatz 65, 01067 Dresden",DE,true,true,2019-10-25T19:00:00Z,,SC Red Dragons Dresden,(0751) 31799
-C-00134,nina.schroeder13@t-online.de,Nina,Schröder,2,"Hauptstraße 80a, 18055 Rostock",DE,true,false,2020-06-10T19:00:00Z,10244,Triple 20 Rostock e.V.,0049 751 68326
-C-00135,michael.koenig5@outlook.com,Michael,König,1,"Goethestraße 95, 8010 Graz",AT,false,true,2021-06-28T18:00:00Z,10246,Dart-Shop GmbH,(05574) 93508
-C-00138,sarah.weber16@gmx.de,Sarah,Weber,2,"Schillerstraße 35a, 88212 Ravensburg",DE,false,false,2023-05-02T22:00:00Z,10248,Gasthaus Weber,0751/99258
-C-00140,sabine.koenig14gmx.de,Sabine,König,2,"Bergstraße 24, 88045 Friedrichshafen",DE,true,true,2020-08-17T18:00:00Z,10251,Red Dragons Friedrichshafen e.V.,+4975134745
-C-00141,jonas.herrmann9@t-online.de,Jonas,Herrmann,0,"Zeppelin-Straße 46, 8001 Zürich",CH,true,true,2020-10-14T13:00:00Z,10252,SV Triple 20 Zürich e. V.,071.92341
-C-00143,tobias.hoffmann35@outlook.com,Tobias,Hoffmann,1,"Schillerstraße 89, 6900 Bregenz",AT,true,true,2019-09-26T17:00:00Z,,DC Black Arrows Bregenz,
-C-00146,julia.wagner72@gmx.de,Julia,Wagner,2,"Zeppelinstraße 2b, 3011 Bern",CH,false,true,2020-05-09T17:00:00Z,10257,Zum Bulls Eye,
-C-00149,katharina.koehler97@web.de,Katharina,Köhler,2,"Am Sportplatz 118, 88212 Ravensburg",DE,false,false,2021-02-21T23:00:00Z,10261,Freizeit-Center GmbH,+4975132878
-C-00151,markus.schneider67@gmail.com,Markus,Schneider,1,"Gartenstraße 2b, 86150 Augsburg",DE,true,true,2022-06-15T08:00:00Z,10265,TSV Black Arrows Augsburg e. V.,
-C-00152,lukas.schulz47@t-online.de,Lukas,Schulz,1,"Bahnhofstraße 56, 06108 Halle (Saale)",DE,false,false,2019-08-18T14:00:00Z,10268,Zum Bulls Eye,
-C-00154,jonas.richter16@gmail.com,Jonas,Richter,1,"Seestraße 49, 04109 Leipzig",DE,true,false,2020-08-09T23:00:00Z,10271,SC Flight Club Leipzig,0751/86541
-C-00156,jonas.schmidt35@outlook.com,Jonas,Schmidt,1,"Am Sportplatz 6b, 18055 Rostock",DE,false,true,2021-10-14T07:00:00Z,,Gasthaus Schmidt,
-C-00159,tobias.hofmann12@outlook.com,Tobias,Hofmann,1,"Industrie-Strasse 67, 88212 Ravensburg",DE,false,true,2021-11-19T15:00:00Z,10273,Dart Store GmbH,(0751) 54490
-C-00162,claudia.schneider99@outlook.com,Claudia,Schneider,2,"Kirchplatz 19, 88212 Ravensburg",DE,false,true,2020-08-22T08:00:00Z,,Spielwaren Schneider GmbH,
-C-00163,claudia.bauer98@t-online.de,Claudia,Bauer,2,"Bahnhofstraße 18, 80331 München",DE,false,false,2021-01-20T16:00:00Z,,Dart-Lounge,+4975143318
-C-00165,jonas.wagner1@outlook.com,Jonas,Wagner,0,"Am Sportplatz 67, 90402 Nürnberg",DE,true,false,2020-01-09T08:00:00Z,,Dart Devils Nürnberg e. V.,
-C-00167,claudia.schmidt41@outlook.com,Claudia,Schmidt,2,"Gartenstraße 19, 88212 Ravensburg",DE,false,false,2022-12-21T22:00:00Z,10282,Pub Triple Twenty,0751/27655
-C-00170,claudia.wagner81@web.de,Claudia,Wagner,2,"Hauptstraße 96b, 8010 Graz",AT,false,true,2021-04-21T23:00:00Z,,Freizeit-Center,05574/76372
-C-00173,jana.hoffmann79@web.de,Jana,Hoffmann,0,"Lindenweg 62, 06108 Halle (Saale)",DE,true,false,2022-12-31T17:00:00Z,10286,SV Black Arrows Halle (Saale) e. V.,0751.38615
-C-00174,anna.zimmermann13@outlook.com,Anna,Zimmermann,2,"Haupt-Straße 27b, 10115 Berlin",DE,true,true,2019-04-04T19:00:00Z,,SV Steeldarters Berlin e. V.,
-C-00177,felix.schwarz37@gmx.de,Felix,Schwarz,1,"Kirchplatz 50, 70173 Stuttgart",DE,false,false,2019-12-04T07:00:00Z,10292,Pub Triple Twenty,0751.20915
-C-00178,markus.weber28@gmx.de,Markus,Weber,1,"Hauptstraße 55, 10115 Berlin",DE,true,true,2020-03-31T09:00:00Z,,Flight Club Berlin,
-C-00179,patrick.weber3@gmail.com,Patrick,Weber,1,"Industrie-Straße 70, 70173 Stuttgart",DE,false,true,2022-09-30T17:00:00Z,10296,Sporthaus Weber GmbH,0751/94135
-C-00181,claudia.koch8@t-online.de,Claudia,Koch,2,"Hauptstraße 26, 79098 Freiburg",DE,false,true,2021-05-13T07:00:00Z,,Kneipe zum Anker,
-C-00184,stefan.koehler64(at)gmx.de,Stefan,Köhler,1,"Zeppelin-Straße 66a, 80331 München",DE,false,false,2019-10-23T22:00:00Z,,Dart-Shop GmbH,0049 751 51866
-C-00186,daniel.lehmann94@outlook.com,Daniel,Lehmann,0,"Mozart-Straße 14b, 72072 Tübingen",DE,false,false,2022-01-16T13:00:00Z,,Dart-Shop OHG,
-C-00188,lukas.koehler45@gmail.com,Lukas,Köhler,1,"Industriestraße 59, 79098 Freiburg",DE,true,true,2019-12-11T10:00:00Z,10309,SV Dartfreunde Freiburg e. V.,
-C-00190,lukas.koehler5@t-online.de,Lukas,Köhler,1,"Lindenweg 76a, 88212 Ravensburg",DE,false,true,2022-03-04T08:00:00Z,,Bistro Köhler,
-C-00193,petra.klein54@web.de,Petra,Klein,0,"Mozart-Straße 13, 04109 Leipzig",DE,true,false,2023-12-18T13:00:00Z,10314,SC Dartsport Leipzig e.V.,0751.84475
-C-00194,max.schneider25@web.de,Max,Schneider,1,"Schillerstraße 32, 10115 Berlin",DE,true,true,2021-12-07T12:00:00Z,,DC Red Dragons Berlin e.V.,
-C-00195,andreas.richter73@outlook.com,Andreas,Richter,1,"Marktstraße 24a, 79098 Freiburg",DE,false,false,2021-07-30T13:00:00Z,,,0049 751 68654
-C-00197,anna.braun25@outlook.com,Anna,Braun,2,"Zeppelinstraße 69, 06108 Halle (Saale)",DE,true,true,2021-07-27T15:00:00Z,,TSV Triple 20 Halle (Saale) e.V.,
-C-00198,sabine.schroeder46@web.de,Sabine,Schröder,2,"Lindenweg 30, 10115 Berlin",DE,true,true,2019-03-31T15:00:00Z,,TSV Dartfreunde Berlin e.V.,0751/90664
-C-00199,lena.hoffmann74@web.de,Lena,Hoffmann,2,"Am Sportplatz 35, 04109 Leipzig",DE,true,true,2023-08-31T21:00:00Z,,DC Dartfreunde Leipzig e.V.,
-C-00202,daniel.neumann75@gmail.com,Daniel,Neumann,0,"Am Sportplatz 71b, 01067 Dresden",DE,true,false,2022-03-31T08:00:00Z,,Steeldarters Dresden,0751.57817
-C-00205,lukas.braun23@gmx.de,Lukas,Braun,0,"Ring-Strasse 27, 80331 München",DE,true,true,2023-01-05T09:00:00Z,,Bulls Eye München e.V.,+4975192905
-C-00206,markus.wolf52@gmx.de,Markus,Wolf,1,"Mozartstraße 65, 80331 München",DE,false,true,2021-02-09T15:00:00Z,,,
-C-00207,felix.schroeder63@t-online.de,Felix,Schröder,1,"Bergstraße 114, 79098 Freiburg",DE,true,true,2022-07-13T22:00:00Z,,SC Dart Devils Freiburg e.V.,0049 751 65866
-C-00208,julia.bauer99@gmail.com,Julia,Bauer,0,"Seestraße 3, 86150 Augsburg",DE,false,true,2021-01-02T10:00:00Z,,Sportsbar 180,
-C-00211,felix.lange24@t-online.de;,Felix,Lange,1,"Kirchplatz 71a, 88250 Weingarten",DE,true,false,2023-08-05T10:00:00Z,,DC Dartsport Weingarten e.V.,0751.94026
-C-00212,markus.koch81@web.de,Markus,Koch,1,"Bahnhofstraße 100, 4051 Basel",CH,false,false,2022-06-11T09:00:00Z,,,(071) 63709
-C-00215,petra.wolf13@outlook.com,Petra,Wolf,2,"Kirchplatz 80, 04109 Leipzig",DE,true,true,2020-02-19T22:00:00Z,,DC Treffpunkt 180 Leipzig e.V.,
-C-00216,anna.jaeger34@gmail.com,Anna,Jäger,0,"See-Straße 7a, 6900 Bregenz",AT,true,false,2022-12-25T18:00:00Z,,DC Dartsport Bregenz e. V.,0043 5574 69574
-C-00219,florian.koch69@outlook.com,Florian,Koch,1,"Am Sportplatz 32, 88212 Ravensburg",DE,true,false,2020-10-16T21:00:00Z,,DC Treffpunkt 180 Ravensburg e.V.,
-C-00221,nina.krause3@t-online.de,Nina,Krause,2,"Am Sportplatz 107, 72072 Tübingen",DE,true,true,2021-08-08T22:00:00Z,,DC Dartfreunde Tübingen,0751/46048
-C-00223,stefan.mueller62@web.de,Stefan,Müller,1,"Goethestraße 61a, 18055 Rostock",DE,false,true,2022-06-15T13:00:00Z,,,0751/83643
-C-00226, max.jaeger59@gmail.com ,Max,Jäger,1,"Gartenstraße 37, 86150 Augsburg",DE,false,false,2019-03-27T09:00:00Z,,Kneipe zum Anker,+4975146493
-C-00229,tobias.mueller59@outlook.com,Tobias,Müller,1,"Garten-Straße 37, 80331 München",DE,false,false,2021-02-27T22:00:00Z,,Kneipe zum Anker,
-C-00230,patrick.schneider61@web.de,Patrick,Schneider,1,"Goethe-Straße 95, 80331 München",DE,false,false,2020-12-14T13:00:00Z,,,
-C-00233,jana.werner38@gmail.com,Jana,Werner,0,"Mozartstraße 119, 79098 Freiburg",DE,true,false,2019-01-27T12:00:00Z,,SC Treffpunkt 180 Freiburg e. V.,
-C-00235,nina.meyer64@gmx.de,Nina,Meyer,2,"Am Sportplatz 3, 90402 Nürnberg",DE,false,true,2021-10-02T23:00:00Z,,,0751.26652
-C-00237,LAURA.HOFFMANN25@T-ONLINE.DE,Laura,Hoffmann,2,"Bergstraße 112, 1010 Wien",AT,true,false,2019-10-14T13:00:00Z,,TSV Dart Devils Wien e.V.,
-C-00239,jana.krause45@gmail.com,Jana,Krause,2,"Ring-Strasse 25b, 3011 Bern",CH,true,true,2020-08-09T21:00:00Z,,DC Triple 20 Bern,0041 71 57895
-C-00241,nina.klein88@gmx.de,Nina,Klein,2,"Bahnhofstraße 50, 5020 Salzburg",AT,true,true,2023-03-08T23:00:00Z,,DC Black Arrows Salzburg,+43557435987
-C-00242,laura.mueller93@web.de,Laura,Müller,0,"Mozartstraße 18, 72072 Tübingen",DE,true,true,2020-03-01T21:00:00Z,,DC Dartsport Tübingen e.V.,0751.20176
-C-00245,sabine.koenig6@t-online.de,Sabine,König,2,"Mozartstraße 19, 06108 Halle (Saale)",DE,true,true,2020-04-13T09:00:00Z,,Dart Devils Halle (Saale) e.V.,(0751) 78651
-C-00248,laura.hoffmann21@outlook.com,Laura,Hoffmann,2,"Mozart-Straße 59a, 88045 Friedrichshafen",DE,true,false,2019-11-27T12:00:00Z,,DC Dartsport Friedrichshafen e. V.,0049 751 61985
-C-00250,anna.becker65@t-online.de,Anna,Becker,2,"Schillerstraße 44a, 88250 Weingarten",DE,true,true,2019-05-29T22:00:00Z,,SV Black Arrows Weingarten e.V.,0751/64277
-C-00251,petra.meyer96@outlook.com,Petra,Meyer,2,"Bergstraße 57, 88212 Ravensburg",DE,false,false,2023-02-04T23:00:00Z,,,0751.53707
-C-00252,claudia.jaeger95@gmx.de,Claudia,Jäger,2,"Kirchplatz 32a, 18055 Rostock",DE,false,true,2023-03-28T14:00:00Z,,,0751/54051
-C-00254,lisa.neumann64(at)web.de,Lisa,Neumann,2,"Lindenweg 57, 8001 Zürich",CH,false,true,2021-09-28T07:00:00Z,,,
-C-00256,katharina.schmidt90@gmail.com,Katharina,Schmidt,2,"Goethestraße 106a, 89073 Ulm",DE,false,true,2022-11-11T19:00:00Z,,,(0751) 63874
-C-00257,sarah.wolf85@web.de,Sarah,Wolf,2,"Lindenweg 5, 18055 Rostock",DE,false,true,2021-06-04T17:00:00Z,,,(0751) 63793
-C-00260,sabine.wolf69@outlook.com,Sabine,Wolf,2,"Kirchplatz 57, 9000 St. Gallen",CH,false,false,2019-07-10T21:00:00Z,,,
-C-00262,sabine.klein44@outlook.com,Sabine,Klein,2,"Lindenweg 8a, 9000 St. Gallen",CH,false,true,2020-04-02T12:00:00Z,,,
-C-00263,lena.lange11@outlook.com,Lena,Lange,2,"Gartenstraße 112, 90402 Nürnberg",DE,false,false,2019-05-07T19:00:00Z,,,
-C-00264,Andreas Hofmann <andreas.hofmann96@t-online.de>,Andreas,Hofmann,1,"Mozartstraße 70, 72072 Tübingen",DE,false,false,2022-05-25T08:00:00Z,,,+4975159574
-C-00266,lena.herrmann32(at)gmx.de,Lena,Herrmann,2,"Kirchplatz  15, 90402 Nürnberg",DE,false,true,2019-05-14T09:00:00Z,,,0751.98756
-C-00269,laura.schneider97@outlook.com,Laura,Schneider,2,"Zeppelinstraße 60, 88250 Weingarten",DE,false,false,2021-07-07T11:00:00Z,,,0751.43755
-C-00270,katharina.werner25@web.de,Katharina,Werner,2,"Seestraße  96a, 90402 Nürnberg",DE,false,true,2019-11-24T23:00:00Z,,,(0751) 88331
-C-00273,sarah.jaeger83@web.de,Sarah,Jäger,2,"Seestraße 36b, 88045 Friedrichshafen",DE,false,true,2021-07-03T11:00:00Z,,,0049 751 30155
-C-00274,stefan.neumann23@web.de,Stefan,Neumann,1,"Kirchplatz  48, 80331 München",DE,false,true,2023-01-30T21:00:00Z,,,0751/41907
-C-00275,michael.koehler1@gmx.de,Michael,Köhler,1,"Bergstraße 78b, 04109 Leipzig",DE,false,true,2023-09-27T12:00:00Z,,,
-C-00277, lisa.schroeder72@gmx.de ,Lisa,Schröder,2,"Kirchplatz 10, 01067 Dresden",DE,false,true,2019-01-13T07:00:00Z,,,(0751) 46405
-C-00279,jonas.herrmann27@gmx.de;,Jonas,Herrmann,0,"Bahnhofstraße 24, 8400 Winterthur",CH,false,true,2022-09-06T20:00:00Z,,,0041 71 59042
-C-00281,lisa.krause58@web.de;,Lisa,Krause,2,"Seestraße 22, 1010 Wien",AT,false,true,2021-03-28T07:00:00Z,,,+43557460277
-C-00283,anna.jaeger29@web.de,Anna,Jäger,2,"Marktstraße 43, 9000 St. Gallen",CH,false,false,2021-07-07T10:00:00Z,,,+417150830
-C-00286,anna.schroeder21@gmx.de,Anna,Schröder,2,"Lindenweg 96, 88250 Weingarten",DE,false,true,2021-05-10T08:00:00Z,,,
-C-00289,NINA.NEUMANN81@T-ONLINE.DE,Nina,Neumann,2,"Goethestraße 119b, 88212 Ravensburg",DE,false,true,2023-01-30T13:00:00Z,,,
-C-00292,laura.schmidt74@web.de,Laura,Schmidt,0,"Schillerstraße 23, 88212 Ravensburg",DE,false,true,2019-10-11T18:00:00Z,,,
-C-00294,petra.koch82@web.de,Petra,Koch,0,"Ringstraße 66a, 06108 Halle (Saale)",DE,false,false,2022-06-07T09:00:00Z,,,0751/56470
-C-00296,jana.weber34@t-online.de,Jana,Weber,2,"Seestraße 60a, 79098 Freiburg",DE,false,false,2022-09-24T15:00:00Z,,,0751.32092
-C-00297,julia.wolf18@web.de;,Julia,Wolf,0,"Gartenstraße 25, 8010 Graz",AT,false,false,2022-06-11T16:00:00Z,,,(05574) 54227
-C-00299,katharina.becker40@outlook.com,Katharina,Becker,0,"Hauptstraße 59b, 80331 München",DE,false,true,2019-02-01T23:00:00Z,,,(0751) 48046
-C-00300,felix.mueller38@outlook.com,Felix,Müller,1,"Gartenstraße  19, 4020 Linz",AT,false,true,2023-01-20T07:00:00Z,,,0043 5574 61126
-C-00303,tobias.schwarz50@web.de,Tobias,Schwarz,1,"Industriestraße 100, 10115 Berlin",DE,false,true,2021-12-04T08:00:00Z,,,
-C-00304,sabine.mueller95@outlook.com,Sabine,Müller,2,"Mozartstraße 29, 4051 Basel",CH,false,true,2019-07-26T23:00:00Z,,,(071) 97384
-C-00307,jonas.krause52@gmail.com,Jonas,Krause,1,"Industriestraße 59b, 6900 Bregenz",AT,false,false,2019-04-02T15:00:00Z,,,05574/53215
-C-00308,katharina.weber39@gmx.de,Katharina,Weber,2,"Zeppelinstraße 28, 88212 Ravensburg",DE,false,true,2022-01-28T19:00:00Z,,,
-C-00311,nina.hoffmann3(at)gmx.de,Nina,Hoffmann,2,"Gartenstraße 96, 72072 Tübingen",DE,false,false,2023-01-03T08:00:00Z,,,(0751) 62171
-C-00313,daniel.schroeder35@gmx.de,Daniel,Schröder,1,"Hauptstraße 93, 04109 Leipzig",DE,false,true,2021-05-27T11:00:00Z,,,
-C-00314,felix.schwarz96@t-online.de,Felix,Schwarz,1,"Industriestraße 36, 06108 Halle (Saale)",DE,false,true,2020-07-24T17:00:00Z,,,0751/60285
-C-00316,jonas.wagner87@outlook.com,Jonas,Wagner,1,"Industriestraße  96a, 86150 Augsburg",DE,false,false,2019-02-12T10:00:00Z,,,0751.78857
-C-00319,andreas.hofmann73@gmail.com,Andreas,Hofmann,1,"Bahnhofstraße 107, 89073 Ulm",DE,false,false,2022-04-13T14:00:00Z,,,
-C-00320,markus.werner9@gmail.com,Markus,Werner,1,"Seestraße 86b, 88045 Friedrichshafen",DE,false,true,2022-06-08T19:00:00Z,,,+4975161326
-C-00323,katharina.klein64@gmail.com,Katharina,Klein,2,"Bergstraße 108, 4051 Basel",CH,false,false,2019-10-10T17:00:00Z,,,(071) 46936
-C-00326,claudia.koch89@gmail.com,Claudia,Koch,2,"Industriestraße 73, 80331 München",DE,false,false,2019-08-31T18:00:00Z,,,(0751) 95443
-C-00327,katharina.schwarz59@web.de;,Katharina,Schwarz,2,"Gartenstraße 33, 6900 Bregenz",AT,false,false,2019-10-07T20:00:00Z,,,+43557436377
-C-00330,jonas.krause45@gmail.com,Jonas,Krause,1,"Hauptstraße 4, 8001 Zürich",CH,false,false,2019-09-21T17:00:00Z,,,+417150193
-C-00331,anna.wolf24outlook.com,Anna,Wolf,2,"Marktstraße 112b, 10115 Berlin",DE,false,false,2021-07-18T13:00:00Z,,,
-C-00333,andreas.bauer9(at)t-online.de,Andreas,Bauer,1,"Industriestraße 12b, 10115 Berlin",DE,false,false,2022-03-11T14:00:00Z,,,0751.38205
-C-00334,sabine.hoffmann68@gmx.de,Sabine,Hoffmann,2,"Seestraße 33, 04109 Leipzig",DE,false,true,2020-12-01T17:00:00Z,,,(0751) 52558
-C-00336,jonas.mueller36@outlook.com,Jonas,Müller,0,"Am Sportplatz 31, 79098 Freiburg",DE,false,false,2022-02-28T10:00:00Z,,,0751.84806
-C-00337,max.weber12@gmail.com,Max,Weber,1,"Am Sportplatz 80b, 88250 Weingarten",DE,false,true,2019-07-28T17:00:00Z,,,0751/77371
-C-00340,sabine.schroeder9@t-online.de,Sabine,Schröder,2,"Bahnhofstraße 4, 4020 Linz",AT,false,false,2019-03-03T09:00:00Z,,,(05574) 71409
-C-00342,stefan.wolf41@web.de,Stefan,Wolf,1,"Am Sportplatz 11a, 6003 Luzern",CH,false,false,2020-02-24T20:00:00Z,,,(071) 58613
-C-00345,lena.krause29@gmx.de,Lena,Krause,2,"Mozartstraße 5b, 88212 Ravensburg",DE,false,false,2019-08-30T18:00:00Z,,,
-C-00348,laura.herrmann17@gmail.com,Laura,Herrmann,2,"Schillerstraße  57, 70173 Stuttgart",DE,false,true,2023-12-21T23:00:00Z,,,(0751) 82747
-C-00349,florian.meyer66@outlook.com,Florian,Meyer,0,"Bahnhofstraße 75, 89073 Ulm",DE,false,true,2023-12-11T20:00:00Z,,,+4975174387
-C-00351,lena.wolf13@gmx.de,Lena,Wolf,0,"Marktstraße 74b, 86150 Augsburg",DE,false,true,2021-06-15T07:00:00Z,,,0049 751 63123
-C-00354, julia.braun45@gmx.de ,Julia,Braun,2,"Hauptstraße 21, 70173 Stuttgart",DE,false,false,2020-10-27T15:00:00Z,,,(0751) 43000
-C-00356,nina.mueller83@gmx.de,Nina,Müller,2,"Bahnhofstraße 47, 01067 Dresden",DE,false,true,2020-03-28T10:00:00Z,,,(0751) 84131
-C-00357,sarah.neumann78@gmail.com,Sarah,Neumann,2,"Kirchplatz 93, 3011 Bern",CH,false,false,2023-10-09T10:00:00Z,,,
-C-00359,lukas.werner13@gmail.com,Lukas,Werner,1,"Bahnhofstraße 24a, 1010 Wien",AT,false,false,2021-07-13T13:00:00Z,,,+43557442887
-C-00360,lisa.krause6@t-online.de,Lisa,Krause,2,"Hauptstraße 80, 8400 Winterthur",CH,false,true,2022-06-17T17:00:00Z,,,0041 71 53448
-C-00361,andreas.koehler97@gmx.de,Andreas,Köhler,1,"Gartenstraße 96a, 79098 Freiburg",DE,false,true,2020-04-26T20:00:00Z,,,
-C-00364,andreas.meyer61@web.de,Andreas,Meyer,0,"Ringstraße 43, 88045 Friedrichshafen",DE,false,true,2023-07-12T16:00:00Z,,,
-C-00367,JANA.MUELLER61@GMX.DE,Jana,Müller,2,"Bergstraße 40, 88250 Weingarten",DE,false,false,2019-10-21T11:00:00Z,,,
-C-00370,daniel.hoffmann37@outlook.com,Daniel,Hoffmann,0,"Seestraße  19, 3011 Bern",CH,false,false,2021-04-21T21:00:00Z,,,(071) 20211
-C-00372,katharina.schroeder2@gmail.com,Katharina,Schröder,2,"Lindenweg 47b, 9000 St. Gallen",CH,false,false,2022-09-04T13:00:00Z,,,071/94182
-C-00374,patrick.werner81@gmail.com,Patrick,Werner,1,"Industriestraße 35, 80331 München",DE,false,true,2020-04-10T07:00:00Z,,,
-C-00377,lisa.krause39@gmx.de,Lisa,Krause,2,"Kirchplatz 101a, 90402 Nürnberg",DE,false,true,2020-10-31T20:00:00Z,,,+4975140526
-C-00380,florian.schroeder81@gmx.de,Florian,Schröder,1,"Am Sportplatz 41, 90402 Nürnberg",DE,false,true,2021-11-02T18:00:00Z,,,0751.49112
-C-00381,patrick.schroeder89@outlook.com,Patrick,Schröder,1,"Am Sportplatz 67b, 89073 Ulm",DE,false,true,2019-06-12T10:00:00Z,,,0751.43834
+C-00102,daniel.meyer53@t-online.de,Daniel,Meyer,1,"Lindenweg 76a, 88212 Ravensburg",DE,true,true,2023-01-04T21:00:00Z,,TSV Dartsport Ravensburg e. V.,0049 751 24940
+C-00105,jonas.koch4@t-online.de,Jonas,Koch,1,"Lindenweg 14, 86150 Augsburg",DE,true,false,2019-05-26T14:00:00Z,10206,TSV Steeldarters Augsburg e.V.,0751.86153
+C-00107,max.schneider90@gmx.de,Max,Schneider,1,"Ring-Straße 80, 72072 Tübingen",DE,true,true,2023-06-15T22:00:00Z,10207,SC Bulls Eye Tübingen,+4975134661
+C-00110,petra.schmidt79@outlook.com,Patrick,Lange,1,"Zeppelinstraße 2b, 3011 Bern",CH,true,false,2020-01-04T18:00:00Z,,Dartfreunde Bern e.V.,
+C-00113,anna.schulz51@gmx.de,Anna,Schulz,2,"Kirchplatz 50, 70173 Stuttgart",DE,true,true,2021-03-03T17:00:00Z,10213,Dartsport Stuttgart e.V.,
+C-00116,tobias.meyer60@outlook.com,Tobias,Meyer,1,"Goethe-Straße 54, 01067 Dresden",DE,true,true,2023-03-28T11:00:00Z,,DC Black Arrows Dresden e.V.,0751/69329
+C-00118,petra.richter24@t-online.de,Petra,richter,2,"See-Strasse 88a, 1010 Wien",AT,false,false,2021-10-05T17:00:00Z,,Dart-Lounge,
+C-00121,jonas.koehler36@gmail.com,Jonas,Köhler,1,"Lindenweg 60, 6020 Innsbruck",AT,true,false,2023-06-14T16:00:00Z,,TSV Steeldarters Innsbruck e. V.,05574/82303
+C-00124,claudia.koch97@t-online.de,Claudia,Koch,2,"Bahnhofstraße 3, 6003 Luzern",CH,true,true,2023-08-03T09:00:00Z,,SV Flight Club Luzern e.V.,(071) 31566
+C-00126,jonas.weber96@web.de,Jonas,Weber,1,"Haupt-Straße 18, 90402 Nürnberg",DE,true,false,2023-07-27T23:00:00Z,10228,SC Bulls Eye Nürnberg,(0751) 27140
+C-00129,max.schmidt56@outlook.com,Max,Schmidt,1,"Bahnhof-Straße 104, 8010 Graz",AT,true,false,2021-05-26T16:00:00Z,,SC Dartfreunde Graz e. V.,
+C-00130,lisa.hoffmann46@outlook.com,Anna,Wolf,2,"Schillerstraße 100a, 5020 Salzburg",AT,false,false,2022-09-27T13:00:00Z,,Zum Bulls Eye,05574/98140
+C-00132,anna.neumann62@outlook.com,Anna,Neumann,2,"Bergstraße  109b, 3011 Bern",CH,false,true,2019-06-27T10:00:00Z,10234,Dart-Shop GmbH,(071) 49956
+C-00135,stefan.meyer79@outlook.com,Stefan,Meyer,1,"Schillerstraße 15, 88045 Friedrichshafen",DE,true,true,2021-05-17T12:00:00Z,,SV Dart Devils Friedrichshafen,
+C-00138,daniel.schulz80@web.de,Daniel,Schulz,1,"Bahnhof-Straße 18, 80331 München",DE,true,false,2019-03-29T07:00:00Z,,TSV Black Arrows München e.V.,+4975194715
+C-00140,lena.braun45@t-online.de,Lena,Braun,2,"Am Sportplatz 65, 01067 Dresden",DE,true,true,2019-10-25T19:00:00Z,,SC Red Dragons Dresden,0751/93428
+C-00143,nina.schroeder13@t-online.de,Nina,SCHRÖDER,0,"Hauptstraße 80a, 18055 Rostock",DE,true,false,2020-06-10T23:00:00Z,10242,Triple 20 Rostock e.V.,0751.96264 -16 Hr. Vogel
+C-00144,Michael König <michael.koenig5@outlook.com>,Michael,König,1,"Goethestraße 95, 8010 Graz",AT,false,true,2021-06-28T12:00:00Z,10243,Dart-Shop GmbH,05574/37919
+C-00146,sarah.weber16@gmx.de,Sarah,Weber,2,"Schillerstraße 35a, 88212 Ravensburg",DE,false,false,2023-05-02T08:00:00Z,10247,Gasthaus Weber,0751.52156
+C-00149,sabine.koenig14@gmx.de,Sabine,König,2,"Bergstraße 24, 88045 Friedrichshafen",DE,true,true,2020-08-17T14:00:00Z,,Red Dragons Friedrichshafen e.V.,
+C-00151,jonas.herrmann9@t-online.de,Jonas,Herrmann,0,"Zeppelin-Straße  46, 8001 Zürich",CH,true,true,2020-10-14T18:00:00Z,,SV Triple 20 Zürich e. V.,(071) 65838
+C-00153,tobias.hoffmann35@outlook.com,Tobias,Hoffmann,1,"Schillerstraße 89, 6900 Bregenz",AT,true,true,2019-09-26T15:00:00Z,10254,DC Black Arrows Bregenz,+43557434001
+C-00155,julia.wagner72@gmx.de,Julia,Wagner,2,"Zeppelin-Straße 2b, 3011 Bern",CH,false,true,2020-05-09T18:00:00Z,10255,Zum Bulls Eye,
+C-00158,katharina.koehler97 @ web.de,Katharina,Köhler,2,"Am  Sportplatz 118, 88212 Ravensburg",DE,false,false,2021-02-21T19:00:00Z,,Freizeit-Center GmbH,
+C-00161,claudia.bauer98@t-online.de,Markus,Schneider,1,"Gartenstraße 2b, 86150 Augsburg",DE,true,true,2022-06-15T14:00:00Z,10261,TSV Black Arrows Augsburg e. V.,0751/91773
+C-00163,lukas.schulz47@t-online.de,Lukas,Schulz,1,"Bahnhofstraße 56, 06108 Halle (Saale)",DE,false,false,2019-08-18T22:00:00Z,10264,Zum Bulls Eye,0751.31690
+C-00166,jonas.richter16@gmail.com,Jonas,Richter,1,"Seestraße 49, 04109 Leipzig",DE,true,false,2020-08-09T22:00:00Z,,SC Flight Club Leipzig,0049 751 94035 -16 Hr. Vogel
+C-00168,nix gefunden,Jonas,Schmidt,1,"Am  Sportplatz 6b, 18055 Rostock",DE,false,true,2021-10-14T19:00:00Z,,Gasthaus Schmidt,
+C-00170,tobias.hofmann12@outlook.com.,Tobias,Hofmann,1,"Industriestraße 67, 88212 Ravensburg",DE,false,true,2021-11-19T15:00:00Z,,Dart Store GmbH,
+C-00172,claudia.schneider99@outlook.com,Claudia,Schneider,2,"Kirchplatz 19, 88212 Ravensburg",DE,false,true,2020-08-22T14:00:00Z,,Spielwaren Schneider GmbH,0751.46136 -16 Hr. Vogel
+C-00174,claudia.bauer98@t-online.de,Claudia,Bauer,2,"Bahnhof-Straße 18, 80331 München",DE,false,false,2021-01-20T20:00:00Z,,Dart-Lounge,0751.67167
+C-00175,jonas.wagner1@outlook.com,Jonas,Wagner,1,"Am Sportplatz 67, 90402 Nürnberg",DE,true,false,2020-01-09T17:00:00Z,10277,Dart Devils Nürnberg e. V.,0751.26580
+C-00177,claudia.schmidt41@outlook.com,Claudia,Schmidt,2,"Gartenstraße 19, 88212 Ravensburg",DE,false,false,2022-12-21T13:00:00Z,,Pub Triple Twenty,+4975155242
+C-00178,CLAUDIA.WAGNER81@WEB.DE,Claudia,Wagner,2,"Haupt-Straße  96b, 8010 Graz",AT,false,true,2021-04-21T11:00:00Z,10280,Freizeit-Center,05574.66868
+C-00180,jana.hoffmann79@web.de,Jana,Hoffmann,0,"Lindenweg 62, 06108 Halle (Saale)",DE,true,false,2022-12-31T13:00:00Z,,SV Black Arrows Halle (Saale) e. V.,
+C-00182,anna.zimmermann13@outlook.com,Anna,Zimmermann,2,"Mozartstraße 37, 10115 Berlin",DE,true,true,2019-04-04T20:00:00Z,,SV Steeldarters Berlin e. V.,+4975195025
+C-00184,felix.schwarz37@gmx.de,Felix,Schwarz,1,"Kirchplatz 50, 70173 Stuttgart",DE,false,false,2019-12-04T18:00:00Z,,Pub Triple Twenty,0049 751 36550
+C-00185,markus.weber28@gmx.de,Markus,Weber,0,"Hauptstraße 55, 10115 Berlin",DE,true,true,2020-03-31T17:00:00Z,,Flight Club Berlin,0751/39488
+C-00188,Patrick Weber <patrick.weber3@gmail.com>,Patrick,Weber,1,"Industriestraße 70, 70173 Stuttgart",DE,false,true,2022-09-30T21:00:00Z,10291,Sporthaus Weber GmbH,0751/36407
+C-00191,max.krueger31@t-online.de,Claudia,Koch,0,"Haupt-Straße 26, 79098 Freiburg",DE,false,true,2021-05-13T07:00:00Z,,Kneipe zum Anker,0049 751 55992
+C-00193,stefan.koehler64@gmx.de,Stefan,Köhler,1,"Zeppelinstraße 66a, 80331 München",DE,false,false,2019-10-23T19:00:00Z,10296,Dart-Shop GmbH,
+C-00196, daniel.lehmann94@outlook.com ,Daniel,Lehmann,1,"Mozart-Strasse 14b, 72072 Tübingen",DE,false,false,2022-01-16T19:00:00Z,,Dart-Shop OHG,0049 751 99987
+C-00199,lukas.koehler45@gmail.com,Lukas,Köhler,1,"Industriestraße 59, 79098 Freiburg",DE,true,true,2019-12-11T17:00:00Z,10303,SV Dartfreunde Freiburg e. V.,0751.45127
+C-00200,lukas.koehler5@t-online.de,Lukas,Köhler,1,"Lindenweg 76a, 88212 Ravensburg",DE,false,true,2022-03-04T09:00:00Z,10306,Bistro Köhler,
+C-00203,petra.klein54@web.de,Petra,Klein,2,"Mozartstraße 13, 04109 Leipzig",DE,true,false,2023-12-18T07:00:00Z,,SC Dartsport Leipzig e.V.,+4975156721
+C-00206,tobias.herrmann83@t-online.de,Tobias,Herrmann,1,"Schillerstraße 86, 86150 Augsburg",DE,false,false,2021-03-20T17:00:00Z,,Freizeit-Center e.K.,
+C-00208,tel. bestellen,Katharina,hoffmann,2,"Mozartstraße 37, 10115 Berlin",DE,false,true,2023-06-11T21:00:00Z,,Kneipe zum Anker,+4975144282
+C-00209,petra.koehler88@web.de,Petra,köhler,2,"Ring-Strasse 119, 88250 Weingarten",DE,false,false,2022-12-25T15:00:00Z,,Spielwaren Köhler OHG,
+C-00210,julia.zimmermann77@web.de; buero.julia.zimmermann77@web.de,Julia,Zimmermann,2,"Bahnhof-Strasse 3, 6003 Luzern",CH,false,true,2019-03-13T14:00:00Z,,Kneipe zum Anker,
+C-00211,sabine.krueger11#gmail.com,Sabine,Krüger,2,"Schillerstraße 40, 04109 Leipzig",DE,true,false,2021-05-19T16:00:00Z,10317,SV Dart Devils Leipzig,(0751) 33478
+C-00214,"markus.werner86@gmail.com, buero.markus.werner86@gmail.com",Markus,Werner,1,"Schillerstraße 63, 79098 Freiburg",DE,false,false,2019-06-14T17:00:00Z,,Dart Store GmbH,
+C-00217,felix.krause35@t-online.de,Felix,Krause,1,"Industriestraße  117, 88045 Friedrichshafen",DE,false,true,2020-01-13T08:00:00Z,,Dartwelt GmbH,0049 751 23948
+C-00219,jana.schmidt68@gmx.de,Jana,Schmidt,0,"Bergstraße 37, 3011 Bern",CH,false,true,2023-01-31T08:00:00Z,,Kneipe zum Anker,(071) 58443
+C-00220,max.lehmann86@outlook.com,Max,Lehmann,1,"Mozartstraße 110, 3011 Bern",CH,false,false,2020-04-06T23:00:00Z,,Sport Lehmann GmbH,+417176403
+C-00223,nina.krause90@gmail.com,Nina,Krause,2,"Seestraße 71b, 9000 St. Gallen",CH,true,true,2021-10-13T12:00:00Z,10330,SV Dart Devils St. Gallen e. V.,
+C-00225,felix.hoffmann30@gmail.com,Felix,Hoffmann,1,"Industriestraße 68b, 6900 Bregenz",AT,false,true,2023-12-13T08:00:00Z,,Dart-Lounge,(05574) 48675
+C-00226,michael.braun71@gmx.de,Michael,Braun,1,"Lindenweg 85b, 6900 Bregenz",AT,true,true,2023-04-05T13:00:00Z,10332,Treffpunkt 180 Bregenz e.V.,
+C-00229,katharina.werner54@gmx.de,Katharina,Werner,2,"Marktstraße 35b, 8001 Zürich",CH,false,false,2021-09-11T19:00:00Z,,Dart-Lounge,(071) 38505
+C-00232,claudia.schwarz77@gmail.com,Claudia,Schwarz,2,"Seestraße 81a, 72072 Tübingen",DE,false,true,2022-02-23T12:00:00Z,,Gasthaus Schwarz,(0751) 45329
+C-00234,max.krueger31@t-online.de,Max,Krüger,1,"Zeppelin-Strasse 83, 90402 Nürnberg",DE,false,true,2019-12-25T21:00:00Z,,Bistro Krüger,+4975149993
+C-00235,patrick.hofmann59@gmx.de,Patrick,Hofmann,0,"Bergstraße 39, 86150 Augsburg",DE,true,true,2022-10-09T19:00:00Z,,TSV Dart Devils Augsburg,0049 751 54844
+C-00236,claudia.koehler28@outlook.com,Claudia,Köhler,2,"Schillerstraße 5b, 72072 Tübingen",DE,false,true,2023-05-25T10:00:00Z,,Dartwelt OHG,
+C-00239,lisa.hoffmann46@outlook.com,Lisa,Hoffmann,0,"Schiller-Straße 52, 10115 Berlin",DE,false,false,2020-01-24T13:00:00Z,,Freizeit-Center OHG,
+C-00240,jana.schwarz71@outlook.com,Jana,Schwarz,2,"Bahnhof-Strasse 78, 6900 Bregenz",AT,true,true,2022-07-06T11:00:00Z,,TSV Triple 20 Bregenz,
+C-00242,anna.becker65@t-online.de,Anna,Becker,0,"Schillerstraße 44a, 88250 Weingarten",DE,true,true,2019-05-29T13:00:00Z,,SV Black Arrows Weingarten e.V.,
+C-00244,petra.meyer96@outlook.com,Petra,Meyer,2,"Bergstraße  57, 88212 Ravensburg",DE,false,false,2023-02-04T23:00:00Z,,,0751.37152
+C-00245,Max Wolf <max.wolf80@t-online.de>,Max,Wolf,1,"Mozartstraße 94, 4051 Basel",CH,false,true,2021-08-17T16:00:00Z,,,
+C-00247,nina.becker92@gmail.com,Nina,Becker,2,"Hauptstraße 118, 6003 Luzern",CH,true,false,2019-07-11T07:00:00Z,,SC Dartfreunde Luzern e.V.,
+C-00249,lena.hoffmann66@gmail.com,Lena,Hoffmann,2,"Am  Sportplatz 89b, 10115 Berlin",DE,false,false,2022-10-31T13:00:00Z,,,0049 751 20043
+C-00251,petra.schulz93@outlook.com,Petra,Schulz,0,"Bahnhofstraße 32, 89073 Ulm",DE,false,false,2019-07-13T09:00:00Z,,Pub Triple Twenty,0049 751 26028
+C-00254,petra.schmidt79@outlook.com,Petra,Schmidt,2,"Goethe-Strasse 10a, 86150 Augsburg",DE,false,true,2020-06-17T17:00:00Z,,Pub Triple Twenty,0049 751 45870
+C-00257,nina.wagner62@outlook.com,Nina,Wagner,2,"Gartenstraße  88a, 80331 München",DE,false,true,2020-01-14T16:00:00Z,,,
+C-00258,claudia.koenig70@gmail.com,Claudia,König,2,"Zeppelin-Straße 84a, 88250 Weingarten",DE,false,false,2021-09-01T15:00:00Z,,,0751.86816
+C-00260,tobias.schneider6@web.de,Tobias,Schneider,1,"Kirchplatz 11, 06108 Halle (Saale)",DE,false,true,2022-06-12T14:00:00Z,,,(0751) 64950 oder mobil
+C-00262,tobias.mueller73@gmx.de,Tobias,Müller,1,"Industriestraße 35, 3011 Bern",CH,true,true,2019-07-02T14:00:00Z,,SV Triple 20 Bern e. V.,0041 71 42043
+C-00263,julia.koenig24@gmail.com,Julia,König,2,"Bahnhof-Strasse 17b, 80331 München",DE,false,true,2023-09-28T15:00:00Z,,,0751/79028
+C-00266,nina.becker64@t-online.de,Nina,Becker,2,"Schiller-Strasse 119, 06108 Halle (Saale)",DE,true,true,2022-05-24T19:00:00Z,,DC Bulls Eye Halle (Saale) e.V.,
+C-00267, markus.richter70@t-online.de ,Markus,richter,1,"Schillerstraße 74, 04109 Leipzig",DE,false,true,2022-09-04T12:00:00Z,,,
+C-00270,daniel.hoffmann64@t-online.de,Daniel,Hoffmann,1,"Haupt-Straße 25b, 88212 Ravensburg",DE,false,false,2019-10-02T20:00:00Z,,Sportsbar 180,(0751) 29806
+C-00272,max.wolf98@web.de,Max,Wolf,1,"Kirchplatz 95, 70173 Stuttgart",DE,true,true,2022-06-01T17:00:00Z,,Bulls Eye Stuttgart e.V.,
+C-00273,andreas.schulz14@t-online.de,Andreas,Schulz,1,"Garten-Straße 44, 86150 Augsburg",DE,true,true,2019-03-01T09:00:00Z,,DC Flight Club Augsburg,+4975184889
+C-00276,julia.schneider46@web.de,Julia,Schneider,0,"Zeppelinstraße 43a, 86150 Augsburg",DE,false,true,2020-10-18T07:00:00Z,,,+4975139031
+C-00279,tobias.schroeder65@gmail.com;,Tobias,Schröder,1,"Kirchplatz 7, 10115 Berlin",DE,false,true,2023-07-28T10:00:00Z,,,
+C-00280,anna.fischer60@outlook.com,Anna,Fischer,2,"Markt-Strasse 85, 06108 Halle (Saale)",DE,true,true,2021-01-18T14:00:00Z,,DC Red Dragons Halle (Saale),
+C-00281,daniel.schmidt53@gmail.com,Daniel,Schmidt,0,"Marktstraße 82, 01067 Dresden",DE,false,true,2021-06-14T17:00:00Z,,,
+C-00283,lisa.becker36@t-online.de,Lisa,Becker,2,"Am Sportplatz 86, 88250 Weingarten",DE,true,true,2020-04-10T15:00:00Z,,SC Red Dragons Weingarten e.V.,0751.22783
+C-00284,lukas.koch60@gmx.de,Lukas,Koch,1,"Schillerstraße 110, 3011 Bern",CH,true,false,2019-06-02T21:00:00Z,,Steeldarters Bern e.V.,
+C-00285,keine Mails!,Petra,Lehmann,2,"Seestraße 109a, 8001 Zürich",CH,true,true,2022-10-06T18:00:00Z,,Dart Devils Zürich,
+C-00286,julia.herrmann68@outlook.com,Julia,Herrmann,2,"Bahnhofstraße 69, 89073 Ulm",DE,false,true,2020-07-22T16:00:00Z,,,
+C-00288,anna.lange35 @ gmail.com,Anna,Lange,2,"Bahnhof-Strasse 59, 01067 Dresden",DE,false,true,2021-02-04T12:00:00Z,,,+4975179413
+C-00291,sarah.schwarz6@outlook.com,Sarah,Schwarz,2,"Garten-Straße 29a, 9000 St. Gallen",CH,true,false,2021-05-30T18:00:00Z,,Black Arrows St. Gallen e.V.,
+C-00293,tobias.schroeder97@gmx.de,Tobias,Schröder,1,"Schiller-Strasse 78, 18055 Rostock",DE,true,true,2022-02-12T23:00:00Z,,SC Dartsport Rostock e.V.,
+C-00294,jonas.herrmann67@web.de,Jonas,Herrmann,1,"Bahnhofstraße 24, 8400 Winterthur",CH,true,false,2023-08-15T23:00:00Z,,DC Red Dragons Winterthur e.V.,0041 71 59836
+C-00296, petra.becker45@gmx.de ,Petra,Becker,2,"See-Strasse 97a, 6003 Luzern",CH,true,true,2020-11-04T16:00:00Z,,TSV Triple 20 Luzern,0041 71 47599
+C-00297,daniel.werner21@gmx.de,Daniel,Werner,1,"Bahnhof-Straße 22, 89073 Ulm",DE,true,true,2021-05-10T12:00:00Z,,SC Dartfreunde Ulm e. V.,
+C-00299,nina.neumann81@t-online.de,Nina,Neumann,2,"Goethestraße 119b, 88212 Ravensburg",DE,false,true,2023-01-30T20:00:00Z,,,0751.30169
+C-00300,laura.schmidt88@web.de,Laura,Schmidt,2,"Schillerstraße 23, 88212 Ravensburg",DE,true,true,2019-10-11T18:00:00Z,,Triple 20 Ravensburg e.V.,(0751) 61504
+C-00303,florian.krueger26@web.de,Florian,Krüger,1,"Industrie-Straße 50, 79098 Freiburg",DE,false,true,2019-03-02T20:00:00Z,,,0751.39907
+C-00306,tobias.schneider75@gmx.de,Tobias,schneider,1,"Lindenweg 57b, 10115 Berlin",DE,false,false,2023-11-27T14:00:00Z,,,0049 751 22221
+C-00308,lukas.koehler5@t-online.de,Laura,Schwarz,2,"Haupt-Straße 93, 70173 Stuttgart",DE,true,true,2020-10-21T12:00:00Z,,SC Red Dragons Stuttgart e. V.,(0751) 98794
+C-00309,claudia.weber38@outlook.com,Claudia,Weber,2,"Bahnhof-Straße 96, 72072 Tübingen",DE,true,true,2023-01-20T08:00:00Z,,SV Dartsport Tübingen e.V.,+4975126770
+C-00310,tobias.schwarz35@t-online.de,Tobias,Schwarz,1,"Industrie-Straße 100, 10115 Berlin",DE,true,false,2020-08-05T11:00:00Z,,SC Dart Devils Berlin e.V.,+4975179604
+C-00313,jonas.schwarz51@gmx.de,Jonas,Schwarz,1,"Goethestraße 47a, 06108 Halle (Saale)",DE,false,false,2023-01-04T17:00:00Z,,,
+C-00315,max.richter1@web.de,Max,Richter,1,"Lindenweg 19, 4051 Basel",CH,true,false,2022-11-26T23:00:00Z,,SC Steeldarters Basel e. V.,+417139915
+C-00317,sarah.braun30@gmail.com,Sarah,Braun,2,"Zeppelin-Straße 71, 18055 Rostock",DE,true,false,2022-06-25T16:00:00Z,,SC Flight Club Rostock e.V.,+4975156590
+C-00318,max.bauer42@gmx.de,Max,BAUER,0,"Hauptstraße 4a, 6900 Bregenz",AT,false,false,2023-02-19T12:00:00Z,,,
+C-00321,florian.neumann39@web.de,Florian,Neumann,1,"Bergstraße 3, 18055 Rostock",DE,false,false,2023-01-26T19:00:00Z,,,(0751) 24731
+C-00324,jonas.neumann44outlook.com,Jonas,Neumann,1,"Ringstraße 90, 70173 Stuttgart",DE,false,false,2021-10-07T21:00:00Z,,,0751.60756
+C-00325,laura.herrmann79@gmail.com,Laura,Herrmann,2,"Zeppelinstraße 78b, 79098 Freiburg",DE,false,false,2019-01-01T15:00:00Z,,,(0751) 25576
+C-00326,daniel.mueller84@outlook.com,Daniel,Müller,1,"Goethestraße 40a, 01067 Dresden",DE,false,true,2023-05-24T08:00:00Z,,,0751.71392
+C-00327,markus.becker78@gmx.de,Markus,Becker,1,"Bergstraße 38a, 70173 Stuttgart",DE,false,true,2022-06-23T16:00:00Z,,,+4975124080
+C-00329,markus.richter80@t-online.de,Markus,Richter,0,"Lindenweg 81, 06108 Halle (Saale)",DE,false,false,2020-02-06T14:00:00Z,,,
+C-00332,markus.schulz54@gmx.de,Markus,Schulz,1,"Marktstraße 11a, 80331 München",DE,false,false,2022-11-24T12:00:00Z,,,0049 751 97740
+C-00333,lena.fischer68@t-online.de,Lena,Fischer,0,"Goethestraße 27, 90402 Nürnberg",DE,false,false,2021-01-07T09:00:00Z,,,+4975150097
+C-00336,florian.wagner81@gmx.de,Florian,Wagner,1,"Goethestraße 109, 06108 Halle (Saale)",DE,false,false,2019-11-20T08:00:00Z,,,+4975147430
+C-00339,julia.werner77@outlook.com,Julia,Werner,2,"Industriestraße 109b, 88250 Weingarten",DE,false,false,2022-10-13T17:00:00Z,,,(0751) 96376
+C-00341,LUKAS.LEHMANN67@GMAIL.COM,Lukas,Lehmann,1,"Mozartstraße 65, 10115 Berlin",DE,false,true,2020-11-13T22:00:00Z,,,0049 751 33032
+C-00343,max.schwarz16@gmx.de,Max,Schwarz,1,"Marktstraße 108, 89073 Ulm",DE,false,false,2019-03-07T22:00:00Z,,,0049 751 69315
+C-00346,tobias.meyer94@outlook.com,Tobias,Meyer,1,"Goethestraße 89a, 9000 St. Gallen",CH,false,true,2022-03-17T22:00:00Z,,,
+C-00348,nix gefunden,Sarah,Wagner,2,"Zeppelinstraße 119b, 86150 Augsburg",DE,false,false,2020-02-06T15:00:00Z,,,(0751) 54963
+C-00350,anna.krueger25@web.de,Anna,Krüger,0,"Bahnhofstraße  91, 04109 Leipzig",DE,false,false,2023-02-12T07:00:00Z,,,+4975127173
+C-00352,laura.becker72@t-online.de,Laura,Becker,2,"Lindenweg 13, 3011 Bern",CH,false,false,2020-01-06T09:00:00Z,,,071.74118
+C-00354,tobias.meyer7@gmx.de,Tobias,Meyer,1,"Bergstraße 58, 88045 Friedrichshafen",DE,false,true,2022-05-26T17:00:00Z,,,+4975194557
+C-00356,katharina.koehler97@gmx.de,Katharina,Köhler,2,"Ringstraße 75, 88250 Weingarten",DE,false,true,2022-06-10T14:00:00Z,,,
+C-00359,lukas.krueger66@web.de,Lukas,Krüger,1,"Kirchplatz 9, 18055 Rostock",DE,false,false,2021-09-04T21:00:00Z,,,
+C-00361,patrick.richter56@t-online.de,Patrick,Richter,1,"Gartenstraße 104b, 5020 Salzburg",AT,false,true,2022-01-27T07:00:00Z,,,
+C-00362,mailto:sarah.jaeger5@web.de,Sarah,Jäger,2,"Goethestraße 16, 10115 Berlin",DE,false,false,2019-01-12T17:00:00Z,,,
+C-00363,florian.krueger56@outlook.com,Florian,Krüger,1,"Seestraße  108b, 89073 Ulm",DE,false,true,2020-06-17T18:00:00Z,,,0049 751 96986
+C-00366, tobias.koch8@gmx.de ,Tobias,Koch,1,"Bergstraße 28b, 6900 Bregenz",AT,false,true,2019-02-03T18:00:00Z,,,
+C-00367,mailto:sarah.meyer97@web.de,Sarah,Meyer,2,"Bergstraße 33, 6003 Luzern",CH,false,true,2019-08-21T13:00:00Z,,,+417165413
+C-00370,jana.becker37@outlook.com,Jana,Becker,2,"Am Sportplatz 75, 88250 Weingarten",DE,false,false,2021-07-09T08:00:00Z,,,
+C-00371,florian.wagner70@gmail.com,Florian,Wagner,1,"Zeppelinstraße 21, 6003 Luzern",CH,false,true,2022-08-12T21:00:00Z,,,071/77937
+C-00372,tobias.schwarz83(at)t-online.de,Tobias,Schwarz,1,"Industriestraße  7b, 88212 Ravensburg",DE,false,false,2020-04-16T19:00:00Z,,,0751.22922
+C-00373,katharina.schwarz63@gmail.com,Katharina,Schwarz,2,"Zeppelinstraße 3b, 80331 München",DE,false,false,2019-06-22T09:00:00Z,,,
+C-00376,max.schroeder19@outlook.com,Max,Schröder,1,"Bahnhofstraße 4a, 86150 Augsburg",DE,false,false,2019-11-23T21:00:00Z,,,0751.21983
+C-00378,julia.hofmann13@outlook.com,Julia,hofmann,2,"Ringstraße 10a, 06108 Halle (Saale)",DE,false,true,2020-03-16T16:00:00Z,,,
+C-00379,sabine.schroeder57@gmx.de,Sabine,Schröder,2,"Mozartstraße 8, 9000 St. Gallen",CH,false,true,2022-09-23T13:00:00Z,,,(071) 76639
+C-00381,tobias.neumann30@gmx.de,Tobias,Neumann,1,"Hauptstraße 58, 10115 Berlin",DE,false,false,2023-09-11T13:00:00Z,,,0751.28688
+C-00382,sarah.wagner71@gmx.de,Sarah,Wagner,2,"Bergstraße 55, 10115 Berlin",DE,false,false,2023-11-22T08:00:00Z,,,0049 751 62788
+C-00383,felix.schulz11@outlook.com,Felix,Schulz,1,"Kirchplatz 10, 5020 Salzburg",AT,false,true,2021-01-19T15:00:00Z,,,(05574) 58115
+C-00386,nina.bauer64@outlook.com,Nina,Bauer,2,"Industriestraße 17, 70173 Stuttgart",DE,false,false,2020-12-27T14:00:00Z,,,0049 751 37284
+C-00388,markus.hofmann45@gmail.com,Markus,Hofmann,1,"Zeppelinstraße  52, 80331 München",DE,false,true,2021-01-05T12:00:00Z,,,+4975193217
+C-00390,michael.jaeger53@t-online.de,Michael,Jäger,1,"Ringstraße 88, 80331 München",DE,false,false,2019-05-23T09:00:00Z,,,(0751) 45209
+C-00393,claudia.schneider65@web.de,Claudia,Schneider,2,"Goethestraße 31, 4051 Basel",CH,false,true,2020-12-17T19:00:00Z,,,(071) 54143
+C-00394,michael.hofmann59@t-online.de,Michael,Hofmann,1,"Kirchplatz 107a, 8001 Zürich",CH,false,true,2021-12-12T10:00:00Z,,,+417185594
+C-00395,nina.herrmann11@gmail.com; buero.nina.herrmann11@gmail.com,Nina,Herrmann,2,"Mozartstraße 32a, 70173 Stuttgart",DE,false,true,2019-06-13T12:00:00Z,,,(0751) 56112
+C-00397,stefan.lange5@t-online.de,Stefan,LANGE,1,"Schillerstraße 97b, 72072 Tübingen",DE,false,true,2019-06-27T10:00:00Z,,,
+C-00399, anna.weber23@outlook.com ,Anna,Weber,2,"Bergstraße 88, 88212 Ravensburg",DE,false,false,2023-10-22T13:00:00Z,,,0751.55522
+C-00400,markus.braun70 @ web.de,Markus,Braun,1,"Industriestraße 82b, 06108 Halle (Saale)",DE,false,true,2022-03-24T10:00:00Z,,,0751/74061
+C-00401,anna.lehmann33@gmx.de,Anna,LEHMANN,2,"Kirchplatz 119, 1010 Wien",AT,false,false,2021-04-01T17:00:00Z,,,(05574) 43515
+C-00402,nina.jaeger95@outlook.com,Nina,Jäger,2,"Bahnhofstraße 19b, 3011 Bern",CH,false,false,2021-02-27T15:00:00Z,,,071/33897
+C-00404,markus.koehler48@gmail.com,Markus,Köhler,1,"Kirchplatz 97b, 72072 Tübingen",DE,false,false,2023-12-10T10:00:00Z,,,
+C-00407,claudia.schroeder27@gmail.com,Claudia,Schröder,2,"Hauptstraße 113, 06108 Halle (Saale)",DE,false,true,2020-07-30T18:00:00Z,,,
+C-00410,felix.lange71@outlook.com,Felix,Lange,0,"Ringstraße 4, 5020 Salzburg",AT,false,true,2023-04-06T23:00:00Z,,,
+C-00411,lena.weber45@outlook.com,Lena,Weber,2,"Am Sportplatz 35, 72072 Tübingen",DE,false,true,2020-05-12T09:00:00Z,,,
+C-00412,lena.neumann9@outlook.com,Lena,Neumann,2,"Schillerstraße 51, 79098 Freiburg",DE,false,true,2020-08-19T15:00:00Z,,,0049 751 63937
+C-00414,petra.neumann33@outlook.com,Petra,Neumann,2,"Bergstraße 101, 6003 Luzern",CH,false,true,2020-08-11T16:00:00Z,,,0041 71 41563 (Durchwahl 22)
+C-00415,claudia.koch82@web.de,Claudia,Koch,2,"Kirchplatz 50, 80331 München",DE,false,true,2021-02-01T22:00:00Z,,,(0751) 34897
+C-00416,claudia.schwarz67@t-online.de,Claudia,Schwarz,0,"Kirchplatz 17, 88045 Friedrichshafen",DE,false,false,2021-03-17T11:00:00Z,,,0049 751 25130
+C-00417,nina.schulz78@web.de,Nina,Schulz,2,"Am Sportplatz 73, 70173 Stuttgart",DE,false,true,2019-04-03T15:00:00Z,,,
+C-00420,lena.hoffmann44@web.de,Lena,Hoffmann,2,"Goethestraße 67, 89073 Ulm",DE,false,true,2023-04-01T19:00:00Z,,,
+C-00421,michael.werner88@outlook.com,Michael,Werner,1,"Am Sportplatz 111, 79098 Freiburg",DE,false,true,2021-01-11T10:00:00Z,,,0751/26540
+C-00424,LISA.ZIMMERMANN34@OUTLOOK.COM,Lisa,Zimmermann,2,"Mozartstraße 53, 10115 Berlin",DE,false,false,2022-05-14T08:00:00Z,,,0751/93390
+C-00426,michael.neumann8@gmx.de,Michael,Neumann,1,"Goethestraße 93, 8400 Winterthur",CH,false,false,2023-09-10T20:00:00Z,,,0041 71 40947
+C-00429,lukas.hofmann75@outlook.com,Lukas,Hofmann,1,"Am Sportplatz 93, 90402 Nürnberg",DE,false,false,2020-06-23T08:00:00Z,,,+4975182215
+C-00432,tobias.hofmann59@web.de,Tobias,Hofmann,0,"Hauptstraße 74, 88212 Ravensburg",DE,false,false,2022-07-09T19:00:00Z,,,+4975153225
+C-00434,laura.schwarz88@gmx.de,Laura,Schwarz,2,"Bergstraße 72, 8010 Graz",AT,false,true,2020-01-06T15:00:00Z,,,05574.52806
+C-00435,nina.richter36@gmail.com,Nina,Richter,2,"Kirchplatz 51b, 01067 Dresden",DE,false,true,2019-07-02T15:00:00Z,,,0049 751 92098
+C-00436,lena.meyer3@gmx.de,Lena,Meyer,0,"Bergstraße 21, 70173 Stuttgart",DE,false,false,2023-04-28T07:00:00Z,,,(0751) 30964
+C-00438,sabine.braun87@t-online.de,Sabine,Braun,2,"Am  Sportplatz 96, 6900 Bregenz",AT,false,true,2019-11-13T17:00:00Z,,,
+C-00440,jonas.richter33@outlook.com,Jonas,Richter,1,"Bahnhofstraße 26b, 9000 St. Gallen",CH,false,true,2021-02-26T22:00:00Z,,,071/77877
+C-00443,michael.wolf15@t-online.de,Michael,Wolf,1,"Industriestraße 24a, 04109 Leipzig",DE,false,true,2020-01-29T16:00:00Z,,,0751/41277
+C-00445,mailto:sabine.richter81@gmx.de,Sabine,Richter,0,"Goethestraße 23b, 79098 Freiburg",DE,false,true,2023-08-03T22:00:00Z,,,0049 751 75038
+C-00447,jana.lange45@web.de,Jana,Lange,2,"Ringstraße 54, 80331 München",DE,false,false,2020-03-19T10:00:00Z,,,+4975155531
+C-00448,florian.fischer84 @ gmail.com,Florian,Fischer,1,"Ringstraße 35, 88045 Friedrichshafen",DE,false,false,2022-10-31T16:00:00Z,,,
+C-00449,sabine.mueller4@web.de,Sabine,Müller,0,"Gartenstraße 120b, 8010 Graz",AT,false,false,2022-01-01T20:00:00Z,,,(05574) 53611
+C-00450,katharina.koch33@gmail.com,Katharina,Koch,0,"Hauptstraße 61, 04109 Leipzig",DE,false,true,2020-09-18T23:00:00Z,,,
+C-00452,claudia.meyer89@gmail.com,Claudia,Meyer,2,"Gartenstraße 75, 10115 Berlin",DE,false,false,2022-07-02T21:00:00Z,,,0751.48714
+C-00455,felix.mueller91@outlook.com,Felix,Müller,1,"Bergstraße 114, 04109 Leipzig",DE,false,true,2023-03-03T11:00:00Z,,,
+C-00458,jonas.schmidt51@outlook.com,Jonas,schmidt,1,"Schillerstraße 104, 70173 Stuttgart",DE,false,false,2022-06-10T17:00:00Z,,,
+C-00461,mailto:stefan.lehmann34@gmail.com,Stefan,Lehmann,1,"Bahnhofstraße  97a, 06108 Halle (Saale)",DE,false,false,2020-04-26T08:00:00Z,,,
+C-00463,markus.krause85@gmail.com,Markus,Krause,1,"Industriestraße 28, 9000 St. Gallen",CH,false,true,2023-08-26T19:00:00Z,,,071/29776
+C-00466,jana.hoffmann64@gmx.de,Jana,Hoffmann,2,"Goethestraße 26b, 72072 Tübingen",DE,false,false,2019-06-25T16:00:00Z,,,0751.57910
+C-00469,michael.hofmann61@t-online.de,Michael,Hofmann,1,"Lindenweg 44a, 88250 Weingarten",DE,false,false,2023-05-02T23:00:00Z,,,
+C-00470,lukas.mueller90@gmail.com; buero.lukas.mueller90@gmail.com,Lukas,Müller,0,"Ringstraße 38, 10115 Berlin",DE,false,false,2020-01-28T17:00:00Z,,,
+C-00472,julia.zimmermann6@gmail.com,Julia,Zimmermann,2,"Mozartstraße 22, 18055 Rostock",DE,false,true,2019-06-04T22:00:00Z,,,(0751) 70428
+C-00473,petra.koenig24@gmx.de,Petra,König,2,"Schillerstraße 72, 1010 Wien",AT,false,false,2019-08-31T15:00:00Z,,,
+C-00476,lukas.krueger50@outlook.com,Lukas,Krüger,1,"Lindenweg 100, 80331 München",DE,false,true,2019-11-27T15:00:00Z,,,0751/57183
+C-00477,daniel.herrmann36@outlook.com,Daniel,Herrmann,1,"Bahnhofstraße 51b, 6900 Bregenz",AT,false,false,2020-12-04T09:00:00Z,,,05574.96940
+C-00480,julia.krause20@t-online.de,Julia,Krause,2,"Mozartstraße  47, 04109 Leipzig",DE,false,true,2022-01-17T09:00:00Z,,,0751.63678
+C-00482,michael.schmidt98@outlook.com,Michael,SCHMIDT,1,"Am Sportplatz 69, 9000 St. Gallen",CH,false,false,2022-09-17T16:00:00Z,,,
+C-00483,patrick.werner79@gmail.com,Patrick,Werner,0,"Bahnhofstraße 53, 70173 Stuttgart",DE,false,false,2021-03-24T09:00:00Z,,,0751.39860
+C-00484,michael.herrmann28(at)web.de,Michael,Herrmann,1,"Bergstraße 78a, 04109 Leipzig",DE,false,true,2021-06-19T11:00:00Z,,,
+C-00485,claudia.koehler95@gmail.com,Claudia,Köhler,2,"Lindenweg 95, 04109 Leipzig",DE,false,false,2019-02-13T13:00:00Z,,,(0751) 24649
+C-00486,daniel.schwarz44@web.de,Daniel,Schwarz,0,"Seestraße 99b, 10115 Berlin",DE,false,true,2021-08-01T08:00:00Z,,,0751.50036
+C-00488,laura.zimmermann74@t-online.de,Laura,Zimmermann,2,"Bahnhofstraße 72, 01067 Dresden",DE,false,false,2023-08-08T14:00:00Z,,,
+C-00491,markus.werner36@t-online.de,Markus,Werner,1,"Kirchplatz 40b, 6020 Innsbruck",AT,false,false,2020-02-22T17:00:00Z,,,
+C-00494,markus.lehmann50@gmx.de,Markus,Lehmann,1,"Bergstraße 33, 4020 Linz",AT,false,false,2020-11-30T14:00:00Z,,,
+C-00495,claudia.schroeder78@t-online.de,Claudia,Schröder,2,"Industriestraße 24b, 3011 Bern",CH,false,true,2020-03-17T10:00:00Z,,,(071) 30880
+C-00497,markus.klein55(at)gmx.de,Markus,Klein,0,"Bahnhofstraße 45, 90402 Nürnberg",DE,false,true,2021-08-09T09:00:00Z,,,0751/52650
+C-99999,test@test.de,Test,Test,0,"Teststr. 1, 12345 Teststadt",DE,false,false,2022-01-01T10:00:00Z,,,

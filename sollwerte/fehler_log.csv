@@ -1,0 +1,319 @@
+Quelle;Tabelle;ID;Fehlertyp
+CRM;Accounts;05246015-107b-11f4-4c38-c03edf4c4de2;Land-Variante
+CRM;Accounts;0a6e6ea3-2c64-aed5-3372-bd58123ae19b;PLZ passt nicht zum Land
+CRM;Accounts;0c2d420c-78cc-0d45-a691-2c85756d4d78;Sammel-E-Mail (zwei Kunden, ein Postfach)
+CRM;Accounts;0e2b1953-ef39-6f11-32e0-3da997471b60;Sammel-E-Mail (zwei Kunden, ein Postfach)
+CRM;Accounts;114096bc-4d18-1b08-8aef-17fa10d40f98;Telefon mit Text
+CRM;Accounts;15d778f4-d8c9-aff5-10a6-6fc24c1af518;Dublette im CRM
+CRM;Accounts;160d23c2-18e7-ac1c-e92c-db5018408256;PLZ fehlt
+CRM;Accounts;165441d8-52d8-72e9-f7e1-2583969353f7;Betreuer nicht auflösbar (Fremdschlüssel per Name)
+CRM;Accounts;165441d8-52d8-72e9-f7e1-2583969353f7;PLZ fehlt
+CRM;Accounts;184c104e-9c79-bb8b-177e-5f3d7efefb61;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;184c104e-9c79-bb8b-177e-5f3d7efefb61;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;1a13054e-3ae3-3c94-e561-b54ef14b14e3;Betreuer nicht auflösbar (Fremdschlüssel per Name)
+CRM;Accounts;1a13054e-3ae3-3c94-e561-b54ef14b14e3;Sammel-E-Mail (zwei Kunden, ein Postfach)
+CRM;Accounts;1cebf0b6-707a-f103-cf45-5923576de3a8;Telefon mit Text
+CRM;Accounts;2217d979-df78-2f78-ae5f-763b3b88c92d;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;231d8181-5c9b-0525-d54c-3768f39c1a7d;Felder vertauscht (Straße/Hausnr)
+CRM;Accounts;26db7654-c215-af43-0393-302cf7aff6c4;PLZ mit Länderpräfix
+CRM;Accounts;26db7654-c215-af43-0393-302cf7aff6c4;Privatkunde nur im Firmenfeld
+CRM;Accounts;2823893f-accd-3010-e4a1-268bd5c430af;Land fehlt
+CRM;Accounts;2868ca4c-4329-eb8e-a405-bb6393e3c8a7;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;297403a2-d1b2-5e69-1c67-ce59e44bd1e4;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;2c77263c-5ef9-d0c5-022e-a16797fa0884;Dublette im CRM
+CRM;Accounts;2dd5c70d-8e62-6f82-a1b2-22fbaae0fb6e;gleiche Adresse wie anderer Kunde (Vereinsheim)
+CRM;Accounts;2df1f2ef-5b46-6b1e-20fd-6903f3e89d22;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;3117e53c-36e9-c3c7-a9d7-5a1ae0cd8bf4;PLZ fehlt
+CRM;Accounts;32df81c3-3e62-9103-6c4d-3b1ab78b3926;gleiche Adresse wie anderer Kunde (Vereinsheim)
+CRM;Accounts;32f71156-a27b-37b8-451e-1a3975e798d5;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;34a0c1c6-fc89-ffb9-7604-1c58b328c5e4;Betreuer nicht auflösbar (Fremdschlüssel per Name)
+CRM;Accounts;34a0c1c6-fc89-ffb9-7604-1c58b328c5e4;Felder vertauscht (Straße/Hausnr)
+CRM;Accounts;376b5a8f-a2c8-0c8e-adfe-84af4b244d8a;PLZ mit Länderpräfix
+CRM;Accounts;38e16fa7-ca0a-6d75-7c51-a65c538505c1;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;38e16fa7-ca0a-6d75-7c51-a65c538505c1;Land-Variante
+CRM;Accounts;392ade85-6b96-3eb7-21fe-640fe9537524;Telefon mit Text
+CRM;Accounts;406ba15c-447f-baea-4682-4175792d88e9;Fremdschlüssel ERP_KdNr mit Tippfehler
+CRM;Accounts;4191d71b-bc2d-03fc-1e34-f9d8544fd697;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;43e7f95b-eb86-bd22-fa82-812d9d6d8cda;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;43e7f95b-eb86-bd22-fa82-812d9d6d8cda;Telefon mit Text
+CRM;Accounts;45a32e1f-aed0-e0f0-d283-523dfd52295f;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;45a32e1f-aed0-e0f0-d283-523dfd52295f;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;49c3108f-f577-63a7-7041-225be49720a9;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;4ee3a40d-abd9-c99b-966c-d7abd758cf16;Dublette im CRM
+CRM;Accounts;5064a7f6-1bc6-a8d3-620c-86e695753235;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;5064a7f6-1bc6-a8d3-620c-86e695753235;Felder vertauscht (Straße/Hausnr)
+CRM;Accounts;5064a7f6-1bc6-a8d3-620c-86e695753235;Land-Variante
+CRM;Accounts;5064a7f6-1bc6-a8d3-620c-86e695753235;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;50bc903d-2949-4405-5d56-a82efe5bfc42;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;50bc903d-2949-4405-5d56-a82efe5bfc42;Land fehlt
+CRM;Accounts;50bc903d-2949-4405-5d56-a82efe5bfc42;gleiche Adresse wie anderer Kunde (Vereinsheim)
+CRM;Accounts;54d5d9eb-64fe-64de-af09-a67c35c80659;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;54d5d9eb-64fe-64de-af09-a67c35c80659;Land-Variante
+CRM;Accounts;55be0572-08fe-8137-3f2b-e7a2a50de4db;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;55be0572-08fe-8137-3f2b-e7a2a50de4db;Sammel-E-Mail (zwei Kunden, ein Postfach)
+CRM;Accounts;59d8ca0e-a9d5-6c27-f6fe-5d1c0aac4060;PLZ als Zahl (Excel-Artefakt, führende Null fehlt)
+CRM;Accounts;59df4811-8874-c440-2c3d-d0b97ec62914;Betreuer nicht auflösbar (Fremdschlüssel per Name)
+CRM;Accounts;5aee4f0d-c478-bb5d-a446-e4f92da4cf3b;Sammel-E-Mail (zwei Kunden, ein Postfach)
+CRM;Accounts;5b618e0e-c5a9-5cc8-7de0-29b39f66ffa5;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;609c0d74-f4c3-9612-caa4-421f81b58e48;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;62ec9fd6-6552-216e-8426-6b97c644d0cc;Telefon mit Text
+CRM;Accounts;6528391f-288e-fed6-a47c-3dd26c2ff95b;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;66b0f95b-ca74-d177-1d2d-00c4e941f7eb;Privatkunde nur im Firmenfeld
+CRM;Accounts;6cb5f817-9834-8dfa-fc4a-8700b60886e4;Land-Variante
+CRM;Accounts;6e097165-2839-104f-088c-9a12989576df;Betreuer nicht auflösbar (Fremdschlüssel per Name)
+CRM;Accounts;6e097165-2839-104f-088c-9a12989576df;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;6e097165-2839-104f-088c-9a12989576df;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;75020b2d-693a-7b75-c0c8-231315a8b03b;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;75020b2d-693a-7b75-c0c8-231315a8b03b;gleiche Adresse wie anderer Kunde (Vereinsheim)
+CRM;Accounts;75ebfed6-e976-9fb3-c29f-b5da284f763d;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;77843665-94bf-1466-ebd0-df59ca74e5a5;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;78726b8b-92e3-5757-2b5e-c4fe4c1b4f64;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;78726b8b-92e3-5757-2b5e-c4fe4c1b4f64;Land-Variante
+CRM;Accounts;78726b8b-92e3-5757-2b5e-c4fe4c1b4f64;PLZ mit Länderpräfix
+CRM;Accounts;7cd24ade-2736-4f7a-ca7e-2bf7b5b274f5;Land-Variante
+CRM;Accounts;7cd24ade-2736-4f7a-ca7e-2bf7b5b274f5;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;7d7ab3fe-132c-2b13-ce6d-1889fed2e413;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;7f58e58b-3805-1326-c9f5-dbf7c02c2eb6;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;7f58e58b-3805-1326-c9f5-dbf7c02c2eb6;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;836010a5-82df-ce66-819b-c543eb6f4530;Dublette im CRM
+CRM;Accounts;858734e5-f417-dfbe-e32b-93d0ebeb77ee;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;858734e5-f417-dfbe-e32b-93d0ebeb77ee;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;858734e5-f417-dfbe-e32b-93d0ebeb77ee;Privatkunde nur im Firmenfeld
+CRM;Accounts;85cdb8ba-7b53-8c42-4a9e-9354919f8fd1;Land fehlt
+CRM;Accounts;85cdb8ba-7b53-8c42-4a9e-9354919f8fd1;PLZ passt nicht zum Land
+CRM;Accounts;8748a957-b428-b83c-9a48-78e8d4918b22;Privatkunde nur im Firmenfeld
+CRM;Accounts;88e85978-9366-de19-37cd-4c37ea3c31f5;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;8d3dfdc3-70fc-6573-9fea-cff071287552;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;8d3dfdc3-70fc-6573-9fea-cff071287552;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;8d3dfdc3-70fc-6573-9fea-cff071287552;Sammel-E-Mail (zwei Kunden, ein Postfach)
+CRM;Accounts;8e23988c-6170-dc57-7af4-282636336417;Privatkunde nur im Firmenfeld
+CRM;Accounts;8e23988c-6170-dc57-7af4-282636336417;Telefon mit Text
+CRM;Accounts;916c0472-bd7c-3ec5-706b-bf9f0f6f41ab;Sperrvermerk im Firmenfeld
+CRM;Accounts;919483ba-0129-c6c9-4501-007d3a934117;Sammel-E-Mail (zwei Kunden, ein Postfach)
+CRM;Accounts;96ea9404-a70d-c19c-646a-76bfc1fa71c2;Sammel-E-Mail (zwei Kunden, ein Postfach)
+CRM;Accounts;9760a9f0-b692-1560-abb4-83a264a7cb38;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;9ffa99eb-429a-d913-c39b-7c5973dcee62;PLZ passt nicht zum Land
+CRM;Accounts;a0ee2b1e-fbd4-e799-c533-37a237b37aa7;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;a23d95b7-fe69-c1a1-04b9-cc29c6ecec2f;Betreuer nicht auflösbar (Fremdschlüssel per Name)
+CRM;Accounts;a358cd26-c0d3-80ef-90b3-5b8aefc354e6;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;a7ad3c41-41f4-e950-101c-2439066f54df;Dublette im CRM
+CRM;Accounts;ace16d6e-bbf9-8a78-2b9a-6382b479aae2;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;ace16d6e-bbf9-8a78-2b9a-6382b479aae2;Telefon mit Text
+CRM;Accounts;b15fd244-860f-4eda-5e43-21fb986c91c6;Land-Variante
+CRM;Accounts;b5a59156-bd91-9ddd-0ccd-a98643e6101f;Land fehlt
+CRM;Accounts;b696dced-2953-7c64-b1bf-d7bfb26b08af;Fremdschlüssel ERP_KdNr mit Tippfehler
+CRM;Accounts;b696dced-2953-7c64-b1bf-d7bfb26b08af;Sperrvermerk im Firmenfeld
+CRM;Accounts;b7b373a6-5814-3d6f-6d40-b0465e8dcda3;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;b7b373a6-5814-3d6f-6d40-b0465e8dcda3;Land-Variante
+CRM;Accounts;bbbe7f18-3f94-68c8-b948-95881cb9748a;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;bbbe7f18-3f94-68c8-b948-95881cb9748a;Land fehlt
+CRM;Accounts;bbbe7f18-3f94-68c8-b948-95881cb9748a;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;bbbe7f18-3f94-68c8-b948-95881cb9748a;Telefon mit Text
+CRM;Accounts;c656d131-4165-637f-efaf-307ef5729184;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;c67118cc-38f8-ded4-cd42-1cc0edf0a956;Felder vertauscht (Straße/Hausnr)
+CRM;Accounts;c835dbb1-36ba-5fef-ccfd-d52184e3f40e;Platzhalter statt leer
+CRM;Accounts;cafe1051-1443-5755-f024-9b955b3dc420;Dublette im CRM
+CRM;Accounts;cee847d5-c511-16cd-3efc-58e58c98ac8f;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;d1279e97-33ae-aff2-1958-2fa57c7390ad;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;d51df0dd-8b6d-7784-53f2-e34ddf18f5e5;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;d5c62dcb-9f20-3e19-14aa-f158ea1c975b;Land fehlt
+CRM;Accounts;d5c62dcb-9f20-3e19-14aa-f158ea1c975b;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;d86fced7-52ec-ce2c-f802-cd66e9c85ee1;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;d9a02705-62b0-e5cc-287d-e032ad469caa;Sammel-E-Mail (zwei Kunden, ein Postfach)
+CRM;Accounts;d9a02705-62b0-e5cc-287d-e032ad469caa;gleiche Adresse wie anderer Kunde (Vereinsheim)
+CRM;Accounts;dff29772-4633-abe4-1c66-1ab2b3da3f19;Testkunde
+CRM;Accounts;e1e356de-146c-3b18-a46a-1e0984c023b4;Land-Variante
+CRM;Accounts;e1e356de-146c-3b18-a46a-1e0984c023b4;gleiche Adresse wie anderer Kunde (Vereinsheim)
+CRM;Accounts;e1ecb8ac-16fe-7fca-c037-2309284def7e;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;e1ecb8ac-16fe-7fca-c037-2309284def7e;PLZ als Zahl (Excel-Artefakt)
+CRM;Accounts;e1ecb8ac-16fe-7fca-c037-2309284def7e;Sammel-E-Mail (zwei Kunden, ein Postfach)
+CRM;Accounts;e7c3576c-b8dd-2c18-fa4c-d66b1e66e57c;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;e917485c-a2f2-87dd-5c38-a5a68c4430f4;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;ea6b7b42-25d5-e33a-b41f-bea65e76666f;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;ea6b7b42-25d5-e33a-b41f-bea65e76666f;Land-Variante
+CRM;Accounts;eaa3dba4-136a-490f-246f-ba54e00888ad;Fremdschlüssel ERP_KdNr mit Tippfehler
+CRM;Accounts;eb96bf9b-caf3-6bbc-58c7-35c6ed5d4df4;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;eb96bf9b-caf3-6bbc-58c7-35c6ed5d4df4;Platzhalter statt leer
+CRM;Accounts;eb96bf9b-caf3-6bbc-58c7-35c6ed5d4df4;Telefon mit Text
+CRM;Accounts;ec8bb50a-6874-e11a-205c-e06404dad78f;Privatkunde nur im Firmenfeld
+CRM;Accounts;f04176fe-1244-3a13-9ef1-71d30475319b;PLZ als Zahl (Excel-Artefakt, führende Null fehlt)
+CRM;Accounts;f07382b6-5ea4-7e41-efed-c58db1060c84;Mojibake (Zeichensatzfehler beim Export)
+CRM;Accounts;f07382b6-5ea4-7e41-efed-c58db1060c84;gleiche Adresse wie anderer Kunde (Vereinsheim)
+CRM;Accounts;f1ece7ac-d9ec-a420-2a9a-5499e85449e3;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;f635165e-471f-1a6d-495f-3dde359cf32f;Sperrvermerk im Firmenfeld
+CRM;Accounts;f925dbbe-78af-35c8-8fb5-dd5763167763;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;f95e008f-f968-2c64-5f33-c85268962d9d;Betreuer nicht auflösbar (Fremdschlüssel per Name)
+CRM;Accounts;f95e008f-f968-2c64-5f33-c85268962d9d;Datum ungenau (nur MM/YYYY)
+CRM;Accounts;fddaffe6-8ba0-9525-4426-20e9cc2a5ec0;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+CRM;Accounts;fec7d02e-621d-cb8d-a92e-df6d807f4a16;Dublette im CRM
+ERP;AUFTRAG;2023-00092;Gutschrift (negative Menge)
+ERP;AUFTRAG;2023-00123;Gutschrift (negative Menge)
+ERP;AUFTRAG;2023-00195;Gutschrift (negative Menge)
+ERP;AUFTRAG;2024-00101;Gutschrift (negative Menge)
+ERP;AUFTRAG;2024-00165;Gutschrift (negative Menge)
+ERP;AUFTRAG;2024-00193;Shop-Auftrag doppelt importiert
+ERP;AUFTRAG;2024-00194;Shop-Auftrag doppelt importiert
+ERP;AUFTRAG;2024-00195;Shop-Auftrag doppelt importiert
+ERP;AUFTRAGSPOS;2023-90000;Position ohne Auftrag (Waise)
+ERP;AUFTRAGSPOS;2023-90001;Position ohne Auftrag (Waise)
+ERP;AUFTRAGSPOS;2023-90002;Position ohne Auftrag (Waise)
+ERP;AUFTRAGSPOS;2023-90003;Position ohne Auftrag (Waise)
+ERP;KUNDE;10202;PLZ im Ortsfeld
+ERP;KUNDE;10202;gleiche Adresse wie anderer Kunde (Vereinsheim)
+ERP;KUNDE;10206;Land-Variante
+ERP;KUNDE;10207;PLZ im Ortsfeld
+ERP;KUNDE;10207;Platzhalter statt leer
+ERP;KUNDE;10209;gleiche Adresse wie anderer Kunde (Vereinsheim)
+ERP;KUNDE;10213;gleiche Adresse wie anderer Kunde (Vereinsheim)
+ERP;KUNDE;10216;Telefon mit Text
+ERP;KUNDE;10220;Land-Variante
+ERP;KUNDE;10220;Postfach im Straßenfeld
+ERP;KUNDE;10222;Feldlänge: Name abgeschnitten
+ERP;KUNDE;10222;Telefon mit Text
+ERP;KUNDE;10224;PLZ ungültig
+ERP;KUNDE;10224;Telefon mit Text
+ERP;KUNDE;10224;gleiche Adresse wie anderer Kunde (Vereinsheim)
+ERP;KUNDE;10230;Telefon mit Text
+ERP;KUNDE;10236;Hausnummer vor Straße
+ERP;KUNDE;10237;gleiche Adresse wie anderer Kunde (Vereinsheim)
+ERP;KUNDE;10247;Telefon mit Text
+ERP;KUNDE;10249;Feldlänge: Name abgeschnitten
+ERP;KUNDE;10250;PLZ mit Länderpräfix
+ERP;KUNDE;10250;Telefon mit Text
+ERP;KUNDE;10261;Feldlänge: Name abgeschnitten
+ERP;KUNDE;10268;Land-Variante
+ERP;KUNDE;10275;Hausnummer vor Straße
+ERP;KUNDE;10275;J/N-Feld mit Fremdwert
+ERP;KUNDE;10275;Tippfehler im Namen
+ERP;KUNDE;10277;Tippfehler im Namen
+ERP;KUNDE;10280;PLZ mit Länderpräfix
+ERP;KUNDE;10283;Feldlänge: Name abgeschnitten
+ERP;KUNDE;10286;Ansprechpartner im Firmenfeld
+ERP;KUNDE;10286;Feldlänge: Name abgeschnitten
+ERP;KUNDE;10286;gleiche Adresse wie anderer Kunde (Vereinsheim)
+ERP;KUNDE;10289;Land-Variante
+ERP;KUNDE;10289;Telefon mit Text
+ERP;KUNDE;10293;Platzhalter statt leer
+ERP;KUNDE;10293;Tippfehler im Namen
+ERP;KUNDE;10299;Tippfehler im Namen
+ERP;KUNDE;10303;Hausnummer vor Straße
+ERP;KUNDE;10306;Zahlungsziel als Text
+ERP;KUNDE;10308;J/N-Feld mit Fremdwert
+ERP;KUNDE;10308;Telefon mit Text
+ERP;KUNDE;10312;PLZ im Ortsfeld
+ERP;KUNDE;10312;Zahlungsziel als Text
+ERP;KUNDE;10315;PLZ mit Länderpräfix
+ERP;KUNDE;10321;Zahlungsziel als Text
+ERP;KUNDE;10323;PLZ im Ortsfeld
+ERP;KUNDE;10330;Feldlänge: Name abgeschnitten
+ERP;KUNDE;10331;Telefon mit Text
+ERP;KUNDE;10332;Platzhalter statt leer
+ERP;KUNDE;10333;Land-Variante
+ERP;KUNDE;10333;PLZ mit Länderpräfix
+ERP;KUNDE;10334;Land-Variante
+ERP;KUNDE;10335;Postfach im Straßenfeld
+ERP;KUNDE;10337;Land-Variante
+ERP;KUNDE;10339;Telefon mit Text
+ERP;KUNDE;10345;Land-Variante
+ERP;KUNDE;10345;Tippfehler im Namen
+ERP;KUNDE;10353;Tippfehler im Namen
+ERP;KUNDE;10357;Hausnummer-Bereich
+ERP;KUNDE;10365;Postfach im Straßenfeld
+ERP;KUNDE;10365;Sperrvermerk nur im Freitext
+ERP;KUNDE;10371;Hausnummer-Bereich
+ERP;KUNDE;10377;J/N-Feld mit Fremdwert
+ERP;KUNDE;10377;PLZ mit Länderpräfix
+ERP;KUNDE;10377;Platzhalter statt leer
+ERP;KUNDE;10420;Ansprechpartner im Firmenfeld
+ERP;KUNDE;10422;Feldlänge: Name abgeschnitten
+ERP;KUNDE;10429;Telefon mit Text
+ERP;KUNDE;10430;Hausnummer-Bereich
+ERP;KUNDE;10436;J/N-Feld mit Fremdwert
+ERP;KUNDE;10454;Telefon mit Text
+ERP;KUNDE;10454;gleiche Adresse wie anderer Kunde (Vereinsheim)
+ERP;KUNDE;10461;Zahlungsziel als Text
+ERP;KUNDE;10473;Zahlungsziel als Text
+ERP;KUNDE;10477;J/N-Feld mit Fremdwert
+ERP;KUNDE;10485;PLZ mit Länderpräfix
+ERP;KUNDE;10492;PLZ im Ortsfeld
+ERP;KUNDE;10495;Telefon mit Text
+ERP;KUNDE;10506;Land-Variante
+ERP;KUNDE;10510;PLZ mit Länderpräfix
+ERP;KUNDE;10511;Dublette im ERP (führend: 10323)
+ERP;KUNDE;10512;Dublette im ERP (führend: 10228)
+ERP;KUNDE;10513;Dublette im ERP (führend: 10279)
+ERP;KUNDE;10514;Dublette im ERP (führend: 10268)
+ERP;KUNDE;10515;Testkunde
+ERP;KUNDE;10516;Testkunde
+ERP;LIEFERUNG;L2023-00119;Versand vor Auftrag
+ERP;LIEFERUNG;L2023-00185;Versand vor Auftrag
+ERP;LIEFERUNG;L2023-00239;Versand vor Auftrag
+ERP;LIEFERUNG;L2024-00062;Versand vor Auftrag
+Shop;customers;C-00102;gleiche Adresse wie anderer Kunde (Vereinsheim)
+Shop;customers;C-00110;Sammel-E-Mail (zwei Kunden, ein Postfach)
+Shop;customers;C-00110;gleiche Adresse wie anderer Kunde (Vereinsheim)
+Shop;customers;C-00113;gleiche Adresse wie anderer Kunde (Vereinsheim)
+Shop;customers;C-00118;Groß-/Kleinschreibung
+Shop;customers;C-00124;gleiche Adresse wie anderer Kunde (Vereinsheim)
+Shop;customers;C-00130;Sammel-E-Mail (zwei Kunden, ein Postfach)
+Shop;customers;C-00138;gleiche Adresse wie anderer Kunde (Vereinsheim)
+Shop;customers;C-00143;Groß-/Kleinschreibung
+Shop;customers;C-00143;Telefon mit Text
+Shop;customers;C-00144;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00158;E-Mail mit Leerzeichen
+Shop;customers;C-00161;Sammel-E-Mail (zwei Kunden, ein Postfach)
+Shop;customers;C-00166;Telefon mit Text
+Shop;customers;C-00168;Bemerkung im E-Mail-Feld
+Shop;customers;C-00170;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00172;Telefon mit Text
+Shop;customers;C-00174;Sammel-E-Mail (zwei Kunden, ein Postfach)
+Shop;customers;C-00178;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00182;gleiche Adresse wie anderer Kunde (Vereinsheim)
+Shop;customers;C-00188;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00191;Sammel-E-Mail (zwei Kunden, ein Postfach)
+Shop;customers;C-00196;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00200;Sammel-E-Mail (zwei Kunden, ein Postfach)
+Shop;customers;C-00208;Bemerkung im E-Mail-Feld
+Shop;customers;C-00208;Groß-/Kleinschreibung
+Shop;customers;C-00209;Groß-/Kleinschreibung
+Shop;customers;C-00210;zwei E-Mails in einem Feld
+Shop;customers;C-00211;E-Mail ohne @
+Shop;customers;C-00214;zwei E-Mails in einem Feld
+Shop;customers;C-00234;Sammel-E-Mail (zwei Kunden, ein Postfach)
+Shop;customers;C-00239;Sammel-E-Mail (zwei Kunden, ein Postfach)
+Shop;customers;C-00245;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00254;Sammel-E-Mail (zwei Kunden, ein Postfach)
+Shop;customers;C-00260;Telefon mit Text
+Shop;customers;C-00267;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00267;Groß-/Kleinschreibung
+Shop;customers;C-00279;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00285;Bemerkung im E-Mail-Feld
+Shop;customers;C-00288;E-Mail mit Leerzeichen
+Shop;customers;C-00296;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00306;Groß-/Kleinschreibung
+Shop;customers;C-00308;Sammel-E-Mail (zwei Kunden, ein Postfach)
+Shop;customers;C-00318;Groß-/Kleinschreibung
+Shop;customers;C-00324;E-Mail ohne @
+Shop;customers;C-00341;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00348;Bemerkung im E-Mail-Feld
+Shop;customers;C-00362;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00366;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00367;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00372;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00378;Groß-/Kleinschreibung
+Shop;customers;C-00395;zwei E-Mails in einem Feld
+Shop;customers;C-00397;Groß-/Kleinschreibung
+Shop;customers;C-00399;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00400;E-Mail mit Leerzeichen
+Shop;customers;C-00401;Groß-/Kleinschreibung
+Shop;customers;C-00414;Telefon mit Text
+Shop;customers;C-00424;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00445;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00448;E-Mail mit Leerzeichen
+Shop;customers;C-00458;Groß-/Kleinschreibung
+Shop;customers;C-00461;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00470;zwei E-Mails in einem Feld
+Shop;customers;C-00482;Groß-/Kleinschreibung
+Shop;customers;C-00484;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-00497;E-Mail-Transportmüll (mailto, Name <>, Großschrift, Satzzeichen, (at))
+Shop;customers;C-99999;Testkunde
