@@ -193,3 +193,36 @@ Präfixfehler in `_nkey` (tsv/sv) korrigiert. Die Mappe ist auf diesem Datenstan
 | E-Mail ohne @ | 2 |
 | PLZ ungültig | 1 |
 | Sperrvermerk nur im Freitext | 1 |
+
+## Mappe auf Datenstand v3 (11.11.2026)
+
+Abfragen neu: `KUNDE_h`, `SHOP_h`, `CRM_h` von Hand neu geschrieben (Reihenfolge wie PA1: globale Vorbereitung -> PLZ/Ort -> Land -> Straße/Hausnr -> Telefon -> Kodierungen -> Befunde),
+Hilfsfunktionen `fnLand`, `fnTyp`, `fnJN`, `fnStrasse`, `fnMatchkey`, `fnTel`, `fnEmails`, `fnNameOk`; `fnClean` um Mojibake-Liste und Platzhalter erweitert;
+Kaskade in `CRM_k`/`SHOP_k` zeilenweise gegen gepufferte Tabellen; Parameter `pAbsicherung` (Stufen 1-3 mit Namensbestätigung) und `pBelegtRegel`;
+neu `CHECK_Pruefliste` (Restbefunde je Datensatz) und `CHECK_Fehlerlog` (Fehlerlog gegen Prüfliste). `CHECK_Fakten` mit neuen Sollwerten und Zeilen für verworfene Waisen/Doppelimporte.
+Importfehler behoben: `KUNDE` las nur 16 von 17 Spalten (Telefon fehlte), `customers` lief mit `QuoteStyle.None` (hätte bei zwei E-Mails mit Komma die Spalten verschoben).
+
+Vor dem Excel-Lauf wurde die Logik in Python nachgebaut (`sim.py`, nicht Teil der Abgabe), um die Regeln gegen beide Sollwert-Dateien zu prüfen.
+
+| Nr. | Stand | zerrissen | verschmolzen | ohne Mapping | Quelle der Zahl |
+| --- | --- | --- | --- | --- | --- |
+| 6 | Datenstand v3, Bereinigung neu, Kaskade ungesichert (`pAbsicherung = false`) | 16 | 10 | 0 | Simulation - in Excel noch nachzumessen |
+| 7 | wie 6, Kaskade abgesichert (`pAbsicherung = true`, `pBelegtRegel = false`) | 7 | 1 | 0 | Simulation - in Excel noch nachzumessen |
+| 8 | wie 7, mit Belegt-Regel (`pBelegtRegel = true`) | 7 | 0 | 0 | **Excel, CHECK_Sollwerte, gemessen 11.11.2026** |
+
+**Messung 8, Matchmethoden (Excel):** CRM: ERP-Schlüssel 54, Adresse + Name 23, Fuzzy 8, neu 71. Shop: ERP-Schlüssel 21, E-Mail 83, Adresse 3, neu 93. ERP-Basis 128.
+Die Simulation traf zerrissen/verschmolzen exakt; die Verteilung Adresse/Fuzzy weicht um wenige Fälle ab (Power Query nutzt Jaccard auf Zeichen-N-Grammen, die Simulation difflib).
+
+**Die 7 Zerreißungen** sind alle Umzieher ohne bestätigenden Schlüssel (6 Gastro, 1 Händler): neue Adresse im CRM, kein ERP_KdNr-Verweis, ERP ohne E-Mail. Wie in Messung 3b bewusst getrennt -> Prüfliste.
+
+**Die eine Verschmelzung in Messung 7** ist ein neuer Falltyp: „Dart-Lounge" zieht von Bregenz nach Wien, wo es bereits eine andere „Dart-Lounge" gibt (im ERP nur mit Postfach).
+Die Nachregel „identischer Name und gleicher Ort" ordnet den umgezogenen CRM-Account dem falschen ERP-Kunden zu. Gegenmaßnahme Belegt-Regel: ein ERP-Kunde, dem bereits ein
+CRM-Account per Schlüssel oder Adresse zugeordnet ist, nimmt keinen weiteren allein über Name + PLZ/Ort auf. Kosten: keine zusätzliche Zerreißung in diesem Datenstand.
+
+**Laufzeit:** Aktualisierung von CHECK_Sollwerte allein rund 8 Minuten (vorher rund 2-3 bei 348 Datensätzen).
+
+**Gesamtlauf „Alle aktualisieren" auf Datenstand v3 (11.11.2026, rund 20 Minuten):** CHECK_Fakten vollständig grün -
+Positionen ohne Auftrag 4/4, doppelt importierte Shop-Aufträge 3/3, Versand vor Auftrag 4/4, Zeilen FAKT_ERP 1463, Aufträge ERP 475,
+Shop gesamt 549 (56 storniert/erstattet), im ERP importiert 131, Bestellungen in FAKT_SHOP 362, KundeKey/ProduktKey/Region null 0,
+Zeilen FAKT_VERKAUF 2529, Netto ERP 466.452,28 EUR, Netto Shop 164.226,33 EUR.
+Offen: Dashboard-Titel F5/F6 passen nicht mehr zu den neuen Zahlen; Achsenbeschriftung F2 überlappt.

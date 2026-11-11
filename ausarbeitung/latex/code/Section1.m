@@ -3,7 +3,7 @@ section Section1;
 shared pPfad = "C:\Users\steff\DHBW\Semester 5 (Okt-Dez 2026)\04 Business Intelligence (Kirchberg)\BI\";
 
 shared KUNDE = let
-    Quelle = Csv.Document(File.Contents(pPfad & "quellen\erp\KUNDE.txt"),[Delimiter=";", Columns=16, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+    Quelle = Csv.Document(File.Contents(pPfad & "quellen\erp\KUNDE.txt"),[Delimiter=";", Columns=17, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
     #"Höher gestufte Header" = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]),
     #"Ersetzter Wert" = Table.ReplaceValue(#"Höher gestufte Header","#(cr)#(lf)","|",Replacer.ReplaceText,{"Bemerkung"}),
     #"Gefilterte Zeilen1" = Table.SelectRows(#"Ersetzter Wert", each true),
@@ -14,7 +14,7 @@ in
     Zeilenvorschub_LF_ersetzt;
 
 shared customers = let
-    Quelle = Csv.Document(File.Contents(pPfad & "quellen\shop\customers.csv"),[Delimiter=",", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+    Quelle = Csv.Document(File.Contents(pPfad & "quellen\shop\customers.csv"),[Delimiter=",", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
     #"Höher gestufte Header" = Table.PromoteHeaders(Quelle, [PromoteAllScalars=true]),
     #"Geänderter Typ mit Gebietsschema" = Table.TransformColumnTypes(#"Höher gestufte Header", {{"created_at", type datetimezone}}, "de-DE")
 in
@@ -24,20 +24,24 @@ shared Accounts = let
     Quelle = Excel.Workbook(File.Contents(pPfad & "quellen\crm\CRM_Export.xlsx"), null, true),
     Accounts_Sheet = Quelle{[Item="Accounts",Kind="Sheet"]}[Data],
     #"Höher gestufte Header" = Table.PromoteHeaders(Accounts_Sheet, [PromoteAllScalars=true]),
-    Flag_Datum_ungenau = Table.AddColumn(#"Höher gestufte Header", "Flag_Datum_ungenau", each Text.Length(Text.From([Erstkontakt])) = 7, type logical),
+    Flag_PLZ_Zahl = Table.AddColumn(#"Höher gestufte Header", "Flag_PLZ_Zahl", each Value.Is([PLZ], type number), type logical),
+    Flag_Datum_ungenau = Table.AddColumn(Flag_PLZ_Zahl, "Flag_Datum_ungenau", each Text.Length(Text.From([Erstkontakt])) = 7, type logical),
     #"Geänderter Typ mit Gebietsschema" = Table.TransformColumnTypes(Flag_Datum_ungenau, {{"Erstkontakt", type date}}, "en-US"),
     #"Geänderter Typ mit Gebietsschema1" = Table.TransformColumnTypes(#"Geänderter Typ mit Gebietsschema", {{"LetzteAenderung", type date}}, "en-US"),
     #"Geänderter Typ" = Table.TransformColumnTypes(#"Geänderter Typ mit Gebietsschema1",{{"PLZ", type text}, {"ERP_KdNr", type text}})
 in
     #"Geänderter Typ";
 
-shared fnClean = (s as nullable text) as nullable text =>
+shared fnClean = // Globale Vorbereitung (PA1): Zeichensatzfehler, Steuerzeichen, geschützte/doppelte Leerzeichen, Platzhalter -> null
+(s as nullable text) as nullable text =>
 let
-    t0 = if s = null then null else Text.Clean(s),
+    moji = {{"Ã¼","ü"}, {"Ã¶","ö"}, {"Ã¤","ä"}, {"ÃŸ","ß"}, {"Ãœ","Ü"}, {"Ã–","Ö"}, {"Ã„","Ä"}},
+    m0 = if s = null then null else List.Accumulate(moji, s, (acc, p) => Text.Replace(acc, p{0}, p{1})),
+    t0 = if m0 = null then null else Text.Clean(m0),
     t1 = if t0 = null then null else Text.Replace(t0, Character.FromNumber(160), " "),
     t2 = if t1 = null then null else Text.Remove(t1, {Character.FromNumber(173), Character.FromNumber(8203)}),
     t3 = if t2 = null then null else Text.Combine(List.Select(Text.Split(t2, " "), each _ <> ""), " "),
-    t4 = if t3 = "" then null else t3
+    t4 = if t3 = null or t3 = "" or List.Contains({"-", "?", "k.a.", "xxx", "n/a", "unbekannt"}, Text.Lower(t3)) then null else t3
 in
     t4;
 
@@ -69,7 +73,7 @@ let
     t1 = if t0 = null then null else
          Text.Replace(Text.Replace(Text.Replace(Text.Replace(t0, "ß","ss"), "ä","ae"), "ö","oe"), "ü","ue"),
     // Reihenfolge wichtig: längere Präfixe (tsv) vor kürzeren (sv), sonst bleibt ein Rest stehen
-    stop = {" e.v.", " e. v.", " gmbh", " e.k.", " ohg", "tsv ", "sv ", "dc ", "sc ", "dr. "},
+    stop = {"(insolvent)", "(gesperrt)", "(nicht verwenden)", " e.v.", " e. v.", " gmbh", " e.k.", " ohg", "tsv ", "sv ", "dc ", "sc ", "dr. "},
     t2 = if t1 = null then null else List.Accumulate(stop, t1, (acc, w) => Text.Replace(acc, w, " ")),
     t3 = if t2 = null then null else Text.Replace(Text.Trim(t2), " ", "")
 in
@@ -77,7 +81,10 @@ in
 
 shared mapLand = #table(type table [Quelle = text, Wert = text, LandISO = text], {
     {"ERP", "D",  "DE"}, {"ERP", "A", "AT"}, {"ERP", "CH", "CH"},
-    {"CRM", "Deutschland", "DE"}, {"CRM", "Österreich", "AT"}, {"CRM", "Schweiz", "CH"}
+    {"CRM", "Deutschland", "DE"}, {"CRM", "Österreich", "AT"}, {"CRM", "Schweiz", "CH"},
+    {"Variante", "DE", "DE"}, {"Variante", "Deutsch", "DE"}, {"Variante", "BRD", "DE"}, {"Variante", "Germany", "DE"}, {"Variante", "Deutschl.", "DE"},
+    {"Variante", "AT", "AT"}, {"Variante", "AUT", "AT"}, {"Variante", "Oesterreich", "AT"}, {"Variante", "Austria", "AT"},
+    {"Variante", "SUI", "CH"}, {"Variante", "Switzerland", "CH"}
 });
 
 shared mapKundentyp = #table(type table [Quelle = text, Wert = text, Kundentyp = text], {
@@ -94,124 +101,245 @@ shared mapRegion = #table(type table [LandISO = text, Praefix = text, Region = t
 
 shared pSchwelle = 0.8 + 0.0;
 
-shared KUNDE_h = let
-    Quelle = KUNDE,
-    fnClean = Table.TransformColumns(Table.TransformColumnTypes(Quelle, {{"Anlagedatum", type text}, {"GesperrtBis", type text}}, "de-DE"),{{"KdNr", Text.Trim, type text}, {"Firma", Text.Trim, type text}, {"Name1", Text.Trim, type text}, {"Vorname", Text.Trim, type text}, {"Strasse", Text.Trim, type text}, {"PLZ", Text.Trim, type text}, {"Ort", Text.Trim, type text}, {"Land", Text.Trim, type text}, {"Kundengruppe", Text.Trim, type text}, {"VertreterNr", Text.Trim, type text}, {"Zahlungsziel", Text.Trim, type text}, {"Anlagedatum", Text.Trim, type text}, {"Newsletter", Text.Trim, type text}, {"Gesperrt", Text.Trim, type text}, {"GesperrtBis", Text.Trim, type text}, {"Bemerkung", Text.Trim, type text}}),
-    #"Geänderter Typ" = Table.TransformColumnTypes(fnClean,{{"KdNr", type text}}),
-    #"Zusammengeführte Abfragen" = Table.NestedJoin(#"Geänderter Typ", {"Land"}, mapLand, {"Wert"}, "mapLand", JoinKind.LeftOuter),
-    #"Erweiterte mapLand" = Table.ExpandTableColumn(#"Zusammengeführte Abfragen", "mapLand", {"LandISO"}, {"mapLand.LandISO"}),
-    #"Entfernte Spalten" = Table.RemoveColumns(#"Erweiterte mapLand",{"Land"}),
-    #"Umbenannte Spalten" = Table.RenameColumns(#"Entfernte Spalten",{{"mapLand.LandISO", "LandISO"}}),
-    #"Hinzugefügte benutzerdefinierte Spalte" = Table.AddColumn(#"Umbenannte Spalten", "PLZ_norm", each if [LandISO] = "DE" then Text.PadStart([PLZ], 5, "0") else [PLZ]),
-    #"Neu angeordnete Spalten" = Table.ReorderColumns(#"Hinzugefügte benutzerdefinierte Spalte",{"KdNr", "Firma", "Name1", "Vorname", "Strasse", "PLZ", "PLZ_norm", "Ort", "Kundengruppe", "VertreterNr", "Zahlungsziel", "Anlagedatum", "Newsletter", "Gesperrt", "GesperrtBis", "Bemerkung", "LandISO"}),
-    #"Spalte nach Trennzeichen teilen" = Table.SplitColumn(#"Neu angeordnete Spalten", "Strasse", Splitter.SplitTextByEachDelimiter({" "}, QuoteStyle.Csv, true), {"Strasse.1", "Strasse.2"}),
-    #"Geänderter Typ1" = Table.TransformColumnTypes(#"Spalte nach Trennzeichen teilen",{{"Strasse.1", type text}, {"Strasse.2", type text}}),
-    #"Umbenannte Spalten1" = Table.RenameColumns(#"Geänderter Typ1",{{"Strasse.2", "Hausnummer"}, {"Strasse.1", "Strasse"}}),
-    #"Umbenannte Spalten2" = Table.RenameColumns(#"Umbenannte Spalten1",{{"Hausnummer", "Hausnr"}}),
-    #"Hinzugefügte benutzerdefinierte Spalte1" = Table.AddColumn(#"Umbenannte Spalten2", "Strasse_ok", each if Text.Select(Text.Start([Strasse], 1), {"0".."9"}) <> "" and Text.Select(Text.Start([Hausnr], 1), {"0".."9"}) = "" then [Hausnr] else [Strasse]),
-    #"Hinzugefügte benutzerdefinierte Spalte2" = Table.AddColumn(#"Hinzugefügte benutzerdefinierte Spalte1", "Hausnr_ok", each if Text.Select(Text.Start([Strasse], 1), {"0".."9"}) <> "" and Text.Select(Text.Start([Hausnr], 1), {"0".."9"}) = "" then [Strasse] else [Hausnr]),
-    #"Gefilterte Zeilen" = Table.SelectRows(#"Hinzugefügte benutzerdefinierte Spalte2", each true),
-    #"Hinzugefügte bedingte Spalte" = Table.AddColumn(#"Gefilterte Zeilen", "Titel", each if Text.StartsWith([Name1], "Dr.") then "Dr." else null),
-    #"Ersetzter Wert" = Table.ReplaceValue(#"Hinzugefügte bedingte Spalte","Dr. ","",Replacer.ReplaceText,{"Name1"}),
-    #"Geänderter Typ2" = Table.TransformColumnTypes(#"Ersetzter Wert",{{"Kundengruppe", type text}}),
-    #"Zusammengeführte Abfragen1" = Table.NestedJoin(#"Geänderter Typ2", {"Kundengruppe"}, mapKundentyp, {"Wert"}, "mapKundentyp", JoinKind.LeftOuter),
-    #"Erweiterte mapKundentyp" = Table.ExpandTableColumn(#"Zusammengeführte Abfragen1", "mapKundentyp", {"Kundentyp"}, {"mapKundentyp.Kundentyp"}),
-    #"Entfernte Spalten1" = Table.RemoveColumns(#"Erweiterte mapKundentyp",{"Kundengruppe"}),
-    #"Umbenannte Spalten3" = Table.RenameColumns(#"Entfernte Spalten1",{{"mapKundentyp.Kundentyp", "Kundentyp"}}),
-    #"Ersetzter Wert1" = Table.ReplaceValue(#"Umbenannte Spalten3","J","true",Replacer.ReplaceText,{"Newsletter"}),
-    #"Ersetzter Wert2" = Table.ReplaceValue(#"Ersetzter Wert1","N","false",Replacer.ReplaceText,{"Newsletter"}),
-    #"Ersetzter Wert3" = Table.ReplaceValue(#"Ersetzter Wert2","J","true",Replacer.ReplaceText,{"Gesperrt"}),
-    #"Ersetzter Wert4" = Table.ReplaceValue(#"Ersetzter Wert3","N","false",Replacer.ReplaceText,{"Gesperrt"}),
-    #"Ersetzter Wert5" = Table.ReplaceValue(#"Ersetzter Wert4","-1",null,Replacer.ReplaceValue,{"Zahlungsziel"}),
-    #"Ersetzter Wert6" = Table.ReplaceValue(#"Ersetzter Wert5","31.12.9999",null,Replacer.ReplaceValue,{"GesperrtBis"}),
-    #"Entfernte Spalten2" = Table.RemoveColumns(#"Ersetzter Wert6",{"Strasse", "Hausnr"}),
-    #"Umbenannte Spalten4" = Table.RenameColumns(#"Entfernte Spalten2",{{"Hausnr_ok", "Hausnr"}, {"Strasse_ok", "Strasse"}}),
-    #"Hinzugefügte benutzerdefinierte Spalte3" = Table.AddColumn(#"Umbenannte Spalten4", "Matchkey", each [LandISO] & [PLZ_norm] & "|" & fnNormStrasse([Strasse]) & "|" & Text.Lower([Hausnr])),
-    #"Hinzugefügte benutzerdefinierte Spalte4" = Table.AddColumn(#"Hinzugefügte benutzerdefinierte Spalte3", "Name_norm", each fnNormName(if [Firma] <> null then [Firma] else [Nachname])),
-    #"Geänderter Typ3" = Table.TransformColumnTypes(#"Hinzugefügte benutzerdefinierte Spalte4",{{"Name_norm", type text}}),
-    #"Hinzugefügte benutzerdefinierte Spalte5" = Table.AddColumn(#"Geänderter Typ3", "Quelle", each "ERP"),
-    #"Andere entfernte Spalten" = Table.SelectColumns(#"Hinzugefügte benutzerdefinierte Spalte5",{"KdNr", "Firma", "Name1", "Vorname", "PLZ_norm", "Ort", "VertreterNr", "Zahlungsziel", "Anlagedatum", "Newsletter", "Gesperrt", "GesperrtBis", "Bemerkung", "LandISO", "Strasse", "Hausnr", "Titel", "Kundentyp", "Matchkey", "Name_norm", "Quelle"}),
-    #"Geänderter Typ4" = Table.TransformColumnTypes(#"Andere entfernte Spalten",{{"Newsletter", type logical}, {"Gesperrt", type logical}}),
-    Benutzerdefiniert1 = Table.ReplaceValue(Table.TransformColumnTypes(#"Geänderter Typ4", {{"Anlagedatum", type date}, {"GesperrtBis", type date}}, "de-DE"), #date(9999,12,31), null, Replacer.ReplaceValue, {"GesperrtBis"})
-in
-    Benutzerdefiniert1;
+shared pAbsicherung = true and true;
 
-shared SHOP_h = let
-    Quelle = customers,
-    fnClean = Table.TransformColumns(Quelle,{{"email", fnClean, type text}, {"customer_id", fnClean, type text}, {"first_name", fnClean, type text}, {"last_name", fnClean, type text}, {"address", fnClean, type text}, {"country", fnClean, type text}, {"erp_customer_no", fnClean, type text}, {"company", fnClean, type text}}),
-    #"Spalte nach Trennzeichen teilen" = Table.SplitColumn(fnClean, "address", Splitter.SplitTextByEachDelimiter({", "}, QuoteStyle.Csv, false), {"address.1", "address.2"}),
-    #"Geänderter Typ" = Table.TransformColumnTypes(#"Spalte nach Trennzeichen teilen",{{"gender", Int64.Type}, {"address.1", type text}, {"address.2", type text}, {"is_club", type logical}, {"newsletter", type logical}}),
-    #"Spalte nach Trennzeichen teilen1" = Table.SplitColumn(#"Geänderter Typ", "address.1", Splitter.SplitTextByEachDelimiter({" "}, QuoteStyle.Csv, true), {"address.1.1", "address.1.2"}),
-    #"Geänderter Typ1" = Table.TransformColumnTypes(#"Spalte nach Trennzeichen teilen1",{{"address.1.1", type text}, {"address.1.2", type text}}),
-    #"Spalte nach Trennzeichen teilen2" = Table.SplitColumn(#"Geänderter Typ1", "address.2", Splitter.SplitTextByEachDelimiter({" "}, QuoteStyle.Csv, false), {"address.2.1", "address.2.2"}),
-    #"Umbenannte Spalten" = Table.RenameColumns(#"Spalte nach Trennzeichen teilen2",{{"address.1.1", "Strasse"}, {"address.1.2", "Hausnr"}, {"address.2.1", "PLZ"}, {"address.2.2", "Ort"}}),
-    #"Hinzugefügte bedingte Spalte" = Table.AddColumn(#"Umbenannte Spalten", "Benutzerdefiniert", each if [is_club] = true then "Verein" else if [company] <> null then null else "Privat"),
-    #"Geänderter Typ2" = Table.TransformColumnTypes(#"Hinzugefügte bedingte Spalte",{{"Benutzerdefiniert", type text}}),
-    #"Emails normalisiern" = Table.AddColumn(#"Geänderter Typ2", "Email_norm", each fnNormEmail([email])),
-    #"Anrede aus gender ableiten" = Table.AddColumn(#"Emails normalisiern", "Benutzerdefiniert.1", each if [gender] = 1 then "Herr" else if [gender] = 2 then "Frau" else null),
-    #"Umbenannte Spalten1" = Table.RenameColumns(#"Anrede aus gender ableiten",{{"Benutzerdefiniert.1", "Anrede"}}),
-    #"Umbenannte Spalten2" = Table.RenameColumns(#"Umbenannte Spalten1",{{"PLZ", "PLZ_norm"}}),
-    #"Hinzugefügte benutzerdefinierte Spalte" = Table.AddColumn(#"Umbenannte Spalten2", "Matchkey", each [country] & [PLZ_norm] & "|" & fnNormStrasse([Strasse]) & "|" & Text.Lower([Hausnr])),
-    #"Hinzugefügte benutzerdefinierte Spalte1" = Table.AddColumn(#"Hinzugefügte benutzerdefinierte Spalte", "Name_norm", each fnNormName(if [company] <> null then [company] else [last_name])),
-    #"Umbenannte Spalten3" = Table.RenameColumns(#"Hinzugefügte benutzerdefinierte Spalte1",{{"customer_id", "ShopID"}, {"erp_customer_no", "ERP_KdNr"}, {"company", "Firma"}, {"first_name", "Vorname"}, {"last_name", "Nachname"}, {"country", "LandISO"}, {"newsletter", "Newsletter"}, {"created_at", "Anlagedatum"}}),
-    #"Hinzugefügte benutzerdefinierte Spalte2" = Table.AddColumn(#"Umbenannte Spalten3", "Quelle", each "Shop"),
-    #"Andere entfernte Spalten" = Table.SelectColumns(#"Hinzugefügte benutzerdefinierte Spalte2",{"ShopID", "Vorname", "Nachname", "Strasse", "Hausnr", "PLZ_norm", "Ort", "LandISO", "is_club", "Newsletter", "Anlagedatum", "ERP_KdNr", "Firma", "Benutzerdefiniert", "Email_norm", "Anrede", "Matchkey", "Name_norm", "Quelle"}),
-    Kundentyp_benannt_Typen_gesetzt = Table.TransformColumnTypes(Table.RenameColumns(#"Andere entfernte Spalten", {{"Benutzerdefiniert", "Kundentyp"}}), {{"Kundentyp", type text}, {"Anrede", type text}, {"Email_norm", type text}, {"Matchkey", type text}, {"Name_norm", type text}, {"Quelle", type text}, {"Anlagedatum", type date}})
-in
-    Kundentyp_benannt_Typen_gesetzt;
+shared pBelegtRegel = true and true;
 
-shared CRM_h = let
-    Quelle = Accounts,
-    #"Abgeschnittener Text" = Table.TransformColumns(Quelle,{{"Land", fnClean, type text}, {"Firma", fnClean, type text}, {"Anrede", fnClean, type text}, {"Titel", fnClean, type text}, {"Vorname", fnClean, type text}, {"Nachname", fnClean, type text}, {"Strasse", fnClean, type text}, {"Hausnr", fnClean, type text}, {"PLZ", fnClean, type text}, {"Ort", fnClean, type text}, {"Kundentyp", fnClean, type text}, {"ERP_KdNr", fnClean, type text}, {"Status", fnClean, type text}, {"E-Mail", fnClean, type text}}),
-    #"Zusammengeführte Abfragen" = Table.NestedJoin(#"Abgeschnittener Text", {"Land"}, mapLand, {"Wert"}, "mapLand", JoinKind.LeftOuter),
-    #"Erweiterte mapLand" = Table.ExpandTableColumn(#"Zusammengeführte Abfragen", "mapLand", {"LandISO"}, {"mapLand.LandISO"}),
-    #"Entfernte Spalten" = Table.RemoveColumns(#"Erweiterte mapLand",{"Land"}),
-    #"Umbenannte Spalten" = Table.RenameColumns(#"Entfernte Spalten",{{"mapLand.LandISO", "LandISO"}}),
-    #"Hinzugefügte benutzerdefinierte Spalte" = Table.AddColumn(#"Umbenannte Spalten", "PLZ_norm", each if [LandISO] = "DE" then Text.PadStart([PLZ], 5, "0") else [PLZ]),
-    #"Geänderter Typ" = Table.TransformColumnTypes(#"Hinzugefügte benutzerdefinierte Spalte",{{"PLZ_norm", type text}}),
-    #"Umbenannte Spalten1" = Table.RenameColumns(#"Geänderter Typ",{{"Kundentyp", "Kundentyp_CRM"}}),
-    #"Zusammengeführte Abfragen1" = Table.NestedJoin(#"Umbenannte Spalten1", {"Kundentyp_CRM"}, mapKundentyp, {"Wert"}, "mapKundentyp", JoinKind.LeftOuter),
-    #"Erweiterte mapKundentyp" = Table.ExpandTableColumn(#"Zusammengeführte Abfragen1", "mapKundentyp", {"Kundentyp"}, {"mapKundentyp.Kundentyp"}),
-    #"Umbenannte Spalten2" = Table.RenameColumns(#"Erweiterte mapKundentyp",{{"mapKundentyp.Kundentyp", "Kundentyp"}}),
-    #"Entfernte Spalten1" = Table.RemoveColumns(#"Umbenannte Spalten2",{"Kundentyp_CRM"}),
-    #"Ersetzter Wert" = Table.ReplaceValue(#"Entfernte Spalten1","X","true",Replacer.ReplaceText,{"Newsletter"}),
-    #"Ersetzter Wert1" = Table.ReplaceValue(#"Ersetzter Wert","","false",Replacer.ReplaceValue,{"Newsletter"}),
-    #"Ersetzter Wert2" = Table.ReplaceValue(#"Ersetzter Wert1",null,"false",Replacer.ReplaceValue,{"Newsletter"}),
-    #"Geänderter Typ1" = Table.TransformColumnTypes(#"Ersetzter Wert2",{{"Newsletter", type logical}}),
-    #"Umbenannte Spalten3" = Table.RenameColumns(#"Geänderter Typ1",{{"Status", "Kundenstatus"}, {"Segment", "ABC_Klasse"}, {"E-Mail", "Email"}}),
-    #"Hinzugefügte benutzerdefinierte Spalte1" = Table.AddColumn(#"Umbenannte Spalten3", "Email_norm", each fnNormEmail([Email])),
-    #"Hinzugefügte benutzerdefinierte Spalte2" = Table.AddColumn(#"Hinzugefügte benutzerdefinierte Spalte1", "Name_norm", each fnNormName(if [Firma] <> null then [Firma] else [Nachname])),
-    #"Hinzugefügte benutzerdefinierte Spalte3" = Table.AddColumn(#"Hinzugefügte benutzerdefinierte Spalte2", "Quelle", each "CRM"),
-    #"Hinzugefügte benutzerdefinierte Spalte4" = Table.AddColumn(#"Hinzugefügte benutzerdefinierte Spalte3", "Matchkey", each [LandISO] & [PLZ_norm] & "|" & fnNormStrasse([Strasse]) & "|" & Text.Lower([Hausnr])),
-    #"Geänderter Typ2" = Table.TransformColumnTypes(#"Hinzugefügte benutzerdefinierte Spalte4",{{"Matchkey", type text}}),
-    #"Andere entfernte Spalten" = Table.SelectColumns(#"Geänderter Typ2",{"AccountId", "Firma", "Anrede", "Titel", "Vorname", "Nachname", "Strasse", "Hausnr", "PLZ", "Ort", "ABC_Klasse", "Betreuer", "ERP_KdNr", "Erstkontakt", "Newsletter", "Kundenstatus", "LetzteAenderung", "Telefon", "LandISO", "PLZ_norm", "Kundentyp", "Email_norm", "Name_norm", "Quelle", "Matchkey"}),
-    #"Umbenannte Spalten4" = Table.RenameColumns(#"Andere entfernte Spalten",{{"Kundenstatus", "Kontaktstatus"}}),
-    Typen_Text_gesetzt = Table.TransformColumnTypes(#"Umbenannte Spalten4", {{"Email_norm", type text}, {"Matchkey", type text}, {"Name_norm", type text}, {"Quelle", type text}, {"PLZ_norm", type text}}),
-    #"Hinzugefügte benutzerdefinierte Spalte5" = Table.AddColumn(Typen_Text_gesetzt, "Anrede_norm", each let a = Text.Lower(Text.Start([Anrede] ?? "", 2)) in
-if a = "he" or a = "hr" then "Herr" else if a = "fr" then "Frau" else null),
-    #"Entfernte Spalten2" = Table.RemoveColumns(#"Hinzugefügte benutzerdefinierte Spalte5",{"Anrede"}),
-    #"Hinzugefügte benutzerdefinierte Spalte6" = Table.AddColumn(#"Entfernte Spalten2", "LandISO_norm", each if [LandISO] <> null then [LandISO]
-else if Text.Length([PLZ_norm]) = 5 then "DE"
-else null),
-    #"Entfernte Spalten3" = Table.RemoveColumns(#"Hinzugefügte benutzerdefinierte Spalte6",{"LandISO"}),
-    #"Umbenannte Spalten5" = Table.RenameColumns(#"Entfernte Spalten3",{{"LandISO_norm", "LandISO"}}),
-    Anrede_Typen_PLZ_Plausibilitaet = Table.AddColumn(Table.TransformColumnTypes(Table.RenameColumns(#"Umbenannte Spalten5", {{"Anrede_norm", "Anrede"}}), {{"Anrede", type text}, {"LandISO", type text}}), "Flag_PLZ_Land", each ([LandISO] = "DE" and Text.Length([PLZ_norm]) <> 5) or ([LandISO] <> "DE" and [LandISO] <> null and Text.Length([PLZ_norm]) <> 4), type logical)
+shared fnNameOk = // Namensbestätigung: gleich, oder gemeinsamer Anfang bis auf höchstens 4 Zeichen des kürzeren Namens (ab 12 Zeichen).
+// Fängt im ERP nach 30 Zeichen abgeschnittene Namen ab, ohne kurze Namen wie "dartshop" zu verwechseln.
+(a as nullable text, b as nullable text) as logical =>
+let
+    n = if a = null or b = null then 0 else List.Min({Text.Length(a), Text.Length(b)}),
+    p = if n = 0 then 0 else List.Count(List.FirstN(List.Zip({Text.ToList(a), Text.ToList(b)}), each _{0} = _{1})),
+    ok = if a = null or b = null then false else a = b or (n >= 12 and p >= n - 4)
 in
-    Anrede_Typen_PLZ_Plausibilitaet;
+    ok;
 
-shared KUNDE_k = let
-    Quelle = KUNDE_h,
-    #"Sortierte Zeilen" = Table.Sort(Quelle,{{"Matchkey", Order.Ascending}, {"Name_norm", Order.Ascending}, {"Anlagedatum", Order.Ascending}}),
-    #"Entfernte Duplikate" = Table.Distinct(#"Sortierte Zeilen", {"Name_norm", "Matchkey"}),
-    #"Hinzugefügte benutzerdefinierte Spalte" = Table.AddColumn(#"Entfernte Duplikate", "Matchmethode", each "0 Basis ERP"),
-    KundeKey_vergeben = Table.TransformColumnTypes(Table.AddIndexColumn(#"Hinzugefügte benutzerdefinierte Spalte", "KundeKey", 1, 1, Int64.Type), {{"Matchmethode", type text}})
+shared fnLand = (w as nullable text) as nullable text =>
+let
+    r = if w = null then null else List.First(Table.SelectRows(mapLand, each Text.Lower([Wert]) = Text.Lower(w))[LandISO], null)
+in
+    r;
+
+shared fnTyp = (w as nullable text) as nullable text =>
+let
+    r = if w = null then null else List.First(Table.SelectRows(mapKundentyp, each [Wert] = w)[Kundentyp], null)
+in
+    r;
+
+shared fnJN = (v as nullable text) as nullable logical =>
+let
+    t = if v = null then null else Text.Lower(v),
+    r = if t = null then null else if List.Contains({"j", "ja", "x", "true", "1", "y"}, t) then true else if List.Contains({"n", "nein", "false", "0"}, t) then false else null
+in
+    r;
+
+shared fnStrasse = // Straße und Hausnummer trennen: Postfach, Hausnummer vor der Straße, Hausnummer-Bereiche (2-5, 5 + 8, 12/1)
+(s as nullable text) as record =>
+let
+    teile = if s = null then {} else Text.Split(s, " "),
+    ziffer = (x as text) => Text.Select(Text.Start(x, 1), {"0".."9"}) <> "",
+    postfach = s <> null and Text.StartsWith(Text.Lower(s), "postfach"),
+    vorn = s <> null and ziffer(s) and List.Count(teile) > 1 and not ziffer(teile{1}),
+    pos = if s = null then -1 else Text.PositionOfAny(s, {"0".."9"}),
+    r = if s = null then [Strasse = null, Hausnr = null, Postfach = false, Vertauscht = false]
+        else if postfach then [Strasse = s, Hausnr = null, Postfach = true, Vertauscht = false]
+        else if vorn then [Strasse = Text.Combine(List.Skip(teile, 1), " "), Hausnr = teile{0}, Postfach = false, Vertauscht = true]
+        else if pos > 0 then [Strasse = Text.Trim(Text.Start(s, pos)), Hausnr = Text.Trim(Text.Middle(s, pos)), Postfach = false, Vertauscht = false]
+        else [Strasse = s, Hausnr = null, Postfach = false, Vertauscht = false]
+in
+    r;
+
+shared fnMatchkey = // Adressschlüssel wie in der PA1: Land + PLZ + normalisierte Straße + erste Hausnummer. Fehlt ein Teil, gibt es keinen Schlüssel.
+(land as nullable text, plz as nullable text, strasse as nullable text, hausnr as nullable text) as nullable text =>
+let
+    h = if hausnr = null then null else Text.Lower(Text.SplitAny(Text.Trim(hausnr), "-+/ "){0}),
+    r = if land = null or plz = null or strasse = null or h = null then null else land & plz & "|" & fnNormStrasse(strasse) & "|" & h
+in
+    r;
+
+shared fnTel = // Telefon nach E.164 (PA1): nur der Teil vor Durchwahl/Text; braucht ein gültiges Land für die Vorwahl
+(t as nullable text, land as nullable text) as nullable text =>
+let
+    h0 = if t = null then null else Text.BeforeDelimiter(t & " -", " -"),
+    pos = if h0 = null then -1 else Text.PositionOfAny(h0, {"a".."z"} & {"A".."Z"}),
+    h = if h0 = null then null else if pos < 0 then h0 else Text.Start(h0, pos),
+    d = if h = null then "" else Text.Select(h, {"0".."9"}),
+    lk = if land = "DE" then "49" else if land = "AT" then "43" else if land = "CH" then "41" else null,
+    r = if Text.Length(d) < 6 then null
+        else if Text.StartsWith(Text.Trim(h), "+") then "+" & d
+        else if Text.StartsWith(d, "00") then "+" & Text.Middle(d, 2)
+        else if Text.StartsWith(d, "0") and lk <> null then "+" & lk & Text.Middle(d, 1)
+        else null
+in
+    r;
+
+shared fnHatText = (t as nullable text) as logical => t <> null and Text.PositionOfAny(t, {"a".."z"} & {"A".."Z"}) >= 0;
+
+shared fnEmails = // E-Mail-Feld zerlegen: mehrere Adressen, Leerzeichen um das @, Transportmüll; liefert nur syntaktisch gültige Adressen
+(s as nullable text) as list =>
+let
+    t = if s = null then null else Text.Replace(Text.Replace(s, " @ ", "@"), " / ", ";"),
+    teile = if t = null then {} else List.Transform(Text.SplitAny(t, ";,"), each fnNormEmail(_)),
+    ok = (e as nullable text) => e <> null and List.Count(Text.Split(e, "@")) = 2 and Text.Contains(Text.AfterDelimiter(e, "@"), ".") and not Text.Contains(e, " ") and Text.Length(Text.BeforeDelimiter(e, "@")) > 0,
+    r = List.Select(teile, each ok(_))
+in
+    r;
+
+shared KUNDE_h = // KUNDE_h: ERP-Kunden harmonisieren. Reihenfolge wie in der PA1: globale Vorbereitung -> PLZ/Ort -> Land -> Straße/Hausnr -> Telefon -> Kodierungen -> Befunde.
+let
+    Txt = {"KdNr", "Firma", "Name1", "Vorname", "Strasse", "PLZ", "Ort", "Land", "Kundengruppe", "VertreterNr", "Zahlungsziel", "Newsletter", "Gesperrt", "Bemerkung", "Telefon"},
+    Q = Table.TransformColumns(KUNDE, List.Transform(Txt, (c) => {c, (v) => fnClean(if v = null then null else Text.From(v)), type text})),
+    // PLZ steht im Ortsfeld ("88212 Ravensburg") oder trägt ein Länderpräfix ("D-88212")
+    P1 = Table.AddColumn(Q, "PLZ_aus_Ort", each if [PLZ] = null and [Ort] <> null and Text.Select(Text.Start([Ort], 1), {"0".."9"}) <> "" then Text.BeforeDelimiter([Ort], " ") else null, type text),
+    P2 = Table.AddColumn(P1, "Ort_ok", each if [PLZ_aus_Ort] <> null then Text.AfterDelimiter([Ort], " ") else [Ort], type text),
+    P3 = Table.AddColumn(P2, "PLZ_Praefix", each if [PLZ] <> null and Text.Contains([PLZ], "-") then Text.Upper(Text.BeforeDelimiter([PLZ], "-")) else null, type text),
+    P4 = Table.AddColumn(P3, "PLZ_roh", each if [PLZ_aus_Ort] <> null then [PLZ_aus_Ort] else if [PLZ_Praefix] <> null then Text.AfterDelimiter([PLZ], "-") else [PLZ], type text),
+    L1 = Table.AddColumn(P4, "LandISO", each fnLand([Land]) ?? fnLand([PLZ_Praefix]), type text),
+    P5 = Table.AddColumn(L1, "PLZ_norm", each if [PLZ_roh] = null then null else if [LandISO] = "DE" and Text.Length([PLZ_roh]) = 4 then "0" & [PLZ_roh] else [PLZ_roh], type text),
+    P6 = Table.AddColumn(P5, "Flag_PLZ_ok", each [PLZ_norm] <> null and Text.Select([PLZ_norm], {"0".."9"}) = [PLZ_norm] and Text.Length([PLZ_norm]) = (if [LandISO] = "DE" then 5 else 4), type logical),
+    // Straße / Hausnummer
+    S1 = Table.AddColumn(P6, "S", each fnStrasse([Strasse])),
+    S2 = Table.ExpandRecordColumn(S1, "S", {"Strasse", "Hausnr", "Postfach", "Vertauscht"}, {"Strasse_ok", "Hausnr", "Flag_Postfach", "Flag_Vertauscht"}),
+    S3 = Table.AddColumn(S2, "Matchkey", each if [Flag_Postfach] or not [Flag_PLZ_ok] then null else fnMatchkey([LandISO], [PLZ_norm], [Strasse_ok], [Hausnr]), type text),
+    // Name, Titel, Kodierungen
+    N1 = Table.AddColumn(S3, "Titel", each if [Name1] <> null and Text.StartsWith([Name1], "Dr.") then "Dr." else null, type text),
+    N2 = Table.AddColumn(N1, "Nachname", each if [Titel] <> null then Text.Trim(Text.AfterDelimiter([Name1], "Dr.")) else [Name1], type text),
+    N3 = Table.AddColumn(N2, "Kundentyp", each fnTyp([Kundengruppe]), type text),
+    N4 = Table.AddColumn(N3, "Name_norm", each fnNormName(if [Firma] <> null then [Firma] else [Nachname]), type text),
+    N5 = Table.AddColumn(N4, "Flag_Test", each [Name_norm] <> null and Text.StartsWith([Name_norm], "test"), type logical),
+    K1 = Table.AddColumn(N5, "Newsletter_ok", each fnJN([Newsletter]), type logical),
+    K2 = Table.AddColumn(K1, "Gesperrt_ok", each fnJN([Gesperrt]) ?? false, type logical),
+    K3 = Table.AddColumn(K2, "Flag_Sperrvermerk", each [Bemerkung] <> null and List.AnyTrue(List.Transform({"insolvent", "gesperrt", "nicht verwenden"}, (w) => Text.Contains(Text.Lower([Bemerkung]), w))), type logical),
+    K4 = Table.AddColumn(K3, "Kontaktstatus", each if [Gesperrt_ok] or [Flag_Sperrvermerk] then "gesperrt" else null, type text),
+    K5 = Table.AddColumn(K4, "Zahlungsziel_ok", each if [Zahlungsziel] = null or Text.StartsWith([Zahlungsziel], "-") or Text.Select([Zahlungsziel], {"0".."9"}) = "" then null else Number.FromText(Text.Select([Zahlungsziel], {"0".."9"})), Int64.Type),
+    K6 = Table.AddColumn(K5, "Telefon_E164", each fnTel([Telefon], [LandISO]), type text),
+    // Befunde: was nach der automatischen Bereinigung übrig bleibt (Prüfliste, Tab. 8.1 Klasse 2 und 3)
+    B = Table.AddColumn(K6, "Befunde", each Text.Combine(List.RemoveNulls({
+            if [Flag_Test] then "Testkunde (gefiltert)" else null,
+            if [LandISO] = null then "Land fehlt oder unbekannt" else null,
+            if not [Flag_PLZ_ok] then "PLZ fehlt oder ungültig" else null,
+            if [Flag_Postfach] then "Postfach statt Straße (kein Adressschlüssel)" else null,
+            if fnHatText([Telefon]) then "Telefon enthält Text" else null,
+            if [Telefon] <> null and [Telefon_E164] = null then "Telefon nicht normalisierbar" else null,
+            if [Firma] <> null and (Text.Contains([Firma], " / ") or Text.Contains([Firma], "Hr.") or Text.Contains([Firma], "Fr.")) then "Firma enthält Zusatz (Ansprechpartner?)" else null,
+            if [Firma] <> null and Text.Length([Firma]) >= 30 then "Name evtl. abgeschnitten (Feldlänge 30)" else null,
+            if [Flag_Sperrvermerk] and not [Gesperrt_ok] then "Sperrvermerk nur im Freitext" else null}), "; "), type text),
+    Sel = Table.SelectColumns(B, {"KdNr", "Firma", "Name1", "Nachname", "Vorname", "PLZ_norm", "Ort_ok", "VertreterNr", "Zahlungsziel_ok", "Anlagedatum", "Newsletter_ok", "Gesperrt_ok", "GesperrtBis", "Bemerkung", "LandISO", "Strasse_ok", "Hausnr", "Titel", "Kundentyp", "Matchkey", "Name_norm", "Kontaktstatus", "Telefon_E164", "Flag_Test", "Flag_PLZ_ok", "Flag_Postfach", "Flag_Vertauscht", "Flag_Sperrvermerk", "Befunde"}),
+    Ren = Table.RenameColumns(Sel, {{"Ort_ok", "Ort"}, {"Zahlungsziel_ok", "Zahlungsziel"}, {"Newsletter_ok", "Newsletter"}, {"Gesperrt_ok", "Gesperrt"}, {"Strasse_ok", "Strasse"}}),
+    Typ = Table.TransformColumnTypes(Ren, {{"Strasse", type text}, {"Hausnr", type text}, {"Flag_Postfach", type logical}, {"Flag_Vertauscht", type logical}}),
+    Nulldatum = Table.ReplaceValue(Typ, #date(9999, 12, 31), null, Replacer.ReplaceValue, {"GesperrtBis"}),
+    Quelle = Table.AddColumn(Nulldatum, "Quelle", each "ERP", type text)
+in
+    Quelle;
+
+shared SHOP_h = // SHOP_h: Shop-Kunden harmonisieren. Adresse steht in einem Feld ("Straße Nr, PLZ Ort"), E-Mail-Feld kann mehrere Adressen oder Text enthalten.
+let
+    Txt = {"customer_id", "email", "first_name", "last_name", "gender", "address", "country", "is_club", "newsletter", "erp_customer_no", "company", "phone"},
+    Q = Table.TransformColumns(customers, List.Transform(Txt, (c) => {c, (v) => fnClean(if v = null then null else Text.From(v)), type text})),
+    A1 = Table.AddColumn(Q, "Adr1", each if [address] = null then null else Text.BeforeDelimiter([address], ", "), type text),
+    A2 = Table.AddColumn(A1, "Adr2", each if [address] = null or not Text.Contains([address], ", ") then null else Text.AfterDelimiter([address], ", "), type text),
+    A3 = Table.AddColumn(A2, "S", each fnStrasse([Adr1])),
+    A4 = Table.ExpandRecordColumn(A3, "S", {"Strasse", "Hausnr", "Postfach"}, {"Strasse", "Hausnr", "Flag_Postfach"}),
+    A5 = Table.AddColumn(A4, "PLZ_norm", each if [Adr2] = null then null else Text.BeforeDelimiter([Adr2], " "), type text),
+    A6 = Table.AddColumn(A5, "Ort", each if [Adr2] = null then null else Text.AfterDelimiter([Adr2], " "), type text),
+    A7 = Table.AddColumn(A6, "LandISO", each fnLand([country]) ?? [country], type text),
+    A8 = Table.AddColumn(A7, "Matchkey", each fnMatchkey([LandISO], [PLZ_norm], [Strasse], [Hausnr]), type text),
+    K1 = Table.AddColumn(A8, "Kundentyp", each if fnJN([is_club]) = true then "Verein" else if [company] <> null then null else "Privat", type text),
+    K2 = Table.AddColumn(K1, "Anrede", each if [gender] = "1" then "Herr" else if [gender] = "2" then "Frau" else null, type text),
+    M1 = Table.AddColumn(K2, "Mails", each fnEmails([email])),
+    M2 = Table.AddColumn(M1, "Email_norm", each List.First([Mails], null), type text),
+    M3 = Table.AddColumn(M2, "Email_2", each if List.Count([Mails]) > 1 then [Mails]{1} else null, type text),
+    N1 = Table.AddColumn(M3, "Name_norm", each fnNormName(if [company] <> null then [company] else [last_name]), type text),
+    N2 = Table.AddColumn(N1, "Flag_Test", each ([Name_norm] <> null and Text.StartsWith([Name_norm], "test")) or [Email_norm] = "test@test.de", type logical),
+    // UTC -> mitteleuropäische Zeit, sonst rutscht eine Bestellung kurz vor Mitternacht auf den Vortag
+    D1 = Table.AddColumn(N2, "Anlagedatum", each Date.From(DateTimeZone.RemoveZone(DateTimeZone.SwitchZone([created_at], 1))), type date),
+    T1 = Table.AddColumn(D1, "Telefon_E164", each fnTel([phone], [LandISO]), type text),
+    B = Table.AddColumn(T1, "Befunde", each Text.Combine(List.RemoveNulls({
+            if [Flag_Test] then "Testkunde (gefiltert)" else null,
+            if [email] <> null and [Email_norm] = null then "E-Mail ungültig oder Text im E-Mail-Feld" else null,
+            if [Email_2] <> null then "zwei E-Mails in einem Feld (erste führt)" else null,
+            if [Matchkey] = null then "Adresse unvollständig (kein Adressschlüssel)" else null,
+            if fnHatText([phone]) then "Telefon enthält Text" else null,
+            if [phone] <> null and [Telefon_E164] = null then "Telefon nicht normalisierbar" else null}), "; "), type text),
+    Ren = Table.RenameColumns(B, {{"customer_id", "ShopID"}, {"erp_customer_no", "ERP_KdNr"}, {"company", "Firma"}, {"first_name", "Vorname"}, {"last_name", "Nachname"}}),
+    L1 = Table.AddColumn(Ren, "is_club_ok", each fnJN([is_club]) ?? false, type logical),
+    L2 = Table.AddColumn(L1, "Newsletter", each fnJN([newsletter]), type logical),
+    Sel = Table.SelectColumns(L2, {"ShopID", "Vorname", "Nachname", "Strasse", "Hausnr", "PLZ_norm", "Ort", "LandISO", "is_club_ok", "Newsletter", "Anlagedatum", "ERP_KdNr", "Firma", "Kundentyp", "Email_norm", "Email_2", "Anrede", "Matchkey", "Name_norm", "Telefon_E164", "Flag_Test", "Befunde"}),
+    Ren2 = Table.RenameColumns(Sel, {{"is_club_ok", "is_club"}}),
+    Typ = Table.TransformColumnTypes(Ren2, {{"Strasse", type text}, {"Hausnr", type text}}),
+    Quelle = Table.AddColumn(Typ, "Quelle", each "Shop", type text)
+in
+    Quelle;
+
+shared CRM_h = // CRM_h: CRM-Accounts harmonisieren. Vom Vertrieb gepflegt: Freitext, Excel-Artefakte, vertauschte Felder, Sperrvermerke im Firmenfeld.
+let
+    Txt = {"AccountId", "Firma", "Anrede", "Titel", "Vorname", "Nachname", "Strasse", "Hausnr", "PLZ", "Ort", "Land", "Kundentyp", "Segment", "Betreuer", "ERP_KdNr", "Newsletter", "Status", "E-Mail", "Telefon"},
+    Q = Table.TransformColumns(Accounts, List.Transform(Txt, (c) => {c, (v) => fnClean(if v = null then null else Text.From(v)), type text})),
+    // Sperrvermerk im Firmenfeld auswerten und aus dem Namen entfernen
+    F1 = Table.AddColumn(Q, "Flag_Sperrvermerk", each [Firma] <> null and List.AnyTrue(List.Transform({"(insolvent)", "(gesperrt)", "(nicht verwenden)"}, (w) => Text.Contains(Text.Lower([Firma]), w))), type logical),
+    F2 = Table.AddColumn(F1, "Firma_ok", each if [Flag_Sperrvermerk] then Text.Trim(Text.BeforeDelimiter([Firma], "(", {0, RelativePosition.FromEnd})) else [Firma], type text),
+    // PLZ: Länderpräfix abtrennen; Zahl aus Excel ist durch den Texttyp schon Text, die führende Null fehlt aber
+    P1 = Table.AddColumn(F2, "PLZ_Praefix", each if [PLZ] <> null and Text.Contains([PLZ], "-") then Text.Upper(Text.BeforeDelimiter([PLZ], "-")) else null, type text),
+    P2 = Table.AddColumn(P1, "PLZ_roh", each if [PLZ_Praefix] <> null then Text.AfterDelimiter([PLZ], "-") else [PLZ], type text),
+    L0 = Table.AddColumn(P2, "LandISO_roh", each fnLand([Land]) ?? fnLand([PLZ_Praefix]), type text),
+    // fehlendes Land: fünfstellige PLZ ist in DACH nur in Deutschland möglich; vierstellig bleibt offen (AT oder CH)
+    L1 = Table.AddColumn(L0, "LandISO", each if [LandISO_roh] <> null then [LandISO_roh] else if [PLZ_roh] <> null and Text.Length([PLZ_roh]) = 5 then "DE" else null, type text),
+    P3 = Table.AddColumn(L1, "PLZ_norm", each if [PLZ_roh] = null then null else if [LandISO] = "DE" and Text.Length([PLZ_roh]) = 4 and [Flag_PLZ_Zahl] then "0" & [PLZ_roh] else [PLZ_roh], type text),
+    P4 = Table.AddColumn(P3, "Flag_PLZ_Land", each [PLZ_norm] <> null and (([LandISO] = "DE" and Text.Length([PLZ_norm]) <> 5) or ([LandISO] <> "DE" and [LandISO] <> null and Text.Length([PLZ_norm]) <> 4)), type logical),
+    // Straße/Hausnr vertauscht (Fehlbelegung bei manueller Erfassung)
+    S0 = Table.AddColumn(P4, "Flag_Vertauscht", each [Strasse] <> null and [Hausnr] <> null and Text.Select(Text.Start([Strasse], 1), {"0".."9"}) <> "" and Text.Select(Text.Start([Hausnr], 1), {"0".."9"}) = "", type logical),
+    S1 = Table.AddColumn(S0, "Strasse_ok", each if [Flag_Vertauscht] then [Hausnr] else [Strasse], type text),
+    S2 = Table.AddColumn(S1, "Hausnr_ok", each if [Flag_Vertauscht] then [Strasse] else [Hausnr], type text),
+    S3 = Table.AddColumn(S2, "Matchkey", each if [Flag_PLZ_Land] then null else fnMatchkey([LandISO], [PLZ_norm], [Strasse_ok], [Hausnr_ok]), type text),
+    // Kodierungen
+    K1 = Table.AddColumn(S3, "Kundentyp_ok", each fnTyp([Kundentyp]), type text),
+    K2 = Table.AddColumn(K1, "Anrede_ok", each let a = Text.Lower(Text.Start([Anrede] ?? "", 2)) in if a = "he" or a = "hr" then "Herr" else if a = "fr" then "Frau" else null, type text),
+    K3 = Table.AddColumn(K2, "Newsletter_ok", each fnJN([Newsletter]) ?? false, type logical),
+    K4 = Table.AddColumn(K3, "Kontaktstatus", each if [Flag_Sperrvermerk] then "gesperrt" else [Status], type text),
+    // Privatkunde nur im Firmenfeld ("Müller Hans"): für den Abgleich zählt das erste Wort als Nachname, die Feldkorrektur bleibt manuell
+    N0 = Table.AddColumn(K4, "Flag_Privat_in_Firma", each [Kundentyp_ok] = "Privat" and [Nachname] = null and [Firma_ok] <> null, type logical),
+    N1 = Table.AddColumn(N0, "Name_norm", each fnNormName(if [Flag_Privat_in_Firma] then Text.BeforeDelimiter([Firma_ok] & " ", " ") else if [Firma_ok] <> null then [Firma_ok] else [Nachname]), type text),
+    N2 = Table.AddColumn(N1, "Flag_Test", each [Name_norm] <> null and Text.StartsWith([Name_norm], "test"), type logical),
+    M1 = Table.AddColumn(N2, "Email_norm", each List.First(fnEmails([#"E-Mail"]), null), type text),
+    T1 = Table.AddColumn(M1, "Telefon_E164", each fnTel([Telefon], [LandISO]), type text),
+    // Betreuer ist ein Fremdschlüssel per Name: Abgleich über den normalisierten Nachnamen gegen das Blatt Betreuer
+    BT = Table.Buffer(Table.AddColumn(Betreuer, "NN", each fnNormName(List.Last(Text.Split([Name], " "))), type text)),
+    R1 = Table.AddColumn(T1, "Betreuer_ok", each if [Betreuer] = null then null else List.First(Table.SelectRows(BT, (b) => b[NN] = fnNormName(List.Last(Text.Split([Betreuer], " "))))[Name], null), type text),
+    B = Table.AddColumn(R1, "Befunde", each Text.Combine(List.RemoveNulls({
+            if [Flag_Test] then "Testkunde (gefiltert)" else null,
+            if [LandISO] = null then "Land fehlt oder unbekannt" else null,
+            if [PLZ_norm] = null then "PLZ fehlt oder ungültig" else null,
+            if [Flag_PLZ_Land] then "PLZ passt nicht zum Land" else null,
+            if [Flag_Datum_ungenau] then "Erstkontakt nur monatsgenau" else null,
+            if [Betreuer] <> null and [Betreuer_ok] = null then "Betreuer nicht auflösbar" else null,
+            if [Flag_Privat_in_Firma] then "Privatname im Firmenfeld" else null,
+            if [#"E-Mail"] <> null and [Email_norm] = null then "E-Mail ungültig oder Text im E-Mail-Feld" else null,
+            if fnHatText([Telefon]) then "Telefon enthält Text" else null,
+            if [Telefon] <> null and [Telefon_E164] = null then "Telefon nicht normalisierbar" else null,
+            if [Flag_Sperrvermerk] then "Sperrvermerk im Firmenfeld" else null}), "; "), type text),
+    Sel = Table.SelectColumns(B, {"AccountId", "Firma_ok", "Anrede_ok", "Titel", "Vorname", "Nachname", "Strasse_ok", "Hausnr_ok", "PLZ", "Ort", "Segment", "Betreuer_ok", "ERP_KdNr", "Erstkontakt", "Newsletter_ok", "Kontaktstatus", "LetzteAenderung", "Telefon_E164", "LandISO", "PLZ_norm", "Kundentyp_ok", "Email_norm", "Name_norm", "Matchkey", "Flag_PLZ_Land", "Flag_Datum_ungenau", "Flag_Vertauscht", "Flag_Sperrvermerk", "Flag_Privat_in_Firma", "Flag_Test", "Befunde"}),
+    Ren = Table.RenameColumns(Sel, {{"Firma_ok", "Firma"}, {"Anrede_ok", "Anrede"}, {"Strasse_ok", "Strasse"}, {"Hausnr_ok", "Hausnr"}, {"Segment", "ABC_Klasse"}, {"Betreuer_ok", "Betreuer"}, {"Newsletter_ok", "Newsletter"}, {"Kundentyp_ok", "Kundentyp"}}),
+    Quelle = Table.AddColumn(Ren, "Quelle", each "CRM", type text)
+in
+    Quelle;
+
+shared KUNDE_k = // KUNDE_k: ERP als Basis der Kundenintegration. Testkunden raus, Dubletten (gleiche Adresse + gleicher Name) auf den ältesten Datensatz, KundeKey als Surrogat.
+let
+    Quelle = Table.SelectRows(KUNDE_h, each not [Flag_Test]),
+    #"Sortierte Zeilen" = Table.Buffer(Table.Sort(Quelle, {{"Matchkey", Order.Ascending}, {"Name_norm", Order.Ascending}, {"Anlagedatum", Order.Ascending}})),
+    MitSchluessel = Table.Distinct(Table.SelectRows(#"Sortierte Zeilen", each [Matchkey] <> null), {"Name_norm", "Matchkey"}),
+    OhneSchluessel = Table.SelectRows(#"Sortierte Zeilen", each [Matchkey] = null),
+    Alle = Table.Combine({MitSchluessel, OhneSchluessel}),
+    #"Hinzugefügte benutzerdefinierte Spalte" = Table.AddColumn(Alle, "Matchmethode", each "0 Basis ERP", type text),
+    KundeKey_vergeben = Table.Buffer(Table.AddIndexColumn(#"Hinzugefügte benutzerdefinierte Spalte", "KundeKey", 1, 1, Int64.Type))
 in
     KundeKey_vergeben;
 
 shared ERP_Dubletten = // ERP_Dubletten (Zeile 47): Kunden, die im ERP mehrfach angelegt sind – gleicher Matchkey + normalisierter Name.
 // Führend ist der älteste Datensatz (Anlagedatum); die anderen KdNr werden später auf denselben KundeKey gemappt.
 let
-    Q = KUNDE_h,
+    Q = Table.SelectRows(KUNDE_h, each [Matchkey] <> null and not [Flag_Test]),
     G = Table.Group(Q, {"Matchkey", "Name_norm"}, {{"Anzahl", each Table.RowCount(_), Int64.Type}, {"Zeilen", each _, type table}}),
     F = Table.SelectRows(G, each [Anzahl] > 1),
     E = Table.ExpandTableColumn(F, "Zeilen", {"KdNr", "Firma", "Anlagedatum"}),
@@ -224,75 +352,99 @@ let
 in
     R;
 
-shared CRM_k = // CRM_k: jedem CRM-Account einen KundeKey zuordnen. Kaskade: 1 ERP-Schlüssel (mit Namensprüfung) -> 3 Adresse exakt -> 4 Fuzzy Name -> neu.
-// Stufe 2 (E-Mail) entfällt, weil das ERP keine E-Mail führt (Checkliste 17).
+shared CRM_k = // CRM_k: jedem CRM-Account einen KundeKey zuordnen. Kaskade: 1 ERP-Schlüssel (mit Namens- oder Adressbestätigung) -> 3 Adresse (mit Namensbestätigung) -> 4 Fuzzy Name -> neu.
+// Stufe 2 (E-Mail) entfällt, weil das ERP keine E-Mail führt. pAbsicherung = false schaltet auf die ungesicherte Kaskade zurück (Messung 6).
 let
-    S = CRM_h,
-    ERP = KUNDE_k,
-    // ---- Stufe 1: ERP-Schlüssel (Checkliste 21)
-    J1 = Table.NestedJoin(S, {"ERP_KdNr"}, ERP, {"KdNr"}, "K", JoinKind.LeftOuter),
-    E1 = Table.ExpandTableColumn(J1, "K", {"KundeKey", "Name_norm"}, {"Key_S", "Name_ERP"}),
-    // Plausibilität (30): Schlüssel nur akzeptieren, wenn der normalisierte Name auf beiden Seiten gleich ist
-    P  = Table.AddColumn(E1, "Key_Schluessel", each if [Key_S] <> null and [Name_ERP] = [Name_norm] then [Key_S] else null, Int64.Type),
-    F  = Table.AddColumn(P, "Flag_Schluessel_Name", each [Key_S] <> null and [Name_ERP] <> [Name_norm], type logical),
-    // ---- Stufe 3: Adresse exakt über Matchkey (27)
-    ERPadr = Table.Distinct(Table.SelectRows(Table.SelectColumns(ERP, {"Matchkey", "KundeKey"}), each [Matchkey] <> null), {"Matchkey"}),
-    J3 = Table.NestedJoin(F, {"Matchkey"}, ERPadr, {"Matchkey"}, "A", JoinKind.LeftOuter),
-    E3 = Table.ExpandTableColumn(J3, "A", {"KundeKey"}, {"Key_Adr"}),
-    Vor = Table.AddColumn(E3, "Key_13", each if [Key_Schluessel] <> null then [Key_Schluessel] else [Key_Adr], Int64.Type),
-    // ---- Stufe 4: Fuzzy auf normalisierten Namen + Land, nur für noch offene Zeilen
+    S = Table.SelectRows(CRM_h, each not [Flag_Test]),
+    ERP = Table.Buffer(Table.SelectColumns(KUNDE_k, {"KdNr", "KundeKey", "Name_norm", "Matchkey", "LandISO", "PLZ_norm", "Ort", "Kundentyp"})),
+    // ---- Stufe 1: ERP-Schlüssel. Der Schlüssel zählt nur, wenn Name oder Adresse ihn bestätigen (Tippfehler im Fremdschlüssel).
+    fKey = (kd as nullable text, name as nullable text, mk as nullable text) as record =>
+        let t = if kd = null then null else Table.SelectRows(ERP, (r) => r[KdNr] = kd),
+            e = if t = null or Table.IsEmpty(t) then null else t{0},
+            ok = if e = null then false else if pAbsicherung then fnNameOk(e[Name_norm], name) or (mk <> null and e[Matchkey] = mk) else e[Name_norm] = name
+        in [Key = if ok then e[KundeKey] else null, Flag = e <> null and not ok],
+    A1 = Table.AddColumn(S, "K1", each fKey([ERP_KdNr], [Name_norm], [Matchkey])),
+    A2 = Table.ExpandRecordColumn(A1, "K1", {"Key", "Flag"}, {"Key_Schluessel", "Flag_Schluessel_Name"}),
+    // ---- Stufe 3: Adresse. Gleiche Adresse allein genügt nicht (Vereinsheim in der Gaststätte, Filialen) – der Name muss passen.
+    fAdr = (mk as nullable text, name as nullable text) =>
+        let t = if mk = null then null else Table.SelectRows(ERP, (r) => r[Matchkey] = mk),
+            k = if t = null then null else if pAbsicherung then Table.SelectRows(t, (r) => fnNameOk(r[Name_norm], name)) else t
+        in if k = null or Table.IsEmpty(k) then null else k{0}[KundeKey],
+    A3 = Table.AddColumn(A2, "Key_Adr", each fAdr([Matchkey], [Name_norm]), Int64.Type),
+    Vor = Table.AddColumn(A3, "Key_13", each [Key_Schluessel] ?? [Key_Adr], Int64.Type),
+    // ---- Stufe 4: Fuzzy auf normalisierten Namen + Land, nur für noch offene Zeilen. Fuzzy liefert Kandidaten, die Nachregel entscheidet.
     Offen = Table.SelectRows(Vor, each [Key_13] = null),
     Zu = Table.SelectRows(Vor, each [Key_13] <> null),
-    ERPn = Table.Distinct(Table.SelectColumns(ERP, {"Name_norm", "LandISO", "PLZ_norm", "Ort", "Kundentyp", "KundeKey"}), {"Name_norm", "LandISO", "PLZ_norm"}),
+    // Belegt-Regel: ein ERP-Kunde, dem schon ein Account per Schlüssel oder Adresse zugeordnet ist, nimmt keinen weiteren Account
+    // allein über Name + PLZ/Ort auf (umgezogener Betrieb trifft am neuen Ort auf einen gleichnamigen).
+    Belegt = List.Buffer(List.RemoveNulls(Zu[Key_13])),
+    ERPn = Table.Distinct(Table.SelectColumns(ERP, {"Name_norm", "LandISO", "PLZ_norm", "Ort", "Kundentyp", "KundeKey", "Matchkey"}), {"Name_norm", "LandISO", "PLZ_norm"}),
     FJ = Table.FuzzyNestedJoin(Offen, {"Name_norm", "LandISO"}, ERPn, {"Name_norm", "LandISO"}, "FZ", JoinKind.LeftOuter, [Threshold = pSchwelle, IgnoreCase = true, IgnoreSpace = true]),
-    FE = Table.RemoveColumns(Table.AddColumn(FJ, "Key_Fuzzy", each let k = Table.SelectRows([FZ], (r) => if [Kundentyp] = "Verein" then r[Name_norm] = [Name_norm] else (r[PLZ_norm] = [PLZ_norm] or (r[Name_norm] = [Name_norm] and Text.StartsWith(Text.Lower([Ort]), Text.Lower(r[Ort]))))) in if Table.IsEmpty(k) then null else k{0}[KundeKey]), {"FZ"}),
+    FE = Table.RemoveColumns(Table.AddColumn(FJ, "Key_Fuzzy", each let k = Table.SelectRows([FZ], (r) =>
+            (pAbsicherung and [Matchkey] <> null and r[Matchkey] = [Matchkey])
+            or (if [Kundentyp] = "Verein" then r[Name_norm] = [Name_norm]
+                else not (pBelegtRegel and List.Contains(Belegt, r[KundeKey])) and (([PLZ_norm] <> null and r[PLZ_norm] = [PLZ_norm]) or (r[Name_norm] = [Name_norm] and Text.StartsWith(Text.Lower([Ort] ?? ""), Text.Lower(r[Ort] ?? "#")))))) in if Table.IsEmpty(k) then null else k{0}[KundeKey]), {"FZ"}),
     OffenK = Table.RemoveColumns(Table.AddColumn(FE, "KundeKey", each [Key_Fuzzy], Int64.Type), {"Key_Fuzzy"}),
     ZuK = Table.AddColumn(Zu, "KundeKey", each [Key_13], Int64.Type),
     Beide = Table.Combine({ZuK, OffenK}),
     M = Table.AddColumn(Beide, "Matchmethode", each
           if [Key_Schluessel] <> null then "1 ERP-Schlüssel"
-          else if [Key_Adr] <> null then "3 Adresse exakt"
+          else if [Key_Adr] <> null then "3 Adresse + Name"
           else if [KundeKey] <> null then "4 Fuzzy Name"
           else "neu", type text),
-    // ---- Neue Keys ab 1001: Leads, Umzieher ohne Schlüssel, Rest. CRM-Dubletten teilen sich einen Key (29)
+    // ---- Neue Keys ab 1001: Leads, Umzieher ohne Schlüssel, Rest. CRM-Dubletten teilen sich einen Key.
     Neu = Table.SelectRows(M, each [KundeKey] = null),
     Alt = Table.SelectRows(M, each [KundeKey] <> null),
     NeuG = Table.Group(Neu, {"Matchkey", "Name_norm"}, {{"Z", each _, type table}}),
     NeuI = Table.AddIndexColumn(NeuG, "NeuKey", 1001, 1, Int64.Type),
     NeuE = Table.ExpandTableColumn(NeuI, "Z", List.RemoveItems(Table.ColumnNames(Neu), {"Matchkey", "Name_norm", "KundeKey"})),
     NeuK = Table.RenameColumns(NeuE, {{"NeuKey", "KundeKey"}}),
-    Fertig = Table.RemoveColumns(Table.Combine({Alt, NeuK}), {"Key_S", "Name_ERP", "Key_Adr", "Key_13"})
+    Fertig = Table.Buffer(Table.RemoveColumns(Table.Combine({Alt, NeuK}), {"Key_Adr", "Key_13"}))
 in
     Fertig;
 
-shared SHOP_k = // SHOP_k: jedem Shop-Kunden einen KundeKey zuordnen. Kaskade: 1 ERP-Schlüssel -> 2 E-Mail (CRM) -> 3 Adresse (ERP, dann CRM) -> 4 Fuzzy (nur gewerblich) -> neu ab 2001.
+shared SHOP_k = // SHOP_k: jedem Shop-Kunden einen KundeKey zuordnen. Kaskade: 1 ERP-Schlüssel -> 2 E-Mail (CRM) -> 3 Adresse + Name (ERP, dann CRM) -> 4 Fuzzy (nur gewerblich) -> neu ab 2001.
 let
-    S = SHOP_h,
-    ERP = KUNDE_k,
-    CRM = CRM_k,
-    // ---- Stufe 1: ERP-Schlüssel mit Namensprüfung (21, 30)
-    J1 = Table.NestedJoin(S, {"ERP_KdNr"}, ERP, {"KdNr"}, "K", JoinKind.LeftOuter),
-    E1 = Table.ExpandTableColumn(J1, "K", {"KundeKey", "Name_norm"}, {"Key_S", "Name_ERP"}),
-    P  = Table.AddColumn(E1, "Key_Schluessel", each if [Key_S] <> null and [Name_ERP] = [Name_norm] then [Key_S] else null, Int64.Type),
-    F  = Table.AddColumn(P, "Flag_Schluessel_Name", each [Key_S] <> null and [Name_ERP] <> [Name_norm], type logical),
-    // ---- Stufe 2: E-Mail gegen CRM (das ERP hat keine E-Mail)
-    CRMm = Table.Distinct(Table.SelectRows(Table.SelectColumns(CRM, {"Email_norm", "KundeKey"}), each [Email_norm] <> null and [Email_norm] <> ""), {"Email_norm"}),
-    J2 = Table.NestedJoin(F, {"Email_norm"}, CRMm, {"Email_norm"}, "M", JoinKind.LeftOuter),
-    E2 = Table.ExpandTableColumn(J2, "M", {"KundeKey"}, {"Key_Mail"}),
-    // ---- Stufe 3: Adresse exakt, erst ERP, dann CRM (27)
-    ERPadr = Table.Distinct(Table.SelectRows(Table.SelectColumns(ERP, {"Matchkey", "KundeKey"}), each [Matchkey] <> null), {"Matchkey"}),
-    CRMadr = Table.Distinct(Table.SelectRows(Table.SelectColumns(CRM, {"Matchkey", "KundeKey"}), each [Matchkey] <> null), {"Matchkey"}),
-    J3a = Table.NestedJoin(E2, {"Matchkey"}, ERPadr, {"Matchkey"}, "A", JoinKind.LeftOuter),
-    E3a = Table.ExpandTableColumn(J3a, "A", {"KundeKey"}, {"Key_AdrERP"}),
-    J3b = Table.NestedJoin(E3a, {"Matchkey"}, CRMadr, {"Matchkey"}, "B", JoinKind.LeftOuter),
-    E3b = Table.ExpandTableColumn(J3b, "B", {"KundeKey"}, {"Key_AdrCRM"}),
-    Vor = Table.AddColumn(E3b, "Key_123", each if [Key_Schluessel] <> null then [Key_Schluessel] else if [Key_Mail] <> null then [Key_Mail] else if [Key_AdrERP] <> null then [Key_AdrERP] else [Key_AdrCRM], Int64.Type),
-    // ---- Stufe 4: Fuzzy nur für gewerbliche Kunden; Privatnamen (Müller) sind zu häufig. Treffer nur bei gleicher PLZ oder bei Vereinen.
+    S = Table.SelectRows(SHOP_h, each not [Flag_Test]),
+    ERP = Table.Buffer(Table.SelectColumns(KUNDE_k, {"KdNr", "KundeKey", "Name_norm", "Matchkey", "LandISO", "PLZ_norm", "Ort", "Kundentyp"})),
+    CRM = Table.Buffer(Table.SelectColumns(CRM_k, {"KundeKey", "Name_norm", "Matchkey", "LandISO", "PLZ_norm", "Ort", "Kundentyp", "Email_norm"})),
+    // ---- Stufe 1: ERP-Schlüssel mit Namens- oder Adressbestätigung
+    fKey = (kd as nullable text, name as nullable text, mk as nullable text) as record =>
+        let t = if kd = null then null else Table.SelectRows(ERP, (r) => r[KdNr] = kd),
+            e = if t = null or Table.IsEmpty(t) then null else t{0},
+            ok = if e = null then false else if pAbsicherung then fnNameOk(e[Name_norm], name) or (mk <> null and e[Matchkey] = mk) else e[Name_norm] = name
+        in [Key = if ok then e[KundeKey] else null, Flag = e <> null and not ok],
+    A1 = Table.AddColumn(S, "K1", each fKey([ERP_KdNr], [Name_norm], [Matchkey])),
+    A2 = Table.ExpandRecordColumn(A1, "K1", {"Key", "Flag"}, {"Key_Schluessel", "Flag_Schluessel_Name"}),
+    // ---- Stufe 2: E-Mail gegen CRM. Bei mehreren Kunden mit derselben Adresse (Sammelpostfach) entscheidet der Name;
+    //      ohne Namensbestätigung zählt die E-Mail nur, wenn sie im CRM genau einem Kunden gehört.
+    fMail = (mail as nullable text, name as nullable text) =>
+        let t = if mail = null then null else Table.SelectRows(CRM, (r) => r[Email_norm] = mail),
+            n = if t = null then null else Table.SelectRows(t, (r) => fnNameOk(r[Name_norm], name))
+        in if t = null or Table.IsEmpty(t) then null
+           else if not pAbsicherung then t{0}[KundeKey]
+           else if not Table.IsEmpty(n) then n{0}[KundeKey]
+           else if List.Count(List.Distinct(t[KundeKey])) = 1 then t{0}[KundeKey]
+           else null,
+    A3 = Table.AddColumn(A2, "Key_Mail", each fMail([Email_norm], [Name_norm]) ?? fMail([Email_2], [Name_norm]), Int64.Type),
+    // ---- Stufe 3: Adresse + Name, erst ERP, dann CRM
+    fAdr = (quelle as table, mk as nullable text, name as nullable text) =>
+        let t = if mk = null then null else Table.SelectRows(quelle, (r) => r[Matchkey] = mk),
+            k = if t = null then null else if pAbsicherung then Table.SelectRows(t, (r) => fnNameOk(r[Name_norm], name)) else t
+        in if k = null or Table.IsEmpty(k) then null else k{0}[KundeKey],
+    A4 = Table.AddColumn(A3, "Key_AdrERP", each fAdr(ERP, [Matchkey], [Name_norm]), Int64.Type),
+    A5 = Table.AddColumn(A4, "Key_AdrCRM", each fAdr(CRM, [Matchkey], [Name_norm]), Int64.Type),
+    Vor = Table.AddColumn(A5, "Key_123", each [Key_Schluessel] ?? [Key_Mail] ?? [Key_AdrERP] ?? [Key_AdrCRM], Int64.Type),
+    // ---- Stufe 4: Fuzzy nur für gewerbliche Kunden; Privatnamen (Müller) sind zu häufig.
     Offen = Table.SelectRows(Vor, each [Key_123] = null and [Kundentyp] <> "Privat"),
     Rest  = Table.SelectRows(Vor, each [Key_123] <> null or [Kundentyp] = "Privat"),
-    Namen = Table.Distinct(Table.Combine({Table.SelectColumns(ERP, {"Name_norm", "LandISO", "PLZ_norm", "Ort", "Kundentyp", "KundeKey"}), Table.SelectColumns(CRM, {"Name_norm", "LandISO", "PLZ_norm", "Ort", "Kundentyp", "KundeKey"})}), {"Name_norm", "LandISO", "PLZ_norm"}),
+    Sp = {"Name_norm", "LandISO", "PLZ_norm", "Ort", "Kundentyp", "KundeKey", "Matchkey"},
+    Namen = Table.Distinct(Table.Combine({Table.SelectColumns(ERP, Sp), Table.SelectColumns(CRM, Sp)}), {"Name_norm", "LandISO", "PLZ_norm"}),
     FJ = Table.FuzzyNestedJoin(Offen, {"Name_norm", "LandISO"}, Namen, {"Name_norm", "LandISO"}, "FZ", JoinKind.LeftOuter, [Threshold = pSchwelle, IgnoreCase = true, IgnoreSpace = true]),
-    FE = Table.RemoveColumns(Table.AddColumn(FJ, "Key_Fuzzy", each let k = Table.SelectRows([FZ], (r) => if [Kundentyp] = "Verein" then r[Name_norm] = [Name_norm] else (r[PLZ_norm] = [PLZ_norm] or (r[Name_norm] = [Name_norm] and Text.StartsWith(Text.Lower([Ort]), Text.Lower(r[Ort]))))) in if Table.IsEmpty(k) then null else k{0}[KundeKey]), {"FZ"}),
+    FE = Table.RemoveColumns(Table.AddColumn(FJ, "Key_Fuzzy", each let k = Table.SelectRows([FZ], (r) =>
+            (pAbsicherung and [Matchkey] <> null and r[Matchkey] = [Matchkey])
+            or (if [Kundentyp] = "Verein" then r[Name_norm] = [Name_norm]
+                else (([PLZ_norm] <> null and r[PLZ_norm] = [PLZ_norm]) or (r[Name_norm] = [Name_norm] and Text.StartsWith(Text.Lower([Ort] ?? ""), Text.Lower(r[Ort] ?? "#")))))) in if Table.IsEmpty(k) then null else k{0}[KundeKey]), {"FZ"}),
     OffenK = Table.RemoveColumns(Table.AddColumn(FE, "KundeKey", each [Key_Fuzzy], Int64.Type), {"Key_Fuzzy"}),
     RestK = Table.AddColumn(Rest, "KundeKey", each [Key_123], Int64.Type),
     Beide = Table.Combine({RestK, OffenK}),
@@ -307,7 +459,7 @@ let
     Neu = Table.SelectRows(M, each [KundeKey] = null),
     Alt = Table.SelectRows(M, each [KundeKey] <> null),
     NeuI = Table.AddIndexColumn(Table.RemoveColumns(Neu, {"KundeKey"}), "KundeKey", 2001, 1, Int64.Type),
-    Fertig = Table.RemoveColumns(Table.Combine({Alt, NeuI}), {"Key_S", "Name_ERP", "Key_Mail", "Key_AdrERP", "Key_AdrCRM", "Key_123"})
+    Fertig = Table.Buffer(Table.RemoveColumns(Table.Combine({Alt, NeuI}), {"Key_Mail", "Key_AdrERP", "Key_AdrCRM", "Key_123"}))
 in
     Fertig;
 
@@ -380,12 +532,12 @@ in
     S;
 
 shared STACK_KUNDE = let
-    Quelle = let Spalten = {"KundeKey","Quelle","Firma","Titel","Vorname","Nachname","Anrede","Kundentyp","LandISO","PLZ_norm","Ort","Strasse","Hausnr","Matchkey","Newsletter","Anlagedatum","Aenderungsdatum","Kontaktstatus","VertreterNr","Betreuer","Email_norm","KdNr","ShopID","AccountId"}, E = Table.AddColumn(Table.AddColumn(KUNDE_k, "Prio", each 1), "Aenderungsdatum", each try [Anlagedatum] otherwise null, type date), C = Table.AddColumn(Table.AddColumn(Table.RenameColumns(CRM_k, {{"Erstkontakt","Anlagedatum"}}, MissingField.Ignore), "Prio", each 2), "Aenderungsdatum", each try [LetzteAenderung] otherwise null, type date), S = Table.AddColumn(Table.AddColumn(SHOP_k, "Prio", each 3), "Aenderungsdatum", each try [Anlagedatum] otherwise null, type date), Alle = Table.Combine({Table.SelectColumns(E, Spalten & {"Prio"}, MissingField.UseNull), Table.SelectColumns(C, Spalten & {"Prio"}, MissingField.UseNull), Table.SelectColumns(S, Spalten & {"Prio"}, MissingField.UseNull)}) in Alle
+    Quelle = let Spalten = {"KundeKey","Quelle","Firma","Titel","Vorname","Nachname","Anrede","Kundentyp","LandISO","PLZ_norm","Ort","Strasse","Hausnr","Matchkey","Newsletter","Anlagedatum","Aenderungsdatum","Kontaktstatus","VertreterNr","Betreuer","Email_norm","KdNr","ShopID","AccountId","Telefon_E164"}, E = Table.AddColumn(Table.AddColumn(KUNDE_k, "Prio", each 1), "Aenderungsdatum", each try [Anlagedatum] otherwise null, type date), C = Table.AddColumn(Table.AddColumn(Table.RenameColumns(CRM_k, {{"Erstkontakt","Anlagedatum"}}, MissingField.Ignore), "Prio", each 2), "Aenderungsdatum", each try [LetzteAenderung] otherwise null, type date), S = Table.AddColumn(Table.AddColumn(SHOP_k, "Prio", each 3), "Aenderungsdatum", each try [Anlagedatum] otherwise null, type date), Alle = Table.Combine({Table.SelectColumns(E, Spalten & {"Prio"}, MissingField.UseNull), Table.SelectColumns(C, Spalten & {"Prio"}, MissingField.UseNull), Table.SelectColumns(S, Spalten & {"Prio"}, MissingField.UseNull)}) in Alle
 in
     Quelle;
 
 shared DIM_KUNDE = let
-    Quelle = let S = Table.Sort(STACK_KUNDE, {{"KundeKey", Order.Ascending}, {"Prio", Order.Ascending}}), erst = (l as list) => List.First(List.RemoveNulls(l)), G = Table.Group(S, {"KundeKey"}, {{"Firma", each erst([Firma]), type text}, {"Titel", each erst([Titel]), type text}, {"Vorname", each erst([Vorname]), type text}, {"Nachname", each erst([Nachname]), type text}, {"Anrede", each erst([Anrede]), type text}, {"Kundentyp", each erst([Kundentyp]) ?? "Privat", type text}, {"LandISO", each erst([LandISO]), type text}, {"Newsletter", each List.AnyTrue(List.RemoveNulls([Newsletter])), type logical}, {"Erstkontakt", each List.Min([Anlagedatum]), type date}, {"Kontaktstatus", each erst([Kontaktstatus]) ?? "Kunde", type text}, {"VertreterNr", each erst([VertreterNr]), type text}, {"Betreuer", each erst([Betreuer]), type text}, {"ERP_KdNr", each erst([KdNr]), type text}, {"ShopID", each erst([ShopID]), type text}, {"AccountId", each erst([AccountId]), type text}, {"Quellen", each Text.Combine(List.Distinct([Quelle]), "+"), type text}, {"AnzahlQuellen", each List.Count(List.Distinct([Quelle])), Int64.Type}}) in G
+    Quelle = let S = Table.Sort(STACK_KUNDE, {{"KundeKey", Order.Ascending}, {"Prio", Order.Ascending}}), erst = (l as list) => List.First(List.RemoveNulls(l)), G = Table.Group(S, {"KundeKey"}, {{"Firma", each erst([Firma]), type text}, {"Titel", each erst([Titel]), type text}, {"Vorname", each erst([Vorname]), type text}, {"Nachname", each erst([Nachname]), type text}, {"Anrede", each erst([Anrede]), type text}, {"Kundentyp", each erst([Kundentyp]) ?? "Privat", type text}, {"LandISO", each erst([LandISO]), type text}, {"Newsletter", each List.AnyTrue(List.RemoveNulls([Newsletter])), type logical}, {"Erstkontakt", each List.Min([Anlagedatum]), type date}, {"Kontaktstatus", each erst([Kontaktstatus]) ?? "Kunde", type text}, {"VertreterNr", each erst([VertreterNr]), type text}, {"Betreuer", each erst([Betreuer]), type text}, {"ERP_KdNr", each erst([KdNr]), type text}, {"ShopID", each erst([ShopID]), type text}, {"AccountId", each erst([AccountId]), type text}, {"Telefon", each erst([Telefon_E164]), type text}, {"Quellen", each Text.Combine(List.Distinct([Quelle]), "+"), type text}, {"AnzahlQuellen", each List.Count(List.Distinct([Quelle])), Int64.Type}}) in G
 in
     Quelle;
 
@@ -475,12 +627,12 @@ in
     Quelle;
 
 shared FAKT_ERP = let
-    Quelle = let P = AUFTRAGSPOS, J1 = Table.NestedJoin(P, {"AuftragNr"}, AUFTRAG, {"AuftragNr"}, "A", JoinKind.LeftOuter), E1 = Table.ExpandTableColumn(J1, "A", {"KdNr", "Datum", "VertreterNr", "Status", "Waehrung", "Lieferart", "Zahlungsziel", "ShopRef"}), L = Table.Group(LIEFERUNG, {"AuftragNr"}, {{"Versanddatum_letzt", each List.Max([Versanddatum]), type date}, {"AnzLieferungen", each Table.RowCount(_), Int64.Type}}), Z = Table.Group(ZAHLUNG, {"AuftragNr"}, {{"Zahldatum_letzt", each List.Max([Datum]), type date}, {"Zahlbetrag", each List.Sum([Betrag]), type number}, {"AnzZahlungen", each Table.RowCount(_), Int64.Type}}), J2 = Table.NestedJoin(E1, {"AuftragNr"}, L, {"AuftragNr"}, "L", JoinKind.LeftOuter), E2 = Table.ExpandTableColumn(J2, "L", {"Versanddatum_letzt"}), J3 = Table.NestedJoin(E2, {"AuftragNr"}, Z, {"AuftragNr"}, "Z", JoinKind.LeftOuter), E3 = Table.ExpandTableColumn(J3, "Z", {"Zahldatum_letzt", "Zahlbetrag"}), KH = Table.AddColumn(Table.SelectColumns(KUNDE_h, {"KdNr", "VertreterNr"}), "KdNr_txt", each Text.From([KdNr]), type text), Q = Table.AddColumn(E3, "QuellID", each Text.From([KdNr]), type text), J4 = Table.NestedJoin(Q, {"QuellID"}, KH, {"KdNr_txt"}, "K", JoinKind.LeftOuter), E4 = Table.ExpandTableColumn(J4, "K", {"VertreterNr"}, {"Stamm_VertreterNr"}), M = Table.AddColumn(E4, "MengeStk", each if [Einheit] = "Set" then [Menge] * 10 else [Menge], Int64.Type), Ku = Table.AddColumn(M, "Kurs", each if [Waehrung] = "CHF" then pKursCHF else 1, type number), N = Table.AddColumn(Ku, "NettoEUR", each Number.Round([MengeStk] * [EPreisNetto] * [Kurs], 2), type number), Ka = Table.AddColumn(N, "Kanal", each if [ShopRef] <> null then "Online" else "Direkt", type text), Vk = Table.AddColumn(Ka, "VerkaeuferKey", each if [VertreterNr] <> null then [VertreterNr] else if [ShopRef] <> null then "ONLINE" else [Stamm_VertreterNr], type text), Ld = Table.AddColumn(Vk, "Lieferdauer_Tage", each if [Versanddatum_letzt] = null then null else Duration.Days([Versanddatum_letzt] - [Datum]), Int64.Type), Zv = Table.AddColumn(Ld, "Zahlungsverzug_Tage", each if [Zahldatum_letzt] = null then null else Duration.Days([Zahldatum_letzt] - Date.AddDays([Datum], [Zahlungsziel])), Int64.Type), Qu = Table.AddColumn(Zv, "Quelle", each "ERP", type text), R = Table.RenameColumns(Qu, {{"AuftragNr", "AuftragID"}, {"Datum", "Auftragsdatum"}, {"ShopRef", "Fremdbeleg"}}), Sel = Table.SelectColumns(R, {"Quelle", "QuellID", "AuftragID", "Pos", "Auftragsdatum", "VerkaeuferKey", "Kanal", "Status", "Lieferart", "ArtNr", "MengeStk", "NettoEUR", "Lieferdauer_Tage", "Zahlungsverzug_Tage", "Fremdbeleg"}) in Sel
+    Quelle = let P = AUFTRAGSPOS, AOK = Table.Combine({Table.SelectRows(AUFTRAG, each [ShopRef] = null), Table.Distinct(Table.Buffer(Table.Sort(Table.SelectRows(AUFTRAG, each [ShopRef] <> null), {{"AuftragNr", Order.Ascending}})), {"ShopRef"})}), J1 = Table.NestedJoin(P, {"AuftragNr"}, AOK, {"AuftragNr"}, "A", JoinKind.Inner), E1 = Table.ExpandTableColumn(J1, "A", {"KdNr", "Datum", "VertreterNr", "Status", "Waehrung", "Lieferart", "Zahlungsziel", "ShopRef"}), L = Table.Group(LIEFERUNG, {"AuftragNr"}, {{"Versanddatum_letzt", each List.Max([Versanddatum]), type date}, {"AnzLieferungen", each Table.RowCount(_), Int64.Type}}), Z = Table.Group(ZAHLUNG, {"AuftragNr"}, {{"Zahldatum_letzt", each List.Max([Datum]), type date}, {"Zahlbetrag", each List.Sum([Betrag]), type number}, {"AnzZahlungen", each Table.RowCount(_), Int64.Type}}), J2 = Table.NestedJoin(E1, {"AuftragNr"}, L, {"AuftragNr"}, "L", JoinKind.LeftOuter), E2 = Table.ExpandTableColumn(J2, "L", {"Versanddatum_letzt"}), J3 = Table.NestedJoin(E2, {"AuftragNr"}, Z, {"AuftragNr"}, "Z", JoinKind.LeftOuter), E3 = Table.ExpandTableColumn(J3, "Z", {"Zahldatum_letzt", "Zahlbetrag"}), KH = Table.AddColumn(Table.SelectColumns(KUNDE_h, {"KdNr", "VertreterNr"}), "KdNr_txt", each Text.From([KdNr]), type text), Q = Table.AddColumn(E3, "QuellID", each Text.From([KdNr]), type text), J4 = Table.NestedJoin(Q, {"QuellID"}, KH, {"KdNr_txt"}, "K", JoinKind.LeftOuter), E4 = Table.ExpandTableColumn(J4, "K", {"VertreterNr"}, {"Stamm_VertreterNr"}), M = Table.AddColumn(E4, "MengeStk", each if [Einheit] = "Set" then [Menge] * 10 else [Menge], Int64.Type), Ku = Table.AddColumn(M, "Kurs", each if [Waehrung] = "CHF" then pKursCHF else 1, type number), N = Table.AddColumn(Ku, "NettoEUR", each Number.Round([MengeStk] * [EPreisNetto] * [Kurs], 2), type number), Ka = Table.AddColumn(N, "Kanal", each if [ShopRef] <> null then "Online" else "Direkt", type text), Vk = Table.AddColumn(Ka, "VerkaeuferKey", each if [VertreterNr] <> null then [VertreterNr] else if [ShopRef] <> null then "ONLINE" else [Stamm_VertreterNr], type text), Ld = Table.AddColumn(Vk, "Lieferdauer_Tage", each if [Versanddatum_letzt] = null or [Versanddatum_letzt] < [Datum] then null else Duration.Days([Versanddatum_letzt] - [Datum]), Int64.Type), Zv = Table.AddColumn(Ld, "Zahlungsverzug_Tage", each if [Zahldatum_letzt] = null then null else Duration.Days([Zahldatum_letzt] - Date.AddDays([Datum], [Zahlungsziel])), Int64.Type), Qu = Table.AddColumn(Zv, "Quelle", each "ERP", type text), R = Table.RenameColumns(Qu, {{"AuftragNr", "AuftragID"}, {"Datum", "Auftragsdatum"}, {"ShopRef", "Fremdbeleg"}}), Sel = Table.SelectColumns(R, {"Quelle", "QuellID", "AuftragID", "Pos", "Auftragsdatum", "VerkaeuferKey", "Kanal", "Status", "Lieferart", "ArtNr", "MengeStk", "NettoEUR", "Lieferdauer_Tage", "Zahlungsverzug_Tage", "Fremdbeleg"}) in Sel
 in
     Quelle;
 
 shared FAKT_SHOP = let
-    Quelle = let I = order_items, J1 = Table.NestedJoin(I, {"order_id"}, orders, {"order_id"}, "O", JoinKind.LeftOuter), E1 = Table.ExpandTableColumn(J1, "O", {"customer_id", "order_date", "status", "shipping_method_id"}), F = Table.SelectRows(E1, each [status] = "shipped" or [status] = "paid"), A = Table.NestedJoin(F, {"order_id"}, AUFTRAG, {"ShopRef"}, "ERP", JoinKind.LeftAnti), A2 = Table.RemoveColumns(A, {"ERP"}), J2 = Table.NestedJoin(A2, {"customer_id"}, SHOP_h, {"ShopID"}, "K", JoinKind.LeftOuter), E2 = Table.ExpandTableColumn(J2, "K", {"LandISO"}), J3 = Table.NestedJoin(E2, {"LandISO"}, mapMwSt, {"LandISO"}, "M", JoinKind.LeftOuter), E3 = Table.ExpandTableColumn(J3, "M", {"MwStFaktor"}), J4 = Table.NestedJoin(E3, {"shipping_method_id"}, shipping_methods, {"id"}, "V", JoinKind.LeftOuter), E4 = Table.ExpandTableColumn(J4, "V", {"name"}, {"Versandart"}), La = Table.AddColumn(E4, "Lieferart", each if [Versandart] = "Abholung" then "Abholung" else "Paket", type text), N = Table.AddColumn(La, "NettoEUR", each Number.Round([qty] * [unit_price_gross] / [MwStFaktor], 2), type number), D = Table.AddColumn(N, "Auftragsdatum", each Date.From([order_date]), type date), St = Table.AddColumn(D, "Status", each if [status] = "shipped" then "L" else "O", type text), J5 = Table.NestedJoin(St, {"sku"}, DIM_PRODUKT, {"Shop_sku"}, "P", JoinKind.LeftOuter), E5 = Table.ExpandTableColumn(J5, "P", {"ArtNr"}), C1 = Table.AddColumn(E5, "Quelle", each "Shop", type text), C2 = Table.AddColumn(C1, "VerkaeuferKey", each "ONLINE", type text), C3 = Table.AddColumn(C2, "Kanal", each "Online", type text), C4 = Table.AddColumn(C3, "Lieferdauer_Tage", each null, Int64.Type), C5 = Table.AddColumn(C4, "Zahlungsverzug_Tage", each null, Int64.Type), C6 = Table.AddColumn(C5, "Fremdbeleg", each null, type text), R = Table.RenameColumns(C6, {{"order_id", "AuftragID"}, {"line_no", "Pos"}, {"qty", "MengeStk"}, {"customer_id", "QuellID"}}), Sel = Table.SelectColumns(R, {"Quelle", "QuellID", "AuftragID", "Pos", "Auftragsdatum", "VerkaeuferKey", "Kanal", "Status", "Lieferart", "ArtNr", "MengeStk", "NettoEUR", "Lieferdauer_Tage", "Zahlungsverzug_Tage", "Fremdbeleg"}) in Sel
+    Quelle = let I = order_items, J1 = Table.NestedJoin(I, {"order_id"}, orders, {"order_id"}, "O", JoinKind.LeftOuter), E1 = Table.ExpandTableColumn(J1, "O", {"customer_id", "order_date", "status", "shipping_method_id"}), F = Table.SelectRows(E1, each [status] = "shipped" or [status] = "paid"), A = Table.NestedJoin(F, {"order_id"}, AUFTRAG, {"ShopRef"}, "ERP", JoinKind.LeftAnti), A2 = Table.RemoveColumns(A, {"ERP"}), J2 = Table.NestedJoin(A2, {"customer_id"}, SHOP_h, {"ShopID"}, "K", JoinKind.LeftOuter), E2 = Table.ExpandTableColumn(J2, "K", {"LandISO"}), J3 = Table.NestedJoin(E2, {"LandISO"}, mapMwSt, {"LandISO"}, "M", JoinKind.LeftOuter), E3 = Table.ExpandTableColumn(J3, "M", {"MwStFaktor"}), J4 = Table.NestedJoin(E3, {"shipping_method_id"}, shipping_methods, {"id"}, "V", JoinKind.LeftOuter), E4 = Table.ExpandTableColumn(J4, "V", {"name"}, {"Versandart"}), La = Table.AddColumn(E4, "Lieferart", each if [Versandart] = "Abholung" then "Abholung" else "Paket", type text), N = Table.AddColumn(La, "NettoEUR", each Number.Round([qty] * [unit_price_gross] / [MwStFaktor], 2), type number), D = Table.AddColumn(N, "Auftragsdatum", each Date.From(DateTimeZone.RemoveZone(DateTimeZone.SwitchZone([order_date], 1))), type date), St = Table.AddColumn(D, "Status", each if [status] = "shipped" then "L" else "O", type text), J5 = Table.NestedJoin(St, {"sku"}, DIM_PRODUKT, {"Shop_sku"}, "P", JoinKind.LeftOuter), E5 = Table.ExpandTableColumn(J5, "P", {"ArtNr"}), C1 = Table.AddColumn(E5, "Quelle", each "Shop", type text), C2 = Table.AddColumn(C1, "VerkaeuferKey", each "ONLINE", type text), C3 = Table.AddColumn(C2, "Kanal", each "Online", type text), C4 = Table.AddColumn(C3, "Lieferdauer_Tage", each null, Int64.Type), C5 = Table.AddColumn(C4, "Zahlungsverzug_Tage", each null, Int64.Type), C6 = Table.AddColumn(C5, "Fremdbeleg", each null, type text), R = Table.RenameColumns(C6, {{"order_id", "AuftragID"}, {"line_no", "Pos"}, {"qty", "MengeStk"}, {"customer_id", "QuellID"}}), Sel = Table.SelectColumns(R, {"Quelle", "QuellID", "AuftragID", "Pos", "Auftragsdatum", "VerkaeuferKey", "Kanal", "Status", "Lieferart", "ArtNr", "MengeStk", "NettoEUR", "Lieferdauer_Tage", "Zahlungsverzug_Tage", "Fremdbeleg"}) in Sel
 in
     Quelle;
 
@@ -513,6 +665,46 @@ in
     Typ;
 
 shared CHECK_Fakten = let
-    Quelle = let F = Table.Buffer(FAKT_VERKAUF), FE = Table.Buffer(FAKT_ERP), FS = Table.Buffer(FAKT_SHOP), VK = Table.Buffer(DIM_VERKAEUFER), dupAuftr = Table.RowCount(Table.SelectRows(Table.Group(Table.Distinct(Table.SelectColumns(F, {"AuftragID", "Quelle"})), {"AuftragID"}, {{"n", Table.RowCount}}), each [n] > 1)), Storno = Table.RowCount(Table.SelectRows(orders, each [status] = "cancelled" or [status] = "refunded")), Importiert = Table.RowCount(Table.SelectRows(AUFTRAG, each [ShopRef] <> null)), Pruef = #table({"Pruefung", "Soll", "Ist"}, {{"Zeilen FAKT_ERP = AUFTRAGSPOS", Table.RowCount(AUFTRAGSPOS), Table.RowCount(FE)}, {"Auftraege ERP", 354, Table.RowCount(Table.Distinct(Table.SelectColumns(FE, {"AuftragID"})))}, {"Bestellungen Shop gesamt", 384, Table.RowCount(orders)}, {"Shop storniert/erstattet (gefiltert)", null, Storno}, {"Shop im ERP importiert (Anti-Join)", 78, Importiert}, {"Bestellungen in FAKT_SHOP", 384 - Storno - Importiert, Table.RowCount(Table.Distinct(Table.SelectColumns(FS, {"AuftragID"})))}, {"AuftragID in beiden Quellen", 0, dupAuftr}, {"KundeKey null", 0, Table.RowCount(Table.SelectRows(F, each [KundeKey] = null))}, {"ProduktKey null", 0, Table.RowCount(Table.SelectRows(F, each [ProduktKey] = null))}, {"Region null", 0, Table.RowCount(Table.SelectRows(F, each [Region] = null))}, {"Verkaeufer unbekannt", 0, Table.RowCount(Table.SelectRows(F, each not List.Contains(VK[VerkaeuferKey], [VerkaeuferKey])))}, {"Zeilen FAKT_VERKAUF", Table.RowCount(FE) + Table.RowCount(FS), Table.RowCount(F)}, {"Summe NettoEUR ERP", null, Number.Round(List.Sum(FE[NettoEUR]), 2)}, {"Summe NettoEUR Shop", null, Number.Round(List.Sum(FS[NettoEUR]), 2)}}), OK = Table.AddColumn(Pruef, "OK", each if [Soll] = null then null else [Soll] = [Ist], type logical) in OK
+    Quelle = let F = Table.Buffer(FAKT_VERKAUF), FE = Table.Buffer(FAKT_ERP), FS = Table.Buffer(FAKT_SHOP), VK = Table.Buffer(DIM_VERKAEUFER), dupAuftr = Table.RowCount(Table.SelectRows(Table.Group(Table.Distinct(Table.SelectColumns(F, {"AuftragID", "Quelle"})), {"AuftragID"}, {{"n", Table.RowCount}}), each [n] > 1)), Storno = Table.RowCount(Table.SelectRows(orders, each [status] = "cancelled" or [status] = "refunded")), Importiert = List.Count(List.Distinct(List.RemoveNulls(AUFTRAG[ShopRef]))), Doppelt = Table.RowCount(Table.SelectRows(AUFTRAG, each [ShopRef] <> null)) - Importiert, Waisen = Table.RowCount(Table.NestedJoin(AUFTRAGSPOS, {"AuftragNr"}, AUFTRAG, {"AuftragNr"}, "A", JoinKind.LeftAnti)), VorAuftrag = Table.RowCount(Table.SelectRows(Table.NestedJoin(LIEFERUNG, {"AuftragNr"}, AUFTRAG, {"AuftragNr"}, "A", JoinKind.Inner), each [Versanddatum] < [A]{0}[Datum])), Pruef = #table({"Pruefung", "Soll", "Ist"}, {{"Positionen ohne Auftrag (verworfen)", 4, Waisen}, {"Shop-Auftraege doppelt im ERP (verworfen)", 3, Doppelt}, {"Versand vor Auftrag (Lieferdauer null)", 4, VorAuftrag}, {"Zeilen FAKT_ERP", 1463, Table.RowCount(FE)}, {"Auftraege ERP", 475, Table.RowCount(Table.Distinct(Table.SelectColumns(FE, {"AuftragID"})))}, {"Bestellungen Shop gesamt", 549, Table.RowCount(orders)}, {"Shop storniert/erstattet (gefiltert)", null, Storno}, {"Shop im ERP importiert (Anti-Join)", 131, Importiert}, {"Bestellungen in FAKT_SHOP", 549 - Storno - Importiert, Table.RowCount(Table.Distinct(Table.SelectColumns(FS, {"AuftragID"})))}, {"AuftragID in beiden Quellen", 0, dupAuftr}, {"KundeKey null", 0, Table.RowCount(Table.SelectRows(F, each [KundeKey] = null))}, {"ProduktKey null", 0, Table.RowCount(Table.SelectRows(F, each [ProduktKey] = null))}, {"Region null", 0, Table.RowCount(Table.SelectRows(F, each [Region] = null))}, {"Verkaeufer unbekannt", 0, Table.RowCount(Table.SelectRows(F, each not List.Contains(VK[VerkaeuferKey], [VerkaeuferKey])))}, {"Zeilen FAKT_VERKAUF", Table.RowCount(FE) + Table.RowCount(FS), Table.RowCount(F)}, {"Summe NettoEUR ERP", null, Number.Round(List.Sum(FE[NettoEUR]), 2)}, {"Summe NettoEUR Shop", null, Number.Round(List.Sum(FS[NettoEUR]), 2)}}), OK = Table.AddColumn(Pruef, "OK", each if [Soll] = null then null else [Soll] = [Ist], type logical) in OK
 in
     Quelle;
+
+shared CHECK_Pruefliste = // CHECK_Pruefliste: Restbefunde nach der Bereinigung (entspricht der Tag-Spalte der PA1). Eine Zeile je Datensatz und Befund.
+let
+    E = Table.SelectColumns(Table.AddColumn(KUNDE_h, "ID", each [KdNr], type text), {"Quelle", "ID", "Name_norm", "Befunde"}),
+    C = Table.SelectColumns(Table.AddColumn(CRM_h, "ID", each [AccountId], type text), {"Quelle", "ID", "Name_norm", "Befunde"}),
+    S = Table.SelectColumns(Table.AddColumn(SHOP_h, "ID", each [ShopID], type text), {"Quelle", "ID", "Name_norm", "Befunde"}),
+    // Befunde aus der Zuordnung: Fremdschlüssel ohne Bestätigung
+    CK = Table.SelectColumns(Table.AddColumn(Table.AddColumn(Table.SelectRows(CRM_k, each [Flag_Schluessel_Name] = true), "ID", each [AccountId], type text), "Befunde2", each "Fremdschlüssel ERP_KdNr zeigt auf anderen Kunden", type text), {"Quelle", "ID", "Name_norm", "Befunde2"}),
+    SK = Table.SelectColumns(Table.AddColumn(Table.AddColumn(Table.SelectRows(SHOP_k, each [Flag_Schluessel_Name] = true), "ID", each [ShopID], type text), "Befunde2", each "Fremdschlüssel ERP_KdNr zeigt auf anderen Kunden", type text), {"Quelle", "ID", "Name_norm", "Befunde2"}),
+    // Befunde über mehrere Kunden: dieselbe E-Mail oder dieselbe Adresse bei verschiedenen KundeKeys
+    ST = Table.Buffer(Table.SelectColumns(Table.Combine({
+            Table.AddColumn(KUNDE_k, "ID", each [KdNr], type text),
+            Table.AddColumn(CRM_k, "ID", each [AccountId], type text),
+            Table.AddColumn(SHOP_k, "ID", each [ShopID], type text)}), {"Quelle", "ID", "Name_norm", "KundeKey", "Email_norm", "Matchkey"}, MissingField.UseNull)),
+    GM = Table.SelectRows(Table.Group(Table.SelectRows(ST, each [Email_norm] <> null), {"Email_norm"}, {{"n", each List.Count(List.Distinct([KundeKey])), Int64.Type}}), each [n] > 1),
+    GA = Table.SelectRows(Table.Group(Table.SelectRows(ST, each [Matchkey] <> null), {"Matchkey"}, {{"n", each List.Count(List.Distinct([KundeKey])), Int64.Type}}), each [n] > 1),
+    XM = Table.SelectColumns(Table.AddColumn(Table.SelectRows(ST, each [Email_norm] <> null and List.Contains(GM[Email_norm], [Email_norm])), "Befunde2", each "E-Mail bei mehreren Kunden (Sammelpostfach?)", type text), {"Quelle", "ID", "Name_norm", "Befunde2"}),
+    XA = Table.SelectColumns(Table.AddColumn(Table.SelectRows(ST, each [Matchkey] <> null and List.Contains(GA[Matchkey], [Matchkey])), "Befunde2", each "Adresse bei mehreren Kunden (Filiale, Vereinsheim?)", type text), {"Quelle", "ID", "Name_norm", "Befunde2"}),
+    Lang1 = Table.ExpandListColumn(Table.AddColumn(Table.SelectRows(Table.Combine({E, C, S}), each [Befunde] <> null and [Befunde] <> ""), "Befund", each Text.Split([Befunde], "; ")), "Befund"),
+    Lang2 = Table.RenameColumns(Table.Combine({CK, SK, XM, XA}), {{"Befunde2", "Befund"}}),
+    Alle = Table.Combine({Table.SelectColumns(Lang1, {"Quelle", "ID", "Name_norm", "Befund"}), Lang2}),
+    Typ = Table.TransformColumnTypes(Alle, {{"Befund", type text}}),
+    Sort = Table.Sort(Typ, {{"Befund", Order.Ascending}, {"Quelle", Order.Ascending}, {"ID", Order.Ascending}})
+in
+    Sort;
+
+shared CHECK_Fehlerlog = // CHECK_Fehlerlog: zweite Erfolgsmessung. Je eingebautem Fehlertyp: wie viele Fälle gibt es, wie viele davon stehen auf der Prüfliste.
+// Automatisch behobene Fehler sollen NICHT auf der Prüfliste stehen, manuelle sollen vollständig dort stehen.
+let
+    Roh = Csv.Document(File.Contents(pPfad & "sollwerte\fehler_log.csv"), [Delimiter = ";", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Log = Table.TransformColumnTypes(Table.PromoteHeaders(Roh, [PromoteAllScalars = true]), {{"Quelle", type text}, {"Tabelle", type text}, {"ID", type text}, {"Fehlertyp", type text}}),
+    Kunden = Table.SelectRows(Log, each [Tabelle] = "KUNDE" or [Tabelle] = "customers" or [Tabelle] = "Accounts"),
+    Typ1 = Table.AddColumn(Kunden, "Typ", each if Text.StartsWith([Fehlertyp], "Dublette im ERP") then "Dublette im ERP" else [Fehlertyp], type text),
+    PL = Table.Buffer(Table.Group(CHECK_Pruefliste, {"Quelle", "ID"}, {{"Befunde", each Text.Combine(List.Distinct([Befund]), "; "), type text}})),
+    J = Table.NestedJoin(Typ1, {"Quelle", "ID"}, PL, {"Quelle", "ID"}, "P", JoinKind.LeftOuter),
+    JE = Table.ExpandTableColumn(J, "P", {"Befunde"}),
+    G = Table.Group(JE, {"Typ"}, {{"Faelle", each Table.RowCount(_), Int64.Type}, {"Auf_Pruefliste", each List.Count(List.RemoveNulls([Befunde])), Int64.Type}, {"Haeufigster_Befund", each List.First(List.RemoveNulls([Befunde]), null), type text}}),
+    Sort = Table.Sort(G, {{"Faelle", Order.Descending}})
+in
+    Sort;
