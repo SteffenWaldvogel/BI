@@ -116,7 +116,7 @@ Sammel-E-Mail und Vereinsheim. Messung 7 mit der neuen Kaskade.
 ## 6. Verworfene Alternative: Punktemodell
 
 Das ServiceTool bewertet jeden Kandidaten additiv (gleicher Name 90, ähnlicher Name 70, PLZ + Ort 40, Straße 20,
-E-Mail 60) und zeigt ab 60 Punkten einen Hinweis, ab 80 eine Warnung; ein Mensch bestätigt. Das ist ein
+E-Mail 60) und zeigt ab 60 Punkten einen Hinweis, ab 80 eine Warnung; die Bestätigung erfolgt manuell. Das ist ein
 probabilistisches Record Linkage im Kleinen und per Konstruktion hybrid. Für die Integration hier nicht gewählt, weil
 (1) Power Query keinen Ähnlichkeitswert aus dem Fuzzy-Join liefert, (2) die Gewichte ohne Trainingsdaten geschätzt
 wären und (3) die Kaskade je Stufe einzeln messbar ist. Als Werkzeug für die Abarbeitung der Prüfliste wäre es die
@@ -131,7 +131,7 @@ die vier Fälle automatisch zusammenführen (Nachbau: 3 zerrissen / 0 verschmolz
 Entscheidung: nicht automatisieren, sondern in die Bewertung aufnehmen. Automatisches Zusammenführen ist möglich, aber je nach Fehler gehen
 dabei Daten verloren (welche Adresse, welcher Ansprechpartner, welcher Betreuer gilt), und eine falsche Zusammenführung ist im integrierten
 Bestand nicht mehr rückgängig zu machen. Stattdessen: eine Abfrage listet die betroffenen Datensätze (`CHECK_Pruefliste`, Befund
-„Adresse bei mehreren Kunden"), ein Mensch prüft sie, danach wird angepasst und zusammengeführt. Dasselbe gilt für die übrigen Lücken des
+„Adresse bei mehreren Kunden"), sie müssen manuell überprüft und entschieden werden, danach wird angepasst und zusammengeführt. Dasselbe gilt für die übrigen Lücken des
 Abgleichs (Fremdschlüssel-Tippfehler ohne Befund, PLZ/Land 2 von 3, Versand vor Auftrag nur in CHECK_Fakten): sie werden als Grenze benannt,
 nicht nachgebaut.
 
