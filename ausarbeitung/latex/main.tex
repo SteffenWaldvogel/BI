@@ -194,6 +194,8 @@ Der integrierte Datenbestand soll sechs Fragen beantworten, die jeweils Verkäuf
     \bottomrule
   \end{tabular}
 \end{table}
+
+\abb{vn-kunde-6}{Kunde 6 in den drei Quellen: Rohwert je Merkmal und harmonisiertes Ergebnis (Abfrage \pq{BELEG\_Heterogenitaet}). Aus drei Schreibweisen der Goethestraße wird ein Adressschlüssel}{fig:vnkunde}{1.0}
 Unter derselben Adresse (Bahnhofstraße 18, München) führen alle drei Systeme außerdem einen zweiten Kunden: den Verein \enquote{Black Arrows München}, der sein Vereinsheim in der Gaststätte hat -- im CRM als \enquote{Black Arrows MÃ¼nchen} mit Zeichensatzfehler. Die E-Mail-Adresse der Gaststätte verwendet zusätzlich ein weiterer Kunde. Beides sind Fälle, in denen ein an sich starkes Merkmal (Adresse, E-Mail) zwei verschiedene Kunden verbindet.
 
 \subsection{Überlappungen und Datengenerierung}
@@ -356,6 +358,8 @@ Daraus entstehen 499 Kundensätze: 134 im ERP (inkl.\ 4 Dubletten und 2 Testkund
 \subsection{Import und globale Vorbereitung}\label{sec:syntax}
 
 \abb{pq-import-erp}{Import der ERP-Datei: Codepage 1252, Semikolon, Gebietsschema de-DE -- und das Problem eingebetteter Zeilenumbrüche}{fig:import}{0.9}
+
+\abb{vn-1-format}{Vorher und nachher, Gruppe 1: Zeichen und Format. Je Fehlerbild ein Datensatz aus dem Fehlerprotokoll des Generators (Abfrage \pq{BELEG\_Fehlerbilder})}{fig:vn1}{1.0}
 % Screenshot: Csv.Document-Dialog bzw. Vorschau mit zerrissenen Zeilen (QuoteStyle.None) vs. korrekt (QuoteStyle.Csv): 124 Zeilen -> 90 Datensätze
 
 \todo{Was: Codepage, Trennzeichen, Dezimaltrenner, drei Datumsformate, UTC-Zeitzone. Entscheidung: Typumwandlung immer mit explizitem Gebietsschema, nie automatisch erkannt. Nachweis Zeilenumbrüche: 124 physische Zeilen, 90 Datensätze.}
@@ -380,7 +384,13 @@ in
 
 \todo{Was: J/N, true/false, X/leer $\rightarrow$ Boolean; Anrede-Varianten; NULL-Kodierungen -1 und 31.12.9999; is\_club $\rightarrow$ Kundentyp; Lieferart Tabelle $\rightarrow$ Spalte; Synonyme/Homonyme umbenennen (Status $\times$ 3). Entscheidung: Mapping-Tabellen, weil erweiterbar und im Text dokumentierbar; Alternative bedingte Spalte -- für Länder ok, für Kundentyp mit fünf Quellwerten unübersichtlich.}
 
+
+\abb{pq-mapping}{Mapping-Tabelle \pq{mapLand}: die Sollkodierung je Quelle und alle angetroffenen Varianten}{fig:mapping}{0.9}
+
+\abb{vn-2-kodierung}{Vorher und nachher, Gruppe 2: Kodierungen. Fehlt das Land und ist die PLZ vierstellig, bleibt der Fall offen und steht auf der Prüfliste}{fig:vn2}{1.0}
 \abb{pq-strasse}{\pq{KUNDE\_h}: PLZ aus dem Ortsfeld und aus dem Länderpräfix, Straße und Hausnummer getrennt, vertauschte Reihenfolge erkannt}{fig:strasse}{0.95}
+
+\abb{vn-3-adresse}{Vorher und nachher, Gruppe 3: Adresse. Was sich nicht sicher reparieren lässt, erhält keinen Adressschlüssel}{fig:vn3}{1.0}
 % Screenshot: KUNDE_h im Editor, Spalten PLZ_norm, Ort, LandISO, Strasse, Hausnr, Flag_Postfach, Flag_Vertauscht, Befunde
 
 Die Fehlerbilder der Beispieldaten folgen nicht nur dem Skript, sondern dem Kriterienkatalog einer realen Stammdatenbereinigung (Projektarbeit 1: Zusammenführung zweier Lexware-Mandanten mit rund 43\,000 Kundeninstanzen). Deren häufigster Fehlertyp war kein Formatfehler, sondern \emph{Feldmissbrauch}: der richtige Wert im falschen Feld oder Text, wo ein Wert stehen müsste. \Cref{tab:fehlerbilder} zeigt die eingebauten Fehlerbilder mit Fallzahl und Behandlung.
@@ -416,6 +426,10 @@ Die Fehlerbilder der Beispieldaten folgen nicht nur dem Skript, sondern dem Krit
   \end{tabular}
 \end{table}
 
+\abb{vn-4-kontakt}{Vorher und nachher, Gruppe 4: Kontaktdaten}{fig:vn4}{1.0}
+
+\abb{vn-5-feldmissbrauch}{Vorher und nachher, Gruppe 5: Feldmissbrauch. Das Erkennen gelingt automatisch, die Korrektur des Feldes muss manuell überprüft und entschieden werden}{fig:vn5}{1.0}
+
 \todo{Drei Absätze. (1) Reihenfolge aus PA1: globale Vorbereitung, dann PLZ/Ort, dann Land, dann Straße/Hausnr, dann Telefon -- Land vor Telefon, weil die Vorwahl ein gültiges Land braucht. (2) Zwei Beispiele ausführen: PLZ-Kette (Präfix D- liefert zugleich das Land; fünfstellige PLZ ohne Land ist in DACH nur Deutschland, vierstellig bleibt offen) und Straße/Hausnr (Postfach, Nummer vorn, Bereich 2-5; Grenze \enquote{Straße des 17. Juni 5}). (3) Entscheidung: nichts raten. Ein Wert, der nicht sicher ableitbar ist, bleibt null und wird gemeldet; MM/YYYY wird zum Monatsersten mit Flag. Alternative: Datensätze mit Mängeln verwerfen -- verworfen, weil dann Umsatz fehlt.}
 
 \subsection{Kundenintegration als Kaskade}\label{sec:linkage}
@@ -442,6 +456,8 @@ Die drei Quellen haben keinen gemeinsamen Schlüssel: ERP und CRM teilen \pq{ERP
     \bottomrule
   \end{tabular}
 \end{table}
+
+\abb{vn-6-schluessel}{Vorher und nachher, Gruppe 6: Datensätze und Schlüssel. Testkunden werden verworfen, Dubletten und Schlüsselfehler löst die Kaskade}{fig:vn6}{1.0}
 
 \todo{Entscheidungen, je mit Alternative: (1) Reihenfolge ERP $\rightarrow$ CRM $\rightarrow$ Shop. (2) Adressschlüssel = Land + PLZ + normierte Straße + erste Hausnummer, ohne Namen (aus PA1). (3) Kein Merkmal zählt allein: Fremdschlüssel braucht Namen oder Adresse (3 Tippfehler im Schlüssel, 7 abgeschnittene Namen -- deshalb gemeinsamer Anfang statt Gleichheit), E-Mail braucht bei Mehrfachverwendung den Namen (5 Sammelpostfächer), Adresse braucht den Namen (8 Vereinsheime). (4) Belegt-Regel für den Fall Dart-Lounge Bregenz/Wien. (5) Alternative Punktemodell (additive Gewichte, Schwellen für Hinweis und Warnung, manuelle Bestätigung) -- verworfen, weil der Fuzzy-Join keinen Ähnlichkeitswert liefert und Gewichte ohne Trainingsdaten geschätzt wären; die Kaskade ist je Stufe messbar.}
 
@@ -507,6 +523,8 @@ Ein Befund verdient eine eigene Betrachtung. Hinter den 50 Zeilen \enquote{Adres
 
 \todo{Was: komposite Schlüssel verketten, Produktgruppe aus sprechendem Schlüssel und ArtNr$\leftrightarrow$SKU, CHF$\rightarrow$EUR, Brutto$\rightarrow$Netto je Land, Sets$\rightarrow$Stück, Filter (cancelled/refunded: 56 Bestellungen) mit Zählung, Auftrag $\rightarrow$ zum Datum gültige Adresse, Shop-Aufträge nur aus einer Quelle (ShopRef, 131 per Anti-Join). Fehler in den Bewegungsdaten: 4 Positionen ohne Auftrag (Inner Join, gezählt), 3 doppelt importierte Shop-Aufträge (je ShopRef der erste), 4 Lieferungen vor Auftragsdatum (Lieferdauer leer statt negativ), 5 Gutschriften (bleiben und mindern den Umsatz). UTC $\rightarrow$ MEZ vor dem Abschneiden der Uhrzeit.}
 
+
+\abb{vn-7-bewegung}{Vorher und nachher, Gruppe 7: Bewegungsdaten und Kennzahlen. Verworfen werden nur Zeilen, die Umsatz doppelt zählen oder zu keinem Auftrag gehören}{fig:vn7}{1.0}
 \abb{check-fakten}{\pq{CHECK\_Fakten}: Soll-Ist-Prüfung der Faktenseite -- Zeilenzahlen, Anti-Join, fehlende Schlüssel, Umsatzsummen je Quelle}{fig:checkfakten}{0.6}
 
 \abb{dashboard}{Ergebnis-Dashboard: alle sechs Auswertungsfragen F1--F6 als PivotCharts auf dem integrierten Datenbestand (Blatt \pq{Dashboard}); jede Diagrammüberschrift formuliert die Kernaussage \skript{4.3}}{fig:dashboard}{1.0}
@@ -542,6 +560,12 @@ Das vollständige Skript (rund 540 Zeilen) liegt im Abgabe-Ordner; hier die Stel
 % ---------- Ehrenwörtliche Erklärung (HR 2.12, Wortlaut vorgegeben, ohne Seitenzahl)
 \newpage
 \thispagestyle{empty}
+\anhang{Vorher-Nachher-Belege}{app:belege}
+
+\abb{pq-beleg}{Die Abfrage \pq{BELEG\_Fehlerbilder} im Power-Query-Editor: 70 Beispiele in sieben Gruppen; links die Abfragen der Mappe}{fig:pqbeleg}{1.0}
+
+\abb{vn-kunde-34}{Kunde 34 (Händler, Österreich) in den drei Quellen. Im CRM fehlt das Land; eine vierstellige PLZ lässt Österreich und die Schweiz zu, deshalb bleibt es dort leer. Der Ortszusatz des CRM bleibt stehen}{fig:vnkunde34}{1.0}
+
 \section*{Ehrenwörtliche Erklärung}
 Ich versichere hiermit, dass ich die vorliegende Arbeit mit dem Thema \enquote{\arbeitstitel} selbständig verfasst und keine anderen als die angegebenen Quellen und Hilfsmittel benutzt habe. Ich versichere zudem, dass die eingereichte elektronische Fassung mit der gedruckten Fassung übereinstimmt.
 
