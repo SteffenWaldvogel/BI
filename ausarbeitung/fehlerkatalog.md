@@ -121,3 +121,19 @@ probabilistisches Record Linkage im Kleinen und per Konstruktion hybrid. Für di
 (1) Power Query keinen Ähnlichkeitswert aus dem Fuzzy-Join liefert, (2) die Gewichte ohne Trainingsdaten geschätzt
 wären und (3) die Kaskade je Stufe einzeln messbar ist. Als Werkzeug für die Abarbeitung der Prüfliste wäre es die
 passende Ergänzung.
+
+## 7. Entscheidung 12.11.2026: Brückenregel wird nicht eingebaut
+
+Befund aus der Prüfliste: Von zwölf Adressen, die bei mehreren Kunden vorkommen, sind acht Vereinsheime (korrekt getrennt) und vier Umzieher.
+Bei den Umziehern verbindet der Shop-Datensatz (alte Adresse und Name wie im ERP, E-Mail wie im CRM) zwei Schlüssel. Eine Brückenregel würde
+die vier Fälle automatisch zusammenführen (Nachbau: 3 zerrissen / 0 verschmolzen statt 7 / 0).
+
+Entscheidung: nicht automatisieren, sondern in die Bewertung aufnehmen. Automatisches Zusammenführen ist möglich, aber je nach Fehler gehen
+dabei Daten verloren (welche Adresse, welcher Ansprechpartner, welcher Betreuer gilt), und eine falsche Zusammenführung ist im integrierten
+Bestand nicht mehr rückgängig zu machen. Stattdessen: eine Abfrage listet die betroffenen Datensätze (`CHECK_Pruefliste`, Befund
+„Adresse bei mehreren Kunden"), ein Mensch prüft sie, danach wird angepasst und zusammengeführt. Dasselbe gilt für die übrigen Lücken des
+Abgleichs (Fremdschlüssel-Tippfehler ohne Befund, PLZ/Land 2 von 3, Versand vor Auftrag nur in CHECK_Fakten): sie werden als Grenze benannt,
+nicht nachgebaut.
+
+Abbildungen der Ausarbeitung reduziert auf sieben Screenshots (Import, KUNDE_h, CRM_k, CHECK_Sollwerte, CHECK_Pruefliste, CHECK_Fakten, Dashboard)
+plus drei TikZ-Grafiken; Adressversionen als Tabelle. Entfallen: pq-mapping, pq-fuzzy, pq-fakt, pivot-f1, pivot-f5.

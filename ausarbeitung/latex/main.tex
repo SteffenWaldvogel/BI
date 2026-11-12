@@ -276,7 +276,19 @@ Daraus entstehen 499 Kundensätze: 134 im ERP (inkl.\ 4 Dubletten und 2 Testkund
 \label{fig:zielschema}
 \end{figure}
 
-\abb{dim-adresse}{\pq{DIM\_KUNDE\_ADRESSE}: Kunde 43 mit zwei Adressversionen -- Gültigkeitszeitraum statt Entscheidung, welche Quelle recht hat}{fig:adresse}{1.0}
+\begin{table}[H]
+  \centering\small
+  \caption{\pq{DIM\_KUNDE\_ADRESSE}: Kunde 15 (DC Black Arrows Bregenz) mit zwei Adressversionen -- Gültigkeitszeitraum statt Entscheidung, welche Quelle recht hat}
+  \label{tab:adresse}
+  \begin{tabular}{@{}rllllllc@{}}
+    \toprule
+    KundeKey & Version & Straße & PLZ & Ort & GueltigVon & GueltigBis & CurrentFlag \\
+    \midrule
+    15 & 1 & Schillerstr.\ 89 & 6900 & Bregenz & 01.01.1900 & 12.01.2024 & FALSCH \\
+    15 & 2 & Am Sportplatz 35 & 4020 & Linz & 13.01.2024 & -- & WAHR \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \todo{Je Entscheidung zwei bis drei Sätze mit Alternative: (1) Surrogatschlüssel KundeKey + Mapping-Tabelle statt einen Quellschlüssel durchzureichen. (2) Adresse historisiert statt \enquote{jüngste gewinnt} -- verhindert, dass Umsatz vor dem Umzug der neuen Region zugeordnet wird. (3) Verkäufer am Auftrag, nicht am Kunden -- nur so ist F5 korrekt. (4) Lieferart als Attribut, nicht als Entität. (5) Leads als Kunden ohne Umsatz. (6) Shop-Aufträge nur aus einer Quelle, weil sie auch ins ERP importiert sind.}
 
@@ -366,9 +378,6 @@ in
 
 \subsection{Kodierungen, Schema und Feldmissbrauch}\label{sec:schema}
 
-\abb{pq-mapping}{Mapping-Tabellen statt verschachtelter Bedingungen: Länder (stark äquivalent) und Kundentyp (schwach äquivalent, kleinster gemeinsamer Nenner)}{fig:mapping}{0.9}
-% Screenshot: mapKundentyp mit den drei Quellkodierungen und dem Merge in CRM_h
-
 \todo{Was: J/N, true/false, X/leer $\rightarrow$ Boolean; Anrede-Varianten; NULL-Kodierungen -1 und 31.12.9999; is\_club $\rightarrow$ Kundentyp; Lieferart Tabelle $\rightarrow$ Spalte; Synonyme/Homonyme umbenennen (Status $\times$ 3). Entscheidung: Mapping-Tabellen, weil erweiterbar und im Text dokumentierbar; Alternative bedingte Spalte -- für Länder ok, für Kundentyp mit fünf Quellwerten unübersichtlich.}
 
 \abb{pq-strasse}{\pq{KUNDE\_h}: PLZ aus dem Ortsfeld und aus dem Länderpräfix, Straße und Hausnummer getrennt, vertauschte Reihenfolge erkannt}{fig:strasse}{0.95}
@@ -436,9 +445,6 @@ Die drei Quellen haben keinen gemeinsamen Schlüssel: ERP und CRM teilen \pq{ERP
 
 \todo{Entscheidungen, je mit Alternative: (1) Reihenfolge ERP $\rightarrow$ CRM $\rightarrow$ Shop. (2) Adressschlüssel = Land + PLZ + normierte Straße + erste Hausnummer, ohne Namen (aus PA1). (3) Kein Merkmal zählt allein: Fremdschlüssel braucht Namen oder Adresse (3 Tippfehler im Schlüssel, 7 abgeschnittene Namen -- deshalb gemeinsamer Anfang statt Gleichheit), E-Mail braucht bei Mehrfachverwendung den Namen (5 Sammelpostfächer), Adresse braucht den Namen (8 Vereinsheime). (4) Belegt-Regel für den Fall Dart-Lounge Bregenz/Wien. (5) Alternative Punktemodell (additive Gewichte, Schwellen für Hinweis und Warnung, Mensch bestätigt) -- verworfen, weil der Fuzzy-Join keinen Ähnlichkeitswert liefert und Gewichte ohne Trainingsdaten geschätzt wären; die Kaskade ist je Stufe messbar.}
 
-\abb{pq-fuzzy}{Fuzzy-Merge liefert nur Kandidaten -- die fachliche Nachregel entscheidet}{fig:fuzzy}{0.9}
-% Screenshot: Table.FuzzyNestedJoin-Schritt mit expandierten Kandidaten und der Nachregel-Spalte
-
 \todo{Beobachtung: Fuzzy-Join vervielfacht Zeilen (122 statt 115) und liefert keinen Ähnlichkeitswert. Nachregel: Verein $\rightarrow$ nur identischer normierter Name (Ort steckt im Namen); Händler/Gastro $\rightarrow$ gleiche PLZ oder identischer Name bei gleichem Ort. Alternative \enquote{Schwellwert hochdrehen} -- verworfen, siehe Messung.}
 
 \subsection{Erfolgsmessung gegen die Sollwerte}\label{sec:erfolgsmessung}
@@ -493,19 +499,15 @@ Was die Regeln nicht sicher beheben können, wird nicht geraten, sondern gemelde
   \end{tabular}
 \end{table}
 
+Ein Befund verdient eine eigene Betrachtung. Hinter den 50 Zeilen \enquote{Adresse bei mehreren Kunden} stehen zwölf Adressen. Acht davon sind Vereinsheime: Verein und Gaststätte teilen sich das Haus und bleiben zu Recht getrennt. Die übrigen vier sind Umzieher. Bei ihnen trägt der Shop-Datensatz noch die alte Adresse und den Namen des ERP-Kunden, hängt aber über die E-Mail am neuen CRM-Eintrag -- der Shop verbindet also zwei Schlüssel, die die paarweise Kaskade getrennt gelassen hat. Eine Brückenregel könnte diese vier Fälle automatisch zusammenführen; im Nachbau der Logik sinkt die Zahl der zerrissenen Kunden damit von sieben auf drei, ohne neue Verschmelzung. Sie wurde bewusst \emph{nicht} eingebaut. Automatisch zusammenführen heißt auch automatisch entscheiden, welche Adresse, welcher Ansprechpartner und welcher Betreuer gelten, und eine falsche Zusammenführung überschreibt Daten, die sich aus dem integrierten Bestand nicht mehr zurückgewinnen lassen. Aus der Formseite sind ein Umzug und ein gemeinsam genutztes Gebäude nicht zu unterscheiden. Der richtige Ort für solche Fälle ist deshalb eine Abfrage, die die betroffenen Datensätze nebeneinander zeigt; ein Mensch prüft sie und führt dann zusammen oder trennt. Genau das leistet die Prüfliste.
+
 \todo{Drei Absätze. (1) Kriterium aus PA1: dort galt je Fehlerbild \enquote{unter 100 Fällen händisch, sonst Methode definieren} bei 43\,000 Datensätzen; übertragen auf 499 Kundensätze lohnt eine Regel ab etwa 5 Fällen. Die Klasse hängt an drei Fragen: sicher erkennbar, eindeutig korrigierbar, Kosten einer falschen Korrektur. (2) Prüfliste wie die Tag-Spalte der PA1 erst nach der Bereinigung: sie enthält nur, was übrig bleibt. Zahlen aus \pq{CHECK\_Fehlerlog} einsetzen. (3) Was verworfen wird und was nicht: Testkunden, Dubletten, Stornos, Waisen, Doppelimporte -- gezählt; kein Datensatz wegen Qualitätsmängeln.}
 
 \subsection{Faktenseite und Auswertung}\label{sec:fakten}
 
-\abb{pq-fakt}{\pq{FAKT\_VERKAUF}: Positionen aus ERP und Shop mit Kanal, Netto-EUR, Lieferdauer und Zahlungsverzug}{fig:fakt}{0.95}
-
 \todo{Was: komposite Schlüssel verketten, Produktgruppe aus sprechendem Schlüssel und ArtNr$\leftrightarrow$SKU, CHF$\rightarrow$EUR, Brutto$\rightarrow$Netto je Land, Sets$\rightarrow$Stück, Filter (cancelled/refunded: 56 Bestellungen) mit Zählung, Auftrag $\rightarrow$ zum Datum gültige Adresse, Shop-Aufträge nur aus einer Quelle (ShopRef, 131 per Anti-Join). Fehler in den Bewegungsdaten: 4 Positionen ohne Auftrag (Inner Join, gezählt), 3 doppelt importierte Shop-Aufträge (je ShopRef der erste), 4 Lieferungen vor Auftragsdatum (Lieferdauer leer statt negativ), 5 Gutschriften (bleiben und mindern den Umsatz). UTC $\rightarrow$ MEZ vor dem Abschneiden der Uhrzeit.}
 
 \abb{check-fakten}{\pq{CHECK\_Fakten}: Soll-Ist-Prüfung der Faktenseite -- Zeilenzahlen, Anti-Join, fehlende Schlüssel, Umsatzsummen je Quelle}{fig:checkfakten}{0.6}
-
-\abb{pivot-f1}{Auswertung F1: Umsatz je Verkäufer und Kundentyp (Pivot auf dem integrierten Bestand)}{fig:pivot1}{0.85}
-\abb{pivot-f5}{Auswertung F5: Kanalanteil Direkt vs.\ Shop je betreutem Kunden}{fig:pivot5}{0.7}
-% Vorgabe Kirchberg: "Verdeutlichen Sie den Integrationsablauf mit Beispieldaten" – mindestens zwei Pivots zeigen
 
 \abb{dashboard}{Ergebnis-Dashboard: alle sechs Auswertungsfragen F1--F6 als PivotCharts auf dem integrierten Datenbestand (Blatt \pq{Dashboard}); jede Diagrammüberschrift formuliert die Kernaussage \skript{4.3}}{fig:dashboard}{1.0}
 
