@@ -206,8 +206,8 @@ Vor dem Excel-Lauf wurde die Logik in Python nachgebaut (`sim.py`, nicht Teil de
 
 | Nr. | Stand | zerrissen | verschmolzen | ohne Mapping | Quelle der Zahl |
 | --- | --- | --- | --- | --- | --- |
-| 6 | Datenstand v3, Bereinigung neu, Kaskade ungesichert (`pAbsicherung = false`) | 16 | 10 | 0 | Simulation - in Excel noch nachzumessen |
-| 7 | wie 6, Kaskade abgesichert (`pAbsicherung = true`, `pBelegtRegel = false`) | 7 | 1 | 0 | Simulation - in Excel noch nachzumessen |
+| 6 | Datenstand v3, Bereinigung neu, Kaskade ungesichert (`pAbsicherung = false`) | 17 | 9 | 0 | **Excel, Messung6.xlsx, gemessen 11.11.2026** (Simulation: 16 / 10) |
+| 7 | wie 6, Kaskade abgesichert (`pAbsicherung = true`, `pBelegtRegel = false`) | 7 | 1 | 0 | **Excel, Messung7.xlsx, gemessen 11.11.2026** (Simulation: 7 / 1) |
 | 8 | wie 7, mit Belegt-Regel (`pBelegtRegel = true`) | 7 | 0 | 0 | **Excel, CHECK_Sollwerte, gemessen 11.11.2026** |
 
 **Messung 8, Matchmethoden (Excel):** CRM: ERP-Schlüssel 54, Adresse + Name 23, Fuzzy 8, neu 71. Shop: ERP-Schlüssel 21, E-Mail 83, Adresse 3, neu 93. ERP-Basis 128.
@@ -226,3 +226,5 @@ Positionen ohne Auftrag 4/4, doppelt importierte Shop-Aufträge 3/3, Versand vor
 Shop gesamt 549 (56 storniert/erstattet), im ERP importiert 131, Bestellungen in FAKT_SHOP 362, KundeKey/ProduktKey/Region null 0,
 Zeilen FAKT_VERKAUF 2529, Netto ERP 466.452,28 EUR, Netto Shop 164.226,33 EUR.
 Offen: Dashboard-Titel F5/F6 passen nicht mehr zu den neuen Zahlen; Achsenbeschriftung F2 überlappt.
+
+**Nachmessung 6 und 7 in Excel (12.11.2026 aus den gespeicherten Messkopien abgelesen):** Messung 6 ergibt 17 zerrissen / 9 verschmolzen statt 16 / 10 aus der Simulation - ein Fall wird vom Fuzzy-Join in Power Query anders behandelt als von difflib. Messung 7 stimmt exakt. Für die Arbeit gelten die Excel-Werte.
