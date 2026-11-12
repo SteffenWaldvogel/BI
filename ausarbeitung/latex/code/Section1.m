@@ -1,6 +1,6 @@
 section Section1;
 
-shared pPfad = "C:\Users\steff\DHBW\Semester 5 (Okt-Dez 2026)\04 Business Intelligence (Kirchberg)\BI\";
+shared pPfad = "C:\Users\SteffenWaldvogel\Documents\DHBW\BI-Seminararbeit\";
 
 shared KUNDE = let
     Quelle = Csv.Document(File.Contents(pPfad & "quellen\erp\KUNDE.txt"),[Delimiter=";", Columns=17, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
