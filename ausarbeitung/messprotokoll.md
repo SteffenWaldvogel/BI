@@ -228,3 +228,33 @@ Zeilen FAKT_VERKAUF 2529, Netto ERP 466.452,28 EUR, Netto Shop 164.226,33 EUR.
 Offen: Dashboard-Titel F5/F6 passen nicht mehr zu den neuen Zahlen; Achsenbeschriftung F2 überlappt.
 
 **Nachmessung 6 und 7 in Excel (12.11.2026 aus den gespeicherten Messkopien abgelesen):** Messung 6 ergibt 17 zerrissen / 9 verschmolzen statt 16 / 10 aus der Simulation - ein Fall wird vom Fuzzy-Join in Power Query anders behandelt als von difflib. Messung 7 stimmt exakt. Für die Arbeit gelten die Excel-Werte.
+
+## Prüfliste und Fehlerlog-Abgleich (12.11.2026, zweites Gerät)
+
+`CHECK_Pruefliste` und `CHECK_Fehlerlog` als Tabellen geladen (je rund 8 Minuten). Prüfliste: **161 Befunde an 139 von 499 Kundensätzen**.
+
+| Befund | Zeilen | ERP | Shop | CRM |
+|---|---|---|---|---|
+| Adresse bei mehreren Kunden | 50 | 17 | 18 | 15 |
+| Telefon enthält Text | 28 | 13 | 5 | 10 |
+| E-Mail bei mehreren Kunden | 22 | 0 | 11 | 11 |
+| Erstkontakt nur monatsgenau | 12 | 0 | 0 | 12 |
+| Name evtl. abgeschnitten (Feldlänge 30) | 9 | 9 | 0 | 0 |
+| E-Mail ungültig oder Text im E-Mail-Feld | 6 | 0 | 6 | 0 |
+| Privatname im Firmenfeld | 6 | 0 | 0 | 6 |
+| PLZ fehlt oder ungültig / passt nicht zum Land | 5 / 2 | 1 | 0 | 6 |
+| Sperrvermerk (Firmenfeld / Freitext) | 4 / 1 | 1 | 0 | 4 |
+| Testkunde, zwei E-Mails, Postfach | 4 / 4 / 3 | | | |
+| Betreuer nicht auflösbar, Firma mit Zusatz, Land unbekannt, Telefon nicht normalisierbar | 2 / 1 / 1 / 1 | | | |
+
+**Abgleich mit dem Fehlerlog:** Die manuellen und hybriden Fehlertypen stehen vollständig auf der Liste (Telefon mit Text 27/27, Sammel-E-Mail 20/20, gleiche Adresse 20/20, Privatname 6/6, Bemerkung im E-Mail-Feld 4/4, E-Mail ohne @ 2/2, Postfach 3/3, PLZ fehlt 3/3, Sperrvermerk 4/4, Testkunden 4/4).
+
+**Lücken, die der Abgleich zeigt:**
+1. `Fremdschlüssel ERP_KdNr mit Tippfehler` (3 Fälle): kein einziger Befund „Fremdschlüssel zeigt auf anderen Kunden". Vermutung: der vertippte Schlüssel zeigt auf eine KdNr, die es nicht gibt - dann setzt die Abfrage kein Flag. Fehlt: Befund „Fremdschlüssel nicht gefunden".
+2. `PLZ passt nicht zum Land`: 2 von 3 erkannt.
+3. `CHECK_Fehlerlog.Auf_Pruefliste` zählt jeden Befund am Datensatz, nicht den passenden - für die automatisch behobenen Typen ist die Spalte deshalb nicht aussagekräftig.
+4. Versand vor Auftrag (4) steht nur in CHECK_Fakten, nicht auf der Prüfliste.
+
+**Neuer Befund aus „Adresse bei mehreren Kunden" (50 Zeilen, 12 Adressen):** 8 Adressen sind Vereinsheime (korrekt getrennt). Die übrigen 4 sind Umzieher: der Shop-Datensatz trägt die alte Adresse und den Namen des ERP-Kunden, hängt aber über die E-Mail am neuen CRM-Key. Der Shop ist damit die Brücke zwischen ERP und CRM. Eine Brückenregel (Shop-Zeile mit E-Mail-Treffer im CRM und Adresse+Name-Treffer im ERP -> beide Keys zusammenführen) löst in der Simulation 4 der 7 Zerreißungen ohne neue Verschmelzung (3 / 0). Noch nicht in der Mappe.
+
+**Ausarbeitung:** main.tex umgebaut (Kap. 2 Beispielzeilen Kunde 31 und neue Verteilung; 4.3 mit Tabelle der Fehlerbilder; 4.4 Kaskade Messung 8; 4.5 Messreihe 6-8; neuer Abschnitt 4.6 Prüfliste; Anhang-Listings auf neue Zeilen). Testkompilat fehlerfrei.

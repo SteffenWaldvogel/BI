@@ -173,25 +173,28 @@ Der integrierte Datenbestand soll sechs Fragen beantworten, die jeweils Verkäuf
 
 \begin{table}[H]
   \centering\scriptsize
-  \caption{Dieselbe Kundin in den drei Quellsystemen (Kunde 7 der Sollwerte): drei Schlüssel, drei Schreibweisen, drei Kodierungen}
+  \caption{Dieselbe Kundin in den drei Quellsystemen (Kunde 31 der Sollwerte): drei Schlüssel, drei Schreibweisen, drei Kodierungen -- und fünf eingebaute Fehler}
   \label{tab:beispielzeilen}
   \begin{tabular}{@{}l>{\ttfamily}p{3.6cm}>{\ttfamily}p{4.2cm}>{\ttfamily}p{4.2cm}@{}}
     \toprule
     Feld & \normalfont ERP \quelle{KUNDE} & \normalfont Shop \quelle{customers} & \normalfont CRM \quelle{Accounts} \\
     \midrule
-    Schlüssel & 10219 & C-00114 & 966dac65-\dots\ (GUID) \\
-    Verweis & -- & erp\_customer\_no = (leer) & ERP\_KdNr = (leer) \\
-    Firma & Dart-Lounge & Dart-Lounge & Dart-Lounge \\
-    Name & Richter; Petra & Petra; Richter; gender=2 & Frau; Petra; Richter \\
-    Adresse & Seestr. 88a & "See-Straße 88a, 1010 Wien" & See-Str.; 88a \\
-    PLZ / Ort & 1010; Wien & (in address) & 1010; Wien \\
-    Land & A & AT & Österreich \\
+    Schlüssel & 10275 & C-00174 & 96ea9404-\dots\ (GUID) \\
+    Verweis & -- & erp\_customer\_no = (leer) & ERP\_KdNr = 10275 \\
+    Firma & Dar-tLounge \normalfont(Tippfehler) & Dart-Lounge & Dart-Lounge \\
+    Name & Dr. Bauer; Claudia \normalfont(Titel im Namen) & Claudia; Bauer; gender=2 & Frau; Claudia; Bauer \\
+    Adresse & 18 Bahnhofstr. \normalfont(Hausnr. vorn) & "Bahnhof-Straße 18, 80331 München" & Bahnhofstrasse; 18 \\
+    PLZ / Ort & 80331; München & (in address) & 80331; München \\
+    Land & D & DE & Deutschland \\
     Kundentyp & Kundengruppe = 3 & is\_club = false & Gastronomie \\
-    E-Mail & -- & petra.richter24@t-online.de & PETRA.RICHTER24@T-ONLINE.DE \\
-    Sonstiges & Zahlungsziel = -1 & created\_at = ISO/UTC & Erstkontakt = 10/05/2021 \\
+    Newsletter & j \normalfont(statt J/N) & true & X \\
+    E-Mail & -- & claudia.bauer98@t-online.de \normalfont(Sammelpostfach) & claudia.bauer98@t-online.de \\
+    Telefon & 0751/77093 & 0751.67167 & 0049 751 57931 \\
+    Datum & Anlage TT.MM.JJJJ & created\_at ISO/UTC & Erstkontakt 01/20/2021 \\
     \bottomrule
   \end{tabular}
 \end{table}
+Unter derselben Adresse (Bahnhofstraße 18, München) führen alle drei Systeme außerdem einen zweiten Kunden: den Verein \enquote{Black Arrows München}, der sein Vereinsheim in der Gaststätte hat -- im CRM als \enquote{Black Arrows MÃ¼nchen} mit Zeichensatzfehler. Die E-Mail-Adresse der Gaststätte verwendet zusätzlich ein weiterer Kunde. Beides sind Fälle, in denen ein an sich starkes Merkmal (Adresse, E-Mail) zwei verschiedene Kunden verbindet.
 
 \subsection{Überlappungen und Datengenerierung}
 
@@ -199,22 +202,22 @@ Der integrierte Datenbestand soll sechs Fragen beantworten, die jeweils Verkäuf
 
 \begin{table}[H]
   \centering\small
-  \caption{Verteilung der 200 eindeutigen Kunden auf die Quellsysteme}
+  \caption{Verteilung der 285 eindeutigen Kunden auf die Quellsysteme}
   \label{tab:verteilung}
   \begin{tabular}{@{}lrl@{}}
     \toprule
     Präsenz & Anzahl & Kundentypen \\
     \midrule
-    ERP + Shop + CRM & 45 & Vereine, Händler, Gastro \\
-    ERP + CRM & 20 & Vereine, Händler, Gastro \\
-    Shop + CRM & 30 & Vereine, Privat, Gastro \\
-    nur CRM (Leads) & 15 & Vereine, Händler, Gastro \\
-    nur Shop & 65 & Privat \\
-    nur ERP (Altkunden, gesperrt) & 25 & Vereine, Händler, Gastro \\
+    ERP + Shop + CRM & 64 & Vereine, Händler, Gastro \\
+    ERP + CRM & 28 & Vereine, Händler, Gastro \\
+    Shop + CRM & 43 & Vereine, Privat, Gastro \\
+    nur CRM (Leads) & 21 & Vereine, Händler, Gastro \\
+    nur Shop & 93 & Privat \\
+    nur ERP (Altkunden, gesperrt) & 36 & Vereine, Händler, Gastro \\
     \bottomrule
   \end{tabular}
 \end{table}
-Daraus entstehen 93 ERP-Kunden (inkl.\ 3 Dubletten), 140 Shop-Kunden und 115 CRM-Accounts (inkl.\ 5 Dubletten). Von den 95 überlappenden Kunden haben 40\,\% eine identische Adresse, 40\,\% eine abweichende Schreibweise und 20\,\% sind umgezogen, wobei das CRM die jüngere Adresse führt.
+Daraus entstehen 499 Kundensätze: 134 im ERP (inkl.\ 4 Dubletten und 2 Testkunden), 201 im Shop (1 Testkunde) und 164 im CRM (7 Dubletten, 1 Testkunde), dazu 478 ERP-Aufträge und 549 Shop-Bestellungen. Der Generator schreibt zwei Sollwert-Dateien, die nicht Teil der Quellen sind: welcher Kunde unter welcher ID in welchem System steckt, und welcher der 318 eingebauten Fehler in welchem Datensatz sitzt. Von den 135 überlappenden Kunden haben 40\,\% eine identische Adresse, 40\,\% eine abweichende Schreibweise und 20\,\% sind umgezogen, wobei das CRM die jüngere Adresse führt.
 
 % =====================================================================
 \section{Zielschema}\label{sec:zielschema}
@@ -292,7 +295,7 @@ Daraus entstehen 93 ERP-Kunden (inkl.\ 3 Dubletten), 140 Shop-Kunden und 115 CRM
   \node[box] (k) at (0,0) {KUNDE, AUFTRAG, \dots};
   \node[box] (c) at (3.6,0) {customers, orders, \dots};
   \node[box] (a) at (7.2,0) {Accounts, Betreuer};
-  \node[box, fill=gray!15] (h) at (10.6,0) {fnClean, fnNorm*, mapLand,\\mapKundentyp, pPfad, pSchwelle};
+  \node[box, fill=gray!15] (h) at (10.6,0) {fnClean, fnNorm*, fnStrasse, fnTel,\\mapLand, mapKundentyp, Parameter};
   % Zeile 2: Harmonisierung
   \node[box] (kh) at (0,-1.4) {KUNDE\_h};
   \node[box] (sh) at (3.6,-1.4) {SHOP\_h};
@@ -307,7 +310,7 @@ Daraus entstehen 93 ERP-Kunden (inkl.\ 3 Dubletten), 140 Shop-Kunden und 115 CRM
   \node[box] (dp) at (3.6,-4.3) {DIM\_PRODUKT,\\DIM\_VERKAEUFER};
   \node[box] (fv) at (7.2,-4.3) {FAKT\_ERP + FAKT\_SHOP\\$\rightarrow$ FAKT\_VERKAUF};
   % Zeile 5: Prüfung
-  \node[box, fill=gray!15] (cs) at (0,-5.7) {CHECK\_Sollwerte};
+  \node[box, fill=gray!15] (cs) at (0,-5.7) {CHECK\_Sollwerte,\\CHECK\_Pruefliste};
   \node[box, fill=gray!15] (cf) at (7.2,-5.7) {CHECK\_Fakten};
   \node[box, fill=gray!15] (pv) at (10.6,-5.7) {Pivots P1--P6};
   % Kanten
@@ -332,70 +335,106 @@ Daraus entstehen 93 ERP-Kunden (inkl.\ 3 Dubletten), 140 Shop-Kunden und 115 CRM
   \node[lab] at (-1.75,-4.3) {Ziel-\\schema};
   \node[lab] at (-1.75,-5.7) {Prüfung};
 \end{tikzpicture}}
-\caption{Schichten der Abfragen in der Mappe (vereinfachte Abhängigkeiten; die Editor-Ansicht \enquote{Abfrageabhängigkeiten} ist mit 45 Knoten nicht lesbar)}
+\caption{Schichten der Abfragen in der Mappe (vereinfachte Abhängigkeiten; die Editor-Ansicht \enquote{Abfrageabhängigkeiten} ist mit 58 Knoten nicht lesbar)}
 \label{fig:abhaengigkeiten}
 \end{figure}
 
 \todo{Erklären: Schichten wie im Staging-Ansatz; Rohdaten-Abfragen enthalten nur den Import; Mappings als eigene Tabellen (mapLand, mapKundentyp, mapRegion, mapMwSt) und Parameter (pSchwelle, pKursCHF, pPfad für den Quellordner -- damit läuft die Mappe auf jedem Rechner nach Änderung einer Zeile) statt Werte im Code; Integrationsreihenfolge ERP $\rightarrow$ CRM $\rightarrow$ Shop, weil das ERP Stammdaten und Verkäufer führt (Alternative: n-är in einem Schritt -- verworfen, Fehler nicht lokalisierbar).}
 
-\subsection{Import und syntaktische Harmonisierung}\label{sec:syntax}
+\subsection{Import und globale Vorbereitung}\label{sec:syntax}
 
 \abb{pq-import-erp}{Import der ERP-Datei: Codepage 1252, Semikolon, Gebietsschema de-DE -- und das Problem eingebetteter Zeilenumbrüche}{fig:import}{0.9}
 % Screenshot: Csv.Document-Dialog bzw. Vorschau mit zerrissenen Zeilen (QuoteStyle.None) vs. korrekt (QuoteStyle.Csv): 124 Zeilen -> 90 Datensätze
 
 \todo{Was: Codepage, Trennzeichen, Dezimaltrenner, drei Datumsformate, UTC-Zeitzone. Entscheidung: Typumwandlung immer mit explizitem Gebietsschema, nie automatisch erkannt. Nachweis Zeilenumbrüche: 124 physische Zeilen, 90 Datensätze.}
 
-\begin{lstlisting}[language=PowerQueryM, caption={Hilfsfunktion \pq{fnClean}: unsichtbare Zeichen und Mehrfach-Leerzeichen entfernen}, label={lst:fnclean}]
+\begin{lstlisting}[language=PowerQueryM, caption={Hilfsfunktion \pq{fnClean}: Zeichensatzfehler, unsichtbare Zeichen, Mehrfach-Leerzeichen und Platzhalter}, label={lst:fnclean}]
 (s as nullable text) as nullable text =>
 let
-    t0 = if s = null then null else Text.Clean(s),
+    moji = {{"Ã¼","ü"}, {"Ã¶","ö"}, {"Ã¤","ä"}, {"ÃŸ","ß"}, {"Ãœ","Ü"}, {"Ã–","Ö"}, {"Ã„","Ä"}},
+    m0 = if s = null then null else List.Accumulate(moji, s, (acc, p) => Text.Replace(acc, p{0}, p{1})),
+    t0 = if m0 = null then null else Text.Clean(m0),
     t1 = if t0 = null then null else Text.Replace(t0, Character.FromNumber(160), " "),
     t2 = if t1 = null then null else Text.Remove(t1, {Character.FromNumber(173), Character.FromNumber(8203)}),
     t3 = if t2 = null then null else Text.Combine(List.Select(Text.Split(t2, " "), each _ <> ""), " "),
-    t4 = if t3 = "" then null else t3
+    t4 = if t3 = null or t3 = "" or List.Contains({"-", "?", "k.a.", "xxx", "n/a", "unbekannt"}, Text.Lower(t3)) then null else t3
 in
     t4
 \end{lstlisting}
 
-\todo{Warum eine Funktion statt Trim je Spalte: 14 Textspalten im CRM allein; unsichtbare Zeichen (NBSP, Soft Hyphen) zerstören Joins. Nachweis: Matchtreffer mit und ohne fnClean. Mojibake-Rückübersetzung Ã¼ $\rightarrow$ ü.}
+\todo{Globale Vorbereitung vor allen Feldregeln (Vorgehen aus der Projektarbeit 1 übernommen): eine Funktion auf alle Textspalten statt Trim je Spalte -- 19 Textspalten im CRM allein; unsichtbare Zeichen (NBSP, Soft Hyphen) zerstören Joins. Mojibake über feste Ersetzungsliste (12 Fälle), Platzhalter wie \enquote{-} oder \enquote{k.A.} werden zu null (6 Fälle). Grenze: die Liste deckt nur deutsche Umlaute. Dazu zwei Importfehler aus der eigenen Entwicklung nennen: KUNDE mit 16 statt 17 Spalten, customers ohne CSV-Quoting -- beides fiel erst mit den neuen Fehlerbildern auf.}
 
-\subsection{Kodierungen, Schema und Datenfehler}\label{sec:schema}
+\subsection{Kodierungen, Schema und Feldmissbrauch}\label{sec:schema}
 
 \abb{pq-mapping}{Mapping-Tabellen statt verschachtelter Bedingungen: Länder (stark äquivalent) und Kundentyp (schwach äquivalent, kleinster gemeinsamer Nenner)}{fig:mapping}{0.9}
 % Screenshot: mapKundentyp mit den drei Quellkodierungen und dem Merge in CRM_h
 
 \todo{Was: J/N, true/false, X/leer $\rightarrow$ Boolean; Anrede-Varianten; NULL-Kodierungen -1 und 31.12.9999; is\_club $\rightarrow$ Kundentyp; Lieferart Tabelle $\rightarrow$ Spalte; Synonyme/Homonyme umbenennen (Status $\times$ 3). Entscheidung: Mapping-Tabellen, weil erweiterbar und im Text dokumentierbar; Alternative bedingte Spalte -- für Länder ok, für Kundentyp mit fünf Quellwerten unübersichtlich.}
 
-\abb{pq-strasse}{Straße und Hausnummer trennen und vertauschte Felder automatisch zurücktauschen}{fig:strasse}{0.9}
-% Screenshot: KUNDE_h mit Strasse.1/Strasse.2, Strasse_ok/Hausnr_ok
+\abb{pq-strasse}{\pq{KUNDE\_h}: PLZ aus dem Ortsfeld und aus dem Länderpräfix, Straße und Hausnummer getrennt, vertauschte Reihenfolge erkannt}{fig:strasse}{0.95}
+% Screenshot: KUNDE_h im Editor, Spalten PLZ_norm, Ort, LandISO, Strasse, Hausnr, Flag_Postfach, Flag_Vertauscht, Befunde
 
-\todo{Was: Teilen am letzten Leerzeichen; Regel \enquote{beginnt Straße mit Ziffer und Hausnummer nicht $\rightarrow$ tauschen}; Titel aus Name1; PLZ mit führender Null; Land aus PLZ-Länge ableiten; MM/YYYY mit Flag\_Datum\_ungenau statt stillschweigend 1. des Monats. Grenze: \enquote{5 Straße des 17. Juni} bleibt manuell.}
+Die Fehlerbilder der Beispieldaten folgen nicht nur dem Skript, sondern dem Kriterienkatalog einer realen Stammdatenbereinigung (Projektarbeit 1: Zusammenführung zweier Lexware-Mandanten mit rund 43\,000 Kundeninstanzen). Deren häufigster Fehlertyp war kein Formatfehler, sondern \emph{Feldmissbrauch}: der richtige Wert im falschen Feld oder Text, wo ein Wert stehen müsste. \Cref{tab:fehlerbilder} zeigt die eingebauten Fehlerbilder mit Fallzahl und Behandlung.
+
+\begin{table}[H]
+  \centering\scriptsize
+  \caption{Eingebaute Fehlerbilder in den Kundenstammdaten (Auswahl), Fallzahl laut Fehlerlog und Behandlung in Power Query}
+  \label{tab:fehlerbilder}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.4cm}r>{\raggedright\arraybackslash}p{7.3cm}c@{}}
+    \toprule
+    Fehlerbild (Beispiel) & Fälle & Behandlung & Klasse \\
+    \midrule
+    E-Mail mit Transportmüll (\texttt{mailto:}, \texttt{Name <\dots>}, \texttt{(at)}) & 42 & \pq{fnNormEmail} & A \\
+    Telefon mit Text oder Durchwahl (\texttt{0751/5512 -16 Hr.\ Vogel}) & 27 & Ziffern bis zum ersten Buchstaben $\rightarrow$ E.164; braucht gültiges Land, Rest auf die Prüfliste & H \\
+    Land als Variante (\texttt{BRD}, \texttt{Germany}, \texttt{AUT}) & 20 & Mapping-Tabelle \pq{mapLand}; unbekannter Wert bleibt null & A \\
+    PLZ als Zahl aus Excel, führende Null fehlt & 16 & Text, in Deutschland auf fünf Stellen auffüllen & A \\
+    Zeichensatzfehler (\texttt{MÃ¼nchen}) & 12 & Ersetzungsliste in \pq{fnClean} & A \\
+    PLZ mit Länderpräfix (\texttt{D-88212}) & 10 & Präfix abtrennen; füllt ein fehlendes Land & A \\
+    Name nach 30 Zeichen abgeschnitten & 7 & Namensprüfung über gemeinsamen Anfang statt Gleichheit & H \\
+    Hausnummer vor Straße, Felder vertauscht & 7 & Rücktausch-Regel in ERP und CRM & A \\
+    Betreuer nicht auflösbar (\texttt{S.\ Huber}) & 7 & Abgleich über normalisierten Nachnamen, Rest Prüfliste & H \\
+    Privatkunde nur im Firmenfeld (\texttt{Müller Hans}) & 6 & erstes Wort zählt für den Abgleich; Feldkorrektur manuell & H \\
+    Tippfehler im Namen (\texttt{Dar-tLounge}) & 6 & Fuzzy-Kandidat, bestätigt durch Adresse & H \\
+    PLZ im Ortsfeld (\texttt{88212 Ravensburg}) & 5 & führende Ziffern übernehmen, wenn PLZ leer & A \\
+    Zwei E-Mails in einem Feld, Leerzeichen, Bemerkung im Feld & 12 & teilen, bereinigen, ohne \texttt{@} $\rightarrow$ null & A \\
+    Sperrvermerk im Freitext (\texttt{INSOLVENT}) & 4 & Schlüsselwortliste setzt Kontaktstatus \enquote{gesperrt} & A \\
+    Postfach im Straßenfeld, Hausnummer-Bereich (\texttt{2-5}) & 6 & erkennen; Postfach erhält keinen Adressschlüssel & H \\
+    PLZ fehlt, ungültig oder passt nicht zum Land & 7 & nur erkennen und melden & M \\
+    E-Mail ohne \texttt{@} & 2 & nur erkennen und melden & M \\
+    Ansprechpartner im Firmenfeld (\texttt{Dart-Shop / Hr.\ Koch}) & 2 & nur erkennen und melden & M \\
+    \bottomrule
+    \multicolumn{4}{@{}l}{A = automatisch behoben, H = hybrid (Regel mit zweiter Bedingung oder Vorschlag), M = manuell (erkennen und melden)}
+  \end{tabular}
+\end{table}
+
+\todo{Drei Absätze. (1) Reihenfolge aus PA1: globale Vorbereitung, dann PLZ/Ort, dann Land, dann Straße/Hausnr, dann Telefon -- Land vor Telefon, weil die Vorwahl ein gültiges Land braucht. (2) Zwei Beispiele ausführen: PLZ-Kette (Präfix D- liefert zugleich das Land; fünfstellige PLZ ohne Land ist in DACH nur Deutschland, vierstellig bleibt offen) und Straße/Hausnr (Postfach, Nummer vorn, Bereich 2-5; Grenze \enquote{Straße des 17. Juni 5}). (3) Entscheidung: nichts raten. Ein Wert, der nicht sicher ableitbar ist, bleibt null und wird gemeldet; MM/YYYY wird zum Monatsersten mit Flag. Alternative: Datensätze mit Mängeln verwerfen -- verworfen, weil dann Umsatz fehlt.}
 
 \subsection{Kundenintegration als Kaskade}\label{sec:linkage}
 
-\abb{pq-kaskade}{Match-Kaskade in \pq{CRM\_k}: ERP-Schlüssel mit Namensprüfung, Adresse exakt, Fuzzy mit fachlicher Nachregel, neu}{fig:kaskade}{0.95}
+\abb{pq-kaskade}{Match-Kaskade in \pq{CRM\_k}: ERP-Schlüssel mit Bestätigung, Adresse mit Namensbestätigung, Fuzzy mit fachlicher Nachregel, neu}{fig:kaskade}{0.95}
 % Screenshot: Spalten Key_Schluessel, Key_Adr, Key_Fuzzy, Matchmethode in CRM_k; alternativ Gruppierung nach Matchmethode
 
 Die drei Quellen haben keinen gemeinsamen Schlüssel: ERP und CRM teilen \pq{ERP\_KdNr} nur bei 60\,\% der Accounts und teils fehlerhaft, Shop und CRM teilen die E-Mail, das ERP führt keine E-Mail. Je Quelle wird deshalb eine Kaskade durchlaufen, die den sichersten verfügbaren Abgleich zuerst versucht und die Matchmethode je Zeile protokolliert (\cref{tab:kaskade}).
 
 \begin{table}[H]
   \centering\small
-  \caption{Match-Kaskade je Quelle und Trefferzahlen (Endstand)}
+  \caption{Match-Kaskade je Quelle und Trefferzahlen (Messung 8)}
   \label{tab:kaskade}
-  \begin{tabular}{@{}c>{\raggedright\arraybackslash}p{4.3cm}>{\raggedright\arraybackslash}p{4.6cm}>{\raggedright\arraybackslash}p{4.0cm}@{}}
+  \begin{tabular}{@{}c>{\raggedright\arraybackslash}p{6.2cm}>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{3.5cm}@{}}
     \toprule
     Stufe & Kriterium & CRM $\rightarrow$ ERP & Shop $\rightarrow$ ERP/CRM \\
     \midrule
-    1 & ERP-Schlüssel + Namensprüfung & 38 Treffer, 1 Tippfehler abgewiesen & 24 Treffer \\
-    2 & E-Mail normalisiert & entfällt (ERP ohne E-Mail) & 51 Treffer (CRM) \\
-    3 & Adresse exakt über \pq{Matchkey} & 18 Treffer & 0 \\
-    4 & Fuzzy auf \pq{Name\_norm} + Nachregel & 5 Treffer & 0 \\
-    -- & neu (eigener \pq{KundeKey}) & 49 (15 Leads, 30 nur Shop+CRM, 4 Umzieher) & 65 (reine Privatkunden) \\
+    0 & Vorfilter: Testkunden entfernen, Dubletten je Quelle zusammenlegen & 1 Test, 7 Dubletten & 1 Test \\
+    1 & ERP-Schlüssel, bestätigt durch Namen oder Adresse & 54 & 21 \\
+    2 & E-Mail; bei mehreren Kunden je Adresse entscheidet der Name & entfällt (ERP ohne E-Mail) & 83 \\
+    3 & Adressschlüssel und Namensbestätigung & 23 & 3 \\
+    4 & Fuzzy auf normalisierten Namen, Nachregel entscheidet & 8 & 0 \\
+    -- & neu (eigener \pq{KundeKey}) & 71 & 93 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\todo{Entscheidungen: (1) Matchkey = Land+PLZ+Straße normiert+Hausnummer, ohne Namen -- aus PA1 übernommen. (2) Fremdschlüssel nicht blind übernehmen: Namensprüfung fängt den eingebauten Tippfehler (ERP\_KdNr zeigt auf einen anderen Kunden). (3) Dubletten im ERP: ältester Datensatz führend, beide KdNr auf einen Key.}
+\todo{Entscheidungen, je mit Alternative: (1) Reihenfolge ERP $\rightarrow$ CRM $\rightarrow$ Shop. (2) Adressschlüssel = Land + PLZ + normierte Straße + erste Hausnummer, ohne Namen (aus PA1). (3) Kein Merkmal zählt allein: Fremdschlüssel braucht Namen oder Adresse (3 Tippfehler im Schlüssel, 7 abgeschnittene Namen -- deshalb gemeinsamer Anfang statt Gleichheit), E-Mail braucht bei Mehrfachverwendung den Namen (5 Sammelpostfächer), Adresse braucht den Namen (8 Vereinsheime). (4) Belegt-Regel für den Fall Dart-Lounge Bregenz/Wien. (5) Alternative Punktemodell (additive Gewichte, Schwellen für Hinweis und Warnung, Mensch bestätigt) -- verworfen, weil der Fuzzy-Join keinen Ähnlichkeitswert liefert und Gewichte ohne Trainingsdaten geschätzt wären; die Kaskade ist je Stufe messbar.}
 
 \abb{pq-fuzzy}{Fuzzy-Merge liefert nur Kandidaten -- die fachliche Nachregel entscheidet}{fig:fuzzy}{0.9}
 % Screenshot: Table.FuzzyNestedJoin-Schritt mit expandierten Kandidaten und der Nachregel-Spalte
@@ -410,29 +449,57 @@ Die Integration wird gemessen statt nur plausibilisiert: \pq{CHECK\_Sollwerte} v
 
 \begin{table}[H]
   \centering\small
-  \caption{Messreihe der Kundenintegration (200 Kunden, Fuzzy-Schwellwert 0,8 sofern nicht anders angegeben)}
+  \caption{Messreihe der Kundenintegration auf dem Datenstand mit 285 Kunden und 499 Kundensätzen (Excel, \pq{CHECK\_Sollwerte})}
   \label{tab:messreihe}
-  \begin{tabular}{@{}c>{\raggedright\arraybackslash}p{7.2cm}rrc@{}}
+  \begin{tabular}{@{}c>{\raggedright\arraybackslash}p{9.4cm}rr@{}}
     \toprule
-    Nr. & Stand & zerrissen & verschmolzen & Fuzzy-Treffer \\
+    Nr. & Stand der Kaskade & zerrissen & verschmolzen \\
     \midrule
-    1  & Kaskade mit Fuzzy auf Name+Land, PLZ-Regel außer Vereine & 5 & 12 & 19 \\
-    2  & Quelldaten korrigiert: Namen je Ort eindeutig & 7 & 8 & 13 \\
-    3a & Fuzzy nur bei gleicher PLZ oder (Verein und identischer Name) & 7 & 3 & 5 \\
-    3b & Verein: nur identischer Name; sonst gleiche PLZ oder gleicher Name und Ort & \textbf{4} & \textbf{0} & 5 \\
-    4  & wie 3b, Schwellwert 0,9 & 4 & 0 & 5 \\
-    5  & wie 3b, Schwellwert 0,7 & 4 & 0 & 5 \\
+    6 & jedes Merkmal zählt allein: Schlüssel bei gleichem Namen, E-Mail, Adresse, Fuzzy mit Nachregel & 17 & 9 \\
+    7 & abgesichert: Schlüssel, E-Mail und Adresse brauchen eine Bestätigung & 7 & 1 \\
+    8 & wie 7, zusätzlich Belegt-Regel & \textbf{7} & \textbf{0} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+Die Messungen 1 bis 5 liefen auf einem ersten Datenstand mit 200 Kunden ohne Feldmissbrauch. Sie führten von 12 Verschmelzungen (Fuzzy ohne fachliche Regel) auf 0 und zeigten, dass der Fuzzy-Schwellwert zwischen 0,7 und 0,9 wirkungslos wird, sobald eine fachliche Nachregel über die Kandidaten entscheidet.
+
+\todo{Drei Absätze. (1) Messung 6: dieselbe Kaskade, die auf dem ersten Datenstand 0 Verschmelzungen hatte, verschmilzt 9 Keys, sobald Sammelpostfächer und Vereinsheime vorkommen -- eine fehlerfreie Messung gilt nur für die Fehlerbilder, die im Datensatz stecken. (2) Messung 7 und 8: Bestätigung statt Einzelmerkmal; der verbleibende Fall (Dart-Lounge zieht von Bregenz nach Wien, wo es eine zweite gibt) und die Belegt-Regel. (3) Precision vor Recall: die 7 Zerrissenen sind Umzieher ohne bestätigenden Schlüssel, bewusst getrennt, auf der Prüfliste. Methodik: Regeln vorab in einem Python-Nachbau geprüft, Abweichung in Messung 6 (16/10 statt 17/9) durch unterschiedliche Ähnlichkeitsmaße; maßgeblich sind die Excel-Werte. Laufzeit: 8 Minuten je Messung, 20 Minuten Gesamtlauf.}
+
+\subsection{Automatisch, hybrid, manuell: die Prüfliste}\label{sec:pruefliste}
+
+\abb{pq-pruefliste}{\pq{CHECK\_Pruefliste}: Restbefunde nach der Bereinigung, eine Zeile je Datensatz und Befund}{fig:pruefliste}{0.9}
+
+Was die Regeln nicht sicher beheben können, wird nicht geraten, sondern gemeldet. \pq{CHECK\_Pruefliste} sammelt diese Restbefunde nach der Bereinigung und der Zuordnung: 161 Befunde an 139 der 499 Kundensätze (\cref{tab:pruefliste}).
+
+\begin{table}[H]
+  \centering\small
+  \caption{Restbefunde in \pq{CHECK\_Pruefliste} nach Bereinigung und Zuordnung}
+  \label{tab:pruefliste}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{6.4cm}r>{\raggedright\arraybackslash}p{7.0cm}@{}}
+    \toprule
+    Befund & Zeilen & Was ein Mensch entscheiden muss \\
+    \midrule
+    Adresse bei mehreren Kunden & 50 & Filiale oder Vereinsheim (getrennt lassen) oder derselbe Kunde nach Umzug (zusammenführen) \\
+    Telefon enthält Text & 28 & Durchwahl und Ansprechpartner aus dem Resttext übernehmen \\
+    E-Mail bei mehreren Kunden & 22 & Sammelpostfach bestätigen \\
+    Erstkontakt nur monatsgenau & 12 & keine Korrektur möglich, Unschärfe ist markiert \\
+    Name evtl.\ abgeschnitten (Feldlänge 30) & 9 & vollen Namen aus CRM oder Shop übernehmen \\
+    PLZ fehlt, ungültig oder passt nicht zum Land & 7 & nachschlagen \\
+    E-Mail ungültig oder Text im E-Mail-Feld & 6 & Adresse erfragen, Hinweis in die Bemerkung \\
+    Privatname im Firmenfeld & 6 & Vor- und Nachname in die richtigen Felder \\
+    Sperrvermerk im Freitext oder Firmenfeld & 5 & Sperre im dafür vorgesehenen Feld setzen \\
+    Testkunde, zwei E-Mails, Postfach, Sonstige & 16 & zur Kenntnis; Testkunden sind bereits gefiltert \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\todo{Drei Absätze: (1) Verschmelzungen in Messung 1/2 waren gleichnamige Vereine in verschiedenen Städten -- Fuzzy gewichtet alle Zeichen gleich, der Ortsanteil ist klein. (2) Precision vor Recall: die Regel, die Verschmelzungen verhindert, blockiert Umzüge; die 4 verbleibenden Zerreißungen sind Umzieher ohne Schlüssel und E-Mail und gehen bewusst in die Prüfliste, weil falsche Verschmelzungen in der Umsatzanalyse schwerer wiegen. (3) Messungen 4/5: der Schwellwert ist wirkungslos geworden -- der Fuzzy-Join ist nur noch Kandidatenlieferant, die Nachregel entscheidet. Gegenbeispiel SHOP\_k: mit einem verlässlichen gemeinsamen Attribut (E-Mail) kamen Adresse und Fuzzy nie zum Zug.}
+\todo{Drei Absätze. (1) Kriterium aus PA1: dort galt je Fehlerbild \enquote{unter 100 Fällen händisch, sonst Methode definieren} bei 43\,000 Datensätzen; übertragen auf 499 Kundensätze lohnt eine Regel ab etwa 5 Fällen. Die Klasse hängt an drei Fragen: sicher erkennbar, eindeutig korrigierbar, Kosten einer falschen Korrektur. (2) Prüfliste wie die Tag-Spalte der PA1 erst nach der Bereinigung: sie enthält nur, was übrig bleibt. Zahlen aus \pq{CHECK\_Fehlerlog} einsetzen. (3) Was verworfen wird und was nicht: Testkunden, Dubletten, Stornos, Waisen, Doppelimporte -- gezählt; kein Datensatz wegen Qualitätsmängeln.}
 
 \subsection{Faktenseite und Auswertung}\label{sec:fakten}
 
 \abb{pq-fakt}{\pq{FAKT\_VERKAUF}: Positionen aus ERP und Shop mit Kanal, Netto-EUR, Lieferdauer und Zahlungsverzug}{fig:fakt}{0.95}
 
-\todo{Was: komposite Schlüssel verketten, Produktgruppe aus sprechendem Schlüssel und ArtNr$\leftrightarrow$SKU, CHF$\rightarrow$EUR, Brutto$\rightarrow$Netto je Land, Sets$\rightarrow$Stück, Filter (gesperrt, cancelled/refunded) mit Zählung, Auftrag $\rightarrow$ zum Datum gültige Adresse, Shop-Aufträge nur aus einer Quelle (ShopRef).}
+\todo{Was: komposite Schlüssel verketten, Produktgruppe aus sprechendem Schlüssel und ArtNr$\leftrightarrow$SKU, CHF$\rightarrow$EUR, Brutto$\rightarrow$Netto je Land, Sets$\rightarrow$Stück, Filter (cancelled/refunded: 56 Bestellungen) mit Zählung, Auftrag $\rightarrow$ zum Datum gültige Adresse, Shop-Aufträge nur aus einer Quelle (ShopRef, 131 per Anti-Join). Fehler in den Bewegungsdaten: 4 Positionen ohne Auftrag (Inner Join, gezählt), 3 doppelt importierte Shop-Aufträge (je ShopRef der erste), 4 Lieferungen vor Auftragsdatum (Lieferdauer leer statt negativ), 5 Gutschriften (bleiben und mindern den Umsatz). UTC $\rightarrow$ MEZ vor dem Abschneiden der Uhrzeit.}
 
 \abb{check-fakten}{\pq{CHECK\_Fakten}: Soll-Ist-Prüfung der Faktenseite -- Zeilenzahlen, Anti-Join, fehlende Schlüssel, Umsatzsummen je Quelle}{fig:checkfakten}{0.6}
 
@@ -444,22 +511,23 @@ Die Integration wird gemessen statt nur plausibilisiert: \pq{CHECK\_Sollwerte} v
 
 \todo{Dashboard kurz einordnen: eine Bildschirmseite, Diagramm statt Tabelle, Aussage als Titel, Zeitreihe als Linie, Struktur als Säule/Balken/Kreis (Skript Kap.~4.3). Chart-Wahl je Frage und was ohne Integration nicht darstellbar wäre (F5: Stamm-Vertreter aus CRM/ERP vs.\ Kanal aus Shop).}
 
-\todo{Je Pivot zwei Sätze: was sie zeigt und welche Integrationsleistung sie voraussetzt. Abschluss: Prüfliste mit Zählung (Umzieher ohne Schlüssel, PLZ-Land-Konflikte, ungültige PLZ/E-Mail) als bewusste Grenze zwischen automatisch und manuell.}
+\todo{Je Pivot zwei Sätze: was sie zeigt und welche Integrationsleistung sie voraussetzt.}
 
 % =====================================================================
 \section{Zusammenfassung}\label{sec:zusammenfassung}
 
-\todo{Eine halbe Seite: drei Quellsysteme mit absichtlich eingebauten Integrationsproblemen, per Skript mit Sollwerten erzeugt; Power-Query-Mappe mit Staging, Harmonisierung, vierstufiger Kaskade, Sternschema, Prüfabfragen. Ergebnis: 200 Kunden aus 348 Quelldatensätzen, 0 falsche Verschmelzungen, 4 bewusst getrennte Umzieher; alle sechs Fragen per Pivot beantwortbar. Zentrale Entscheidungen: Historisierung statt Priorisierung, Verkäufer am Auftrag, Precision vor Recall, Fuzzy nur als Kandidatenlieferant mit fachlicher Nachregel. Eigenleistung: Messreihe als Methode.}
+\todo{Eine halbe Seite: drei Quellsysteme mit absichtlich eingebauten Integrationsproblemen, per Skript mit Sollwerten erzeugt; Power-Query-Mappe mit Staging, Harmonisierung, vierstufiger Kaskade, Sternschema, Prüfabfragen. Ergebnis: 285 Kunden aus 499 Kundensätzen mit 318 eingebauten Fehlern, 0 falsche Verschmelzungen, 7 bewusst getrennte Umzieher, Prüfliste mit Restbefunden; alle sechs Fragen per Pivot beantwortbar. Zentrale Entscheidungen: Historisierung statt Priorisierung, Verkäufer am Auftrag, Precision vor Recall, Fuzzy nur als Kandidatenlieferant mit fachlicher Nachregel. Kein Merkmal zählt allein. Eigenleistung: Fehlerbilder aus einer realen Bereinigung (PA1), zwei Sollwert-Dateien, Messreihe als Methode.}
 
 % =====================================================================
 % ANHANG – knapp (HR 2.9: nie größer als der Textteil)
 % =====================================================================
 \anhang{Zentrale Power-Query-Abfragen (M-Code)}{app:mcode}
 Der vollständige M-Code liegt in der Mappe; hier die Abfragen, die die Entscheidungen aus \cref{sec:integration} tragen.
-% Zeilennummern passen zu code/Section1.m (Stand 09.11.2026); bei Änderungen in der Mappe neu extrahieren.
-\lstinputlisting[language=PowerQueryM, caption={\pq{fnNormName}}, firstline=66, lastline=77]{code/Section1.m}
-\lstinputlisting[language=PowerQueryM, caption={\pq{CRM\_k}: Match-Kaskade}, firstline=227, lastline=267]{code/Section1.m}
-\lstinputlisting[language=PowerQueryM, caption={\pq{CHECK\_Sollwerte}: Erfolgsmessung}, firstline=329, lastline=354]{code/Section1.m}
+% Zeilennummern passen zu code/Section1.m (Stand 12.11.2026); bei Änderungen in der Mappe neu extrahieren.
+\lstinputlisting[language=PowerQueryM, caption={\pq{fnNormName}: Namen für den Abgleich normalisieren}, firstline=70, lastline=80]{code/Section1.m}
+\lstinputlisting[language=PowerQueryM, caption={\pq{fnNameOk}: Namensbestätigung über den gemeinsamen Anfang}, firstline=108, lastline=116]{code/Section1.m}
+\lstinputlisting[language=PowerQueryM, caption={\pq{CRM\_k}: Match-Kaskade}, firstline=355, lastline=404]{code/Section1.m}
+\lstinputlisting[language=PowerQueryM, caption={\pq{CHECK\_Sollwerte}: Erfolgsmessung}, firstline=481, lastline=505]{code/Section1.m}
 
 \anhang{Generator der Beispieldaten}{app:generator}
 \texttt{generate\_sources.py} erzeugt alle Quelldateien deterministisch (Seed 20261127) und schreibt die Sollwerte, die nur der Erfolgsmessung dienen.
