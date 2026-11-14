@@ -232,6 +232,22 @@ Daraus entstehen 499 Kundensätze: 134 im ERP (inkl.\ 4 Dubletten und 2 Testkund
 % =====================================================================
 \subsection{Zielschema}\label{sec:zielschema}
 
+Das Zielschema ist als Sternschema mit einer Faktentabelle auf Ebene der Auftragsposition und drei Dimensionen aufgebaut (\cref{fig:zielschema}). Es beruht auf sechs Entwurfsentscheidungen.
+
+\textbf{Surrogatschlüssel mit Mapping-Tabelle.} Der Kunde erhält einen künstlichen Schlüssel \pq{KundeKey}; die Tabelle \pq{MAP\_SCHLUESSEL} ordnet jedem Quellschlüssel den Zielschlüssel und die verwendete Zuordnungsmethode zu. Die Alternative, die ERP-Kundennummer als führenden Schlüssel zu übernehmen, scheidet aus, da 157 der 285 Kunden im ERP-System nicht geführt sind.
+
+\textbf{Historisierung der Adresse.} Weichen die Anschriften eines Kunden zwischen den Quellen ab, wird keine Quelle priorisiert, sondern jede Anschrift als Version mit Gültigkeitszeitraum in \pq{DIM\_KUNDE\_ADRESSE} geführt (\cref{tab:adresse}). Der Gültigkeitsbeginn ergibt sich aus dem frühesten Datum der Quelle, die die Anschrift liefert. Bei einer Priorisierung nach Quelle oder nach Aktualität würde die ältere Anschrift überschrieben und der vor dem Umzug erzielte Umsatz der neuen Region zugerechnet. Die Faktentabelle übernimmt daher Land, Region und Postleitzahl in der zum Auftragsdatum gültigen Version.
+
+\textbf{Feste Quellreihenfolge für die übrigen Stammattribute.} Für Attribute ohne Zeitbezug wird der erste vorhandene Wert in der Reihenfolge ERP, CRM, Shop übernommen, da das ERP-System die rechnungsrelevanten Stammdaten führt. Abweichend davon gilt die Newsletter-Einwilligung als erteilt, sobald sie in einer Quelle vorliegt, und als Erstkontakt das früheste Datum aller Quellen.
+
+\textbf{Verkäufer am Auftrag.} Der Verkäuferschlüssel wird aus dem Auftrag und nicht aus dem Kundenstamm abgeleitet; Bestellungen über den Shop erhalten den Pseudo-Verkäufer \enquote{ONLINE}. Der im Kundenstamm hinterlegte Vertreter bleibt als eigenes Attribut \pq{Stamm\_VertreterNr} erhalten. Nur diese Trennung erlaubt die Auswertung des Kanalanteils betreuter Kunden (F5), da ein betreuter Kunde auch ohne Mitwirkung des Vertreters im Shop bestellen kann.
+
+\textbf{Lieferart als Attribut.} Der Shop führt die Versandart als eigene Tabelle, das ERP-System als Attribut des Auftrags. Im Zielschema wird sie als Attribut der Faktentabelle modelliert, da sie nur wenige Ausprägungen und keine eigenen Eigenschaften besitzt.
+
+\textbf{Interessenten und doppelt geführte Bestellungen.} Interessenten ohne Auftrag werden mit dem Kontaktstatus \enquote{Lead} in die Kundendimension aufgenommen, sodass der Kundenbestand vollständig bleibt; in der Faktentabelle treten sie nicht auf. In das ERP-System übernommene Shop-Bestellungen gehen nur einmal in die Faktentabelle ein, und zwar als ERP-Auftrag mit dem Kanal \enquote{Online}.
+
+Die Faktentabelle enthält zusätzlich die für die Auswertung benötigten Dimensionsattribute (Kundentyp, Region, Produktgruppe, Saison). Diese Redundanz ist beabsichtigt: Die zum Auftragsdatum gültige Anschrift lässt sich nicht über eine einfache Schlüsselbeziehung, sondern nur über einen Bereichsvergleich zuordnen, der bereits in Power Query aufgelöst wird.
+
 \begin{figure}[H]\centering\small
 \resizebox{0.95\textwidth}{!}{%
 \begin{tikzpicture}[x=1cm, y=1cm, >=Latex,
@@ -300,7 +316,6 @@ Daraus entstehen 499 Kundensätze: 134 im ERP (inkl.\ 4 Dubletten und 2 Testkund
   \end{tabular}
 \end{table}
 
-\todo{Je Entscheidung zwei bis drei Sätze mit Alternative: (1) Surrogatschlüssel KundeKey + Mapping-Tabelle statt einen Quellschlüssel durchzureichen. (2) Adresse historisiert statt \enquote{jüngste gewinnt} -- verhindert, dass Umsatz vor dem Umzug der neuen Region zugeordnet wird. (3) Verkäufer am Auftrag, nicht am Kunden -- nur so ist F5 korrekt. (4) Lieferart als Attribut, nicht als Entität. (5) Leads als Kunden ohne Umsatz. (6) Shop-Aufträge nur aus einer Quelle, weil sie auch ins ERP importiert sind.}
 
 % =====================================================================
 \subsection{Import und Harmonisierung}\label{sec:integration}\label{sec:aufbau}\label{sec:syntax}\label{sec:schema}
