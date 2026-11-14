@@ -230,23 +230,9 @@ Die Beispieldaten werden durch ein Python-Skript mit festem Startwert erzeugt (A
 Daraus entstehen 499 Kundensätze: 134 im ERP (inkl.\ 4 Dubletten und 2 Testkunden), 201 im Shop (1 Testkunde) und 164 im CRM (7 Dubletten, 1 Testkunde), dazu 478 ERP-Aufträge und 549 Shop-Bestellungen. Der Generator schreibt zwei Sollwert-Dateien, die nicht Teil der Quellen sind: welcher Kunde unter welcher ID in welchem System steckt, und welcher der 318 eingebauten Fehler in welchem Datensatz sitzt. Von den 135 überlappenden Kunden haben 40\,\% eine identische Adresse, 40\,\% eine abweichende Schreibweise und 20\,\% sind umgezogen, wobei das CRM die jüngere Adresse führt.
 
 % =====================================================================
-\subsection{Zielschema}\label{sec:zielschema}
+\subsection{Integrierter Datenbestand}\label{sec:zielschema}
 
-Das Zielschema ist als Sternschema mit einer Faktentabelle auf Ebene der Auftragsposition und drei Dimensionen aufgebaut (\cref{fig:zielschema}). Es beruht auf sechs Entwurfsentscheidungen.
-
-\textbf{Surrogatschlüssel mit Mapping-Tabelle.} Der Kunde erhält einen künstlichen Schlüssel \pq{KundeKey}; die Tabelle \pq{MAP\_SCHLUESSEL} ordnet jedem Quellschlüssel den Zielschlüssel und die verwendete Zuordnungsmethode zu. Die Alternative, die ERP-Kundennummer als führenden Schlüssel zu übernehmen, scheidet aus, da 157 der 285 Kunden im ERP-System nicht geführt sind.
-
-\textbf{Historisierung der Adresse.} Weichen die Anschriften eines Kunden zwischen den Quellen ab, wird keine Quelle priorisiert, sondern jede Anschrift als Version mit Gültigkeitszeitraum in \pq{DIM\_KUNDE\_ADRESSE} geführt (\cref{tab:adresse}). Der Gültigkeitsbeginn ergibt sich aus dem frühesten Datum der Quelle, die die Anschrift liefert. Bei einer Priorisierung nach Quelle oder nach Aktualität würde die ältere Anschrift überschrieben und der vor dem Umzug erzielte Umsatz der neuen Region zugerechnet. Die Faktentabelle übernimmt daher Land, Region und Postleitzahl in der zum Auftragsdatum gültigen Version.
-
-\textbf{Feste Quellreihenfolge für die übrigen Stammattribute.} Für Attribute ohne Zeitbezug wird der erste vorhandene Wert in der Reihenfolge ERP, CRM, Shop übernommen, da das ERP-System die rechnungsrelevanten Stammdaten führt. Abweichend davon gilt die Newsletter-Einwilligung als erteilt, sobald sie in einer Quelle vorliegt, und als Erstkontakt das früheste Datum aller Quellen.
-
-\textbf{Verkäufer am Auftrag.} Der Verkäuferschlüssel wird aus dem Auftrag und nicht aus dem Kundenstamm abgeleitet; Bestellungen über den Shop erhalten den Pseudo-Verkäufer \enquote{ONLINE}. Der im Kundenstamm hinterlegte Vertreter bleibt als eigenes Attribut \pq{Stamm\_VertreterNr} erhalten. Nur diese Trennung erlaubt die Auswertung des Kanalanteils betreuter Kunden (F5), da ein betreuter Kunde auch ohne Mitwirkung des Vertreters im Shop bestellen kann.
-
-\textbf{Lieferart als Attribut.} Der Shop führt die Versandart als eigene Tabelle, das ERP-System als Attribut des Auftrags. Im Zielschema wird sie als Attribut der Faktentabelle modelliert, da sie nur wenige Ausprägungen und keine eigenen Eigenschaften besitzt.
-
-\textbf{Interessenten und doppelt geführte Bestellungen.} Interessenten ohne Auftrag werden mit dem Kontaktstatus \enquote{Lead} in die Kundendimension aufgenommen, sodass der Kundenbestand vollständig bleibt; in der Faktentabelle treten sie nicht auf. In das ERP-System übernommene Shop-Bestellungen gehen nur einmal in die Faktentabelle ein, und zwar als ERP-Auftrag mit dem Kanal \enquote{Online}.
-
-Die Faktentabelle enthält zusätzlich die für die Auswertung benötigten Dimensionsattribute (Kundentyp, Region, Produktgruppe, Saison). Diese Redundanz ist beabsichtigt: Die zum Auftragsdatum gültige Anschrift lässt sich nicht über eine einfache Schlüsselbeziehung, sondern nur über einen Bereichsvergleich zuordnen, der bereits in Power Query aufgelöst wird.
+Ziel der Integration ist ein gemeinsamer Datenbestand, auf dem sich die sechs Fragestellungen ohne Rückgriff auf die Quellsysteme beantworten lassen. Er besteht aus einer Tabelle der Verkäufe auf Ebene der Auftragsposition sowie je einer Tabelle für Kunden, Verkäufer und Produkte (\cref{fig:zielschema}). Da die Quellsysteme keinen gemeinsamen Kundenschlüssel besitzen, erhält jeder Kunde einen künstlichen Schlüssel; eine Mapping-Tabelle hält fest, welcher Quellschlüssel auf welchen Zielschlüssel abgebildet wurde. Abweichende Anschriften eines Kunden werden nicht überschrieben, sondern mit Gültigkeitszeitraum geführt (\cref{tab:adresse}), sodass Umsätze der zum Auftragsdatum gültigen Region zugeordnet werden.
 
 \begin{figure}[H]\centering\small
 \resizebox{0.95\textwidth}{!}{%
@@ -298,7 +284,7 @@ Die Faktentabelle enthält zusätzlich die für die Auswertung benötigten Dimen
   \draw[->, dashed] (a.east) -- node[sloped, below, font=\tiny, fill=white, inner sep=1pt] {Adresse zum Auftragsdatum} (f.south west);
   \draw[->, dashed] (m) -- node[right, font=\tiny] {n : 1} (k);
 \end{tikzpicture}}
-\caption{Zielschema: Sternschema mit historisierter Kundenadresse und Schlüssel-Mapping (fett: Schlüssel)}
+\caption{Integrierter Datenbestand: Verkäufe, Kunden, Verkäufer und Produkte mit Schlüssel-Mapping und Adressversionen (fett: Schlüssel)}
 \label{fig:zielschema}
 \end{figure}
 
@@ -451,6 +437,8 @@ Die Fehlerbilder der Beispieldaten gehen über reine Formatfehler hinaus. Ein in
 
 \subsection{Kundenintegration und Erfolgsmessung}\label{sec:linkage}\label{sec:erfolgsmessung}
 
+\todo{Hier begründen: künstlicher Schlüssel statt ERP-Kundennummer (157 von 285 Kunden stehen nicht im ERP); Anschrift als Version mit Gültigkeit statt Priorisierung einer Quelle; übrige Stammattribute: erster vorhandener Wert in der Reihenfolge ERP, CRM, Shop.}
+
 \abb{pq-kaskade}{Match-Kaskade in \pq{CRM\_k}: ERP-Schlüssel mit Bestätigung, Adresse mit Namensbestätigung, Fuzzy mit fachlicher Nachregel, neu}{fig:kaskade}{0.95}
 % Screenshot: Spalten Key_Schluessel, Key_Adr, Key_Fuzzy, Matchmethode in CRM_k; alternativ Gruppierung nach Matchmethode
 
@@ -535,6 +523,8 @@ Ein Befund verdient eine eigene Betrachtung. Hinter den 50 Zeilen \enquote{Adres
 \todo{Drei Absätze. (1) Kriterium: Bei 499 Kundensätzen lohnt eine Regel ab etwa 5 gleichartigen Fällen, darunter ist die Einzelprüfung schneller. Die Klasse hängt an drei Fragen: sicher erkennbar, eindeutig korrigierbar, Kosten einer falschen Korrektur. (2) Prüfliste erst nach der Bereinigung: sie enthält nur, was übrig bleibt. Zahlen aus \pq{CHECK\_Fehlerlog} einsetzen. (3) Was verworfen wird und was nicht: Testkunden, Dubletten, Stornos, Waisen, Doppelimporte -- gezählt; kein Datensatz wegen Qualitätsmängeln.}
 
 \subsection{Fakten und Auswertung}\label{sec:fakten}
+
+\todo{Hier begründen: Verkäufer aus dem Auftrag, Vertreter laut Kundenstamm als eigenes Attribut (F5); Shop-Bestellungen, die auch im ERP stehen, zählen nur einmal.}
 
 \todo{Was: komposite Schlüssel verketten, Produktgruppe aus sprechendem Schlüssel und ArtNr$\leftrightarrow$SKU, CHF$\rightarrow$EUR, Brutto$\rightarrow$Netto je Land, Sets$\rightarrow$Stück, Filter (cancelled/refunded: 56 Bestellungen) mit Zählung, Auftrag $\rightarrow$ zum Datum gültige Adresse, Shop-Aufträge nur aus einer Quelle (ShopRef, 131 per Anti-Join). Fehler in den Bewegungsdaten: 4 Positionen ohne Auftrag (Inner Join, gezählt), 3 doppelt importierte Shop-Aufträge (je ShopRef der erste), 4 Lieferungen vor Auftragsdatum (Lieferdauer leer statt negativ), 5 Gutschriften (bleiben und mindern den Umsatz). UTC $\rightarrow$ MEZ vor dem Abschneiden der Uhrzeit.}
 
