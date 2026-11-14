@@ -168,7 +168,7 @@ def firma_crm(c):
         f = f.replace(" e.V.","").replace(" e. V.","")
     return f
 
-# Gleiche Adresse, verschiedene Kunden (PA1: Sammeladressen/Filialen): Verein hat sein Vereinsheim in der Gaststätte
+# Gleiche Adresse, verschiedene Kunden (Sammeladressen/Filialen): Verein hat sein Vereinsheim in der Gaststätte
 VEREINSHEIM = []
 _gastro = [c for c in KUNDEN if c["typ"]=="Gastro" and not c["umzug"]]
 _frei = [c for c in KUNDEN if c["typ"]=="Verein" and not c["umzug"]]
@@ -178,7 +178,7 @@ for g in _gastro:
         v = kand[0]; _frei.remove(v)
         v["strasse"], v["hnr"], v["plz"] = g["strasse"], g["hnr"], g["plz"]
         VEREINSHEIM.append((g, v))
-# Sammel-E-Mail (ServiceTool: gleiche E-Mail bei verschiedenen Kunden): zwei Kunden teilen sich ein Postfach
+# Sammel-E-Mail (gleiche E-Mail bei verschiedenen Kunden): zwei Kunden teilen sich ein Postfach
 SAMMELMAIL = []
 _mp = [c for c in KUNDEN if "SHOP" in c["praesenz"] and "CRM" in c["praesenz"] and c["typ"]!="Privat" and not c["umzug"]]
 random.shuffle(_mp)
@@ -342,7 +342,7 @@ def w_erp(name, header, rows):
     with open(os.path.join(OUT,"erp",name+".txt"), "w", encoding="cp1252", newline="") as f:
         wr = csv.writer(f, delimiter=";", lineterminator="\r\n"); wr.writerow(header); wr.writerows(rows)
 os.makedirs(os.path.join(OUT,"erp"), exist_ok=True)
-# Fehlerbilder aus der Praxis (PA1 Kriterienkatalog, ServiceTool): richtiger Wert im falschen Feld, Text statt Wert
+# Fehlerbilder aus der Praxis: richtiger Wert im falschen Feld, Text statt Wert
 ERP_FELDLAENGE = 30   # Firmenfeld im ERP begrenzt: längere Namen werden beim Speichern abgeschnitten
 LAND_VAR_ERP = {"DE":["DE","Deutschland","Deutsch","BRD"], "AT":["AT","AUT","Österreich"], "CH":["Schweiz","SUI"]}
 LAND_VAR_CRM = {"DE":["DE","Germany","Deutschl.","D"], "AT":["Oesterreich","AT","Austria"], "CH":["CH","Switzerland"]}

@@ -32,7 +32,7 @@ shared Accounts = let
 in
     #"Geänderter Typ";
 
-shared fnClean = // Globale Vorbereitung (PA1): Zeichensatzfehler, Steuerzeichen, geschützte/doppelte Leerzeichen, Platzhalter -> null
+shared fnClean = // Globale Vorbereitung: Zeichensatzfehler, Steuerzeichen, geschützte/doppelte Leerzeichen, Platzhalter -> null
 (s as nullable text) as nullable text =>
 let
     moji = {{"Ã¼","ü"}, {"Ã¶","ö"}, {"Ã¤","ä"}, {"ÃŸ","ß"}, {"Ãœ","Ü"}, {"Ã–","Ö"}, {"Ã„","Ä"}},
@@ -150,7 +150,7 @@ let
 in
     r;
 
-shared fnMatchkey = // Adressschlüssel wie in der PA1: Land + PLZ + normalisierte Straße + erste Hausnummer. Fehlt ein Teil, gibt es keinen Schlüssel.
+shared fnMatchkey = // Adressschlüssel: Land + PLZ + normalisierte Straße + erste Hausnummer. Fehlt ein Teil, gibt es keinen Schlüssel.
 (land as nullable text, plz as nullable text, strasse as nullable text, hausnr as nullable text) as nullable text =>
 let
     h = if hausnr = null then null else Text.Lower(Text.SplitAny(Text.Trim(hausnr), "-+/ "){0}),
@@ -158,7 +158,7 @@ let
 in
     r;
 
-shared fnTel = // Telefon nach E.164 (PA1): nur der Teil vor Durchwahl/Text; braucht ein gültiges Land für die Vorwahl
+shared fnTel = // Telefon nach E.164: nur der Teil vor Durchwahl/Text; braucht ein gültiges Land für die Vorwahl
 (t as nullable text, land as nullable text) as nullable text =>
 let
     h0 = if t = null then null else Text.BeforeDelimiter(t & " -", " -"),
@@ -186,7 +186,7 @@ let
 in
     r;
 
-shared KUNDE_h = // KUNDE_h: ERP-Kunden harmonisieren. Reihenfolge wie in der PA1: globale Vorbereitung -> PLZ/Ort -> Land -> Straße/Hausnr -> Telefon -> Kodierungen -> Befunde.
+shared KUNDE_h = // KUNDE_h: ERP-Kunden harmonisieren. Reihenfolge: globale Vorbereitung -> PLZ/Ort -> Land -> Straße/Hausnr -> Telefon -> Kodierungen -> Befunde.
 let
     Txt = {"KdNr", "Firma", "Name1", "Vorname", "Strasse", "PLZ", "Ort", "Land", "Kundengruppe", "VertreterNr", "Zahlungsziel", "Newsletter", "Gesperrt", "Bemerkung", "Telefon"},
     Q = Table.TransformColumns(KUNDE, List.Transform(Txt, (c) => {c, (v) => fnClean(if v = null then null else Text.From(v)), type text})),
@@ -214,7 +214,7 @@ let
     K4 = Table.AddColumn(K3, "Kontaktstatus", each if [Gesperrt_ok] or [Flag_Sperrvermerk] then "gesperrt" else null, type text),
     K5 = Table.AddColumn(K4, "Zahlungsziel_ok", each if [Zahlungsziel] = null or Text.StartsWith([Zahlungsziel], "-") or Text.Select([Zahlungsziel], {"0".."9"}) = "" then null else Number.FromText(Text.Select([Zahlungsziel], {"0".."9"})), Int64.Type),
     K6 = Table.AddColumn(K5, "Telefon_E164", each fnTel([Telefon], [LandISO]), type text),
-    // Befunde: was nach der automatischen Bereinigung übrig bleibt (Prüfliste, Tab. 8.1 Klasse 2 und 3)
+    // Befunde: was nach der automatischen Bereinigung übrig bleibt (Prüfliste)
     B = Table.AddColumn(K6, "Befunde", each Text.Combine(List.RemoveNulls({
             if [Flag_Test] then "Testkunde (gefiltert)" else null,
             if [LandISO] = null then "Land fehlt oder unbekannt" else null,
@@ -669,7 +669,7 @@ shared CHECK_Fakten = let
 in
     Quelle;
 
-shared CHECK_Pruefliste = // CHECK_Pruefliste: Restbefunde nach der Bereinigung (entspricht der Tag-Spalte der PA1). Eine Zeile je Datensatz und Befund.
+shared CHECK_Pruefliste = // CHECK_Pruefliste: Restbefunde nach der Bereinigung. Eine Zeile je Datensatz und Befund.
 let
     E = Table.SelectColumns(Table.AddColumn(KUNDE_h, "ID", each [KdNr], type text), {"Quelle", "ID", "Name_norm", "Befunde"}),
     C = Table.SelectColumns(Table.AddColumn(CRM_h, "ID", each [AccountId], type text), {"Quelle", "ID", "Name_norm", "Befunde"}),
