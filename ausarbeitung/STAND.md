@@ -29,8 +29,11 @@
   Sie waren nur Hilfestellung bei der Erarbeitung.
 - Formulierung: "muss manuell überprüft und entschieden werden", nicht "ein Mensch prüft".
 - Keine Quellenverweise, kein Literaturverzeichnis, kein KI-Verzeichnis.
-- Alles in einer `main.tex`. Schwerpunkt sind die Abbildungen mit Beschreibung und Entscheidungen.
-- Vorher/Nachher-Abbildungen als kleine Ausschnitte zu allen Fehlerbildern.
+- Alles in einer `main.tex`.
+- Stil (Vorgabe vom 16.11.): Fließtext. Keine Gedankenstriche und keine Semikolons als Satztrenner, Doppelpunkte nur sparsam.
+- Abbildungen und Tabellen (Vorgabe vom 16.11.): im Textteil nur die notwendigen, damit der rote Faden erkennbar bleibt.
+  Die Vorher/Nachher-Belege zu allen Fehlerbildern stehen im Beleg-Anhang (Anhang B).
+- Code (Vorgabe vom 16.11.): jedes Listing wird kurz beschrieben (was der Code bewerkstelligt), die Beschreibung steht vor dem Listing.
 - Maximal rund 500 Kundendatensätze.
 - Eine automatische Zusammenführung umgezogener Kunden (Brückenregel) wird nicht eingebaut, aber im Text
   bewertet: möglich, jedoch mit Risiko von Datenverlust; stattdessen Prüfliste und manuelle Entscheidung.
@@ -45,8 +48,9 @@
 | `integration/DartPoint_Integration.xlsx` | die Mappe: 60 Abfragen, 18 Blätter, Datenmodell, Dashboard |
 | `integration/Messung6.xlsx`, `Messung7.xlsx` | Messkopien mit umgestellten Parametern (Beleg für die Messreihe) |
 | `ausarbeitung/latex/main.tex` | die Ausarbeitung (pdfLaTeX, für Overleaf) |
-| `ausarbeitung/latex/bilder/` | 19 Abbildungen |
+| `ausarbeitung/latex/bilder/` | 19 Abbildungen, davon 13 eingebunden |
 | `ausarbeitung/latex/code/` | `Section1.m` (M-Code der Mappe, Quelle der Listings), `BELEG_*.m`, Generator, Listing-Stil |
+| `ausarbeitung/latex_humanized/`, `overleaf_upload_humanized.zip` | Vergleichskopie vom 16.11.: derselbe Stand, Text zusätzlich mit dem Humanizer überarbeitet (nur `main.tex` weicht ab). Noch nicht entschieden, welche Fassung abgegeben wird. |
 | `ausarbeitung/overleaf_upload.zip` | `latex/` gezippt; nach jeder Änderung an `latex/` neu bauen |
 | `ausarbeitung/fehlerkatalog.md`, `messprotokoll.md` | interne Arbeitsunterlagen (nennen die frühere Projektarbeit; nicht Teil der Abgabe) |
 | `ausarbeitung/OFFEN.md` | kurze Liste offener Punkte (in Abschnitt 7 übernommen) |
@@ -97,36 +101,44 @@ Gliederung in `main.tex`:
    - 2.2 Integrierter Datenbestand
    - 2.3 Import und Harmonisierung
    - 2.4 Kundenintegration und Erfolgsmessung
-   - 2.5 Prüfliste: automatisch, hybrid, manuell
+   - 2.5 Prüfliste und manuelle Entscheidung
    - 2.6 Fakten und Auswertung
 3. Zusammenfassung
 
-Anhang A (M-Code-Ausschnitte), B (Generator-Ausschnitte), C (Vorher/Nachher-Belege), ehrenwörtliche Erklärung.
+Anhang A (M-Code-Ausschnitte), B (Belege aus der Arbeitsmappe), ehrenwörtliche Erklärung.
+Der Anhang mit den Generator-Ausschnitten ist am 16.11. gestrichen: Skript und Excel-Mappe werden nicht abgegeben,
+abgegeben wird nur das PDF. Der Text verweist deshalb nirgends auf mitgelieferte Dateien. Die Erzeugung der Demodaten
+beschreibt 2.1 in Worten.
 
-- **Der Text ist vollständig geschrieben** (alle Abschnitte, Einleitung und Zusammenfassung). Einzige verbliebene
-  `\todo`-Stelle: Dozent auf dem Deckblatt.
-- Abbildungen: `vn-kunde-6`, `vn-kunde-34` (ein Kunde in drei Quellen), `vn-1-format` bis `vn-7-bewegung`
-  (Vorher/Nachher je Fehlergruppe), `pq-import-erp`, `pq-mapping`, `pq-strasse`, `pq-kaskade`, `pq-check`,
-  `pq-pruefliste`, `pq-beleg`, `check-fakten`, `dashboard`. Dazu drei TikZ-Schaubilder im Text.
-- **Seit dem Einbau der neuen Abbildungen, der neuen Gliederung und der Texte wurde `main.tex` nicht kompiliert.**
-  Erster Schritt im neuen Chat: ZIP in Overleaf hochladen, Fehler beheben, Seitenzahl feststellen.
-  Wahrscheinliche Stellen: Querverweise auf zusammengelegte Abschnitte (mehrere `\label` an einer Überschrift),
-  Sonderzeichen in Bildunterschriften.
+- **Der Text ist vollständig geschrieben** (alle Abschnitte, Einleitung und Zusammenfassung). Keine `\todo`-Stelle mehr offen.
+- Überarbeitung vom 16.11. (Stil, weniger Abbildungen, Code-Beschreibungen):
+  - Textteil: 7 Abbildungen (drei TikZ-Schaubilder Quellsysteme, Datenbestand, Schichten; `vn-kunde-6`,
+    `vn-3-adresse`, `dashboard`, `analyse`), 3 Tabellen (Fehlerbilder, Kaskade, Messreihe), 1 Listing (`fnClean`).
+  - In den Beleg-Anhang (jetzt Anhang B) verschoben: `vn-1`, `vn-2`, `vn-4` bis `vn-7`, `pq-kaskade`, `pq-check`, `pq-pruefliste`, `check-fakten`.
+  - Nicht mehr eingebunden (Dateien liegen weiter in `bilder/`): `pq-beleg`, `vn-kunde-34`, `pq-import-erp`,
+    `pq-mapping`, `pq-strasse`.
+  - In Fließtext aufgelöste Tabellen: Beispielzeilen Kunde 31, Verteilung der Kunden, Adressversionen, Restbefunde der Prüfliste.
+  - Alle Listings (`fnClean` im Text, vier in Anhang A) haben eine Beschreibung vor dem Code.
+- `main.tex` kompiliert fehlerfrei (pdfLaTeX, lokal geprüft am 16.11.): 31 Seiten, davon 16 Seiten Textteil
+  (vorher 22), Anhang A und B 10 Seiten. Die Prüfung in Overleaf steht noch aus.
 - Im Text offen angesprochene Grenzen: Sommerzeit bei der UTC-Umrechnung unberücksichtigt; Straßennamen mit Zahl
   würden falsch getrennt; Ersetzungsliste nur für deutsche Umlaute; Stammattribute nach fester Reihenfolge
   ERP, CRM, Shop (erster vorhandener Wert).
 
 ## 7. Offene Punkte
 
-1. In Overleaf kompilieren, Fehler beheben, Seitenzahl prüfen; danach entscheiden, welche Abbildungen in den
-   Anhang wandern (2.3 trägt acht Abbildungen und eine Tabelle).
-2. Dozent auf dem Deckblatt eintragen (Titel und Vorname prüfen).
-3. Analyse-Blatt in der Mappe (vom Autor gewünscht, nach dem Text): Pivot-Tabelle mit Hierarchien
-   (Land > Region > Verkäufer; Saisonjahr > Quartal > Monat) für Drill-down und Roll-up, dazu Datenschnitte
-   (Produktgruppe, Kundentyp, Kanal). Das Dashboard bleibt unverändert, weil seine Titel feste Aussagen nennen.
-   Danach ein Screenshot und zwei bis drei Sätze in 2.6.
-4. Schwache Vorher/Nachher-Beispiele ersetzen (`DE -> DE` bei den Ländervarianten, `ja -> ja` bei J/N),
-   dafür `BELEG_Fehlerbilder` anpassen und `vn-2-kodierung` neu aufnehmen.
+1. ZIP in Overleaf hochladen und die PDF gegenlesen. Der Textteil hat 15 Seiten bei einer Richtlinie von 8 bis 12;
+   bei Bedarf weiter kürzen.
+2. Erledigt am 16.11.: Dozent auf dem Deckblatt ist Prof. Dr. Paul F. Kirchberg (Name laut Skript).
+3. Erledigt am 16.11.: Blatt `Analyse` in der Mappe (vor `Dashboard`). PivotTable `PT_Analyse` auf der Tabelle `FAKT_VERKAUF`,
+   Zeilen Land > Region > Verkäufer, Spalten Jahr > Quartal > Monat (Kalenderjahr statt Saisonjahr, weil Quartale sonst über
+   zwei Saisons laufen), Wert Umsatz netto, Datenschnitte Produktgruppe, Kundentyp, Saisonjahr, Kanal. Abbildung
+   `bilder/analyse.png` und drei Sätze in 2.6 sind in beiden Fassungen eingebaut. Der Screenshot hat nur 1332 Pixel Breite;
+   bei Bedarf in Excel mit Zoom 150 % schärfer neu aufnehmen.
+4. Erledigt am 16.11.: `vn-2-kodierung` neu aufgenommen, ohne die schwachen Beispiele (DE, CH, AT und ja sind im Blatt
+   weggefiltert, die Abfrage ist unverändert und nicht neu geladen). Sollen sie bei der nächsten Aktualisierung gar nicht
+   mehr entstehen, in `BELEG_Fehlerbilder` die Normallisten der drei `varianten(...)`-Aufrufe erweitern:
+   Newsletter um "ja", "nein"; Land ERP um "DE", "AT"; Land CRM um "DE", "AT", "CH".
 5. Optional: zweite Erfolgsmessung (`CHECK_Fehlerlog`) mit Zahlen in 2.5; je Frage ein Satz Ergebnis in 2.6.
 6. `FAKT_VERKAUF 1` aus dem Datenmodell entfernen; M-Kommentare in der Mappe bereinigen.
 7. PDF erzeugen und abgeben; zwei Folien für die Präsentation.

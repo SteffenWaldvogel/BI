@@ -1,0 +1,506 @@
+% =====================================================================
+%  Portfolioleistung Business Intelligence – Thema 1.2
+%  Integration der Quellsysteme eines Dart-Händlers mit Excel Power Query
+%  DHBW Ravensburg, WWIBE124, Theoriephase 5 (Okt–Dez 2026)
+%
+%  Layout nach Handreichung WA v3 Kap. 3.4: Times 12 pt,
+%  Ränder 2,5 / 2,0 / 2,5 / 2,5 cm, 1,5-zeilig; Tabellen/Abbildungen/Listings einzeilig.
+%  Keine Quellenbelege, kein Literaturverzeichnis, kein KI-Verzeichnis (Vorgabe Kirchberg).
+%  FASSUNG MIT HUMANIZER (Vergleichskopie zu latex/main.tex). Aufbau: Fließtext mit wenigen, notwendigen Abbildungen; übrige Belege in Anhang B; jedes Listing wird beschrieben.
+%  Overleaf: Compiler pdfLaTeX, Hauptdatei main.tex. Screenshots nach bilder/ legen.
+% =====================================================================
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\usepackage[ngerman]{babel}
+\usepackage[babel, german=quotes]{csquotes}
+\usepackage{graphicx}
+\graphicspath{{bilder/}}
+\usepackage{geometry}
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.0cm}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{enumitem}
+\setlist{noitemsep}
+\usepackage[font=small, labelfont=bf, labelsep=colon]{caption}
+\usepackage{listings}
+\input{code/lst-powerquery-m.tex}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, fit, backgrounds, calc}
+\usepackage[hidelinks]{hyperref}
+\usepackage[nameinlink, ngerman]{cleveref}
+
+\usepackage{etoolbox}
+\setstretch{1.5}
+\AtBeginEnvironment{table}{\setstretch{1.0}\selectfont}
+\AtBeginEnvironment{figure}{\setstretch{1.0}\selectfont}
+\AtBeginEnvironment{lstlisting}{\setstretch{1.0}\selectfont}
+\clubpenalty=10000
+\widowpenalty=10000
+
+% ---------- Hilfsmakros
+\newcommand{\todo}[1]{\textcolor{red!80!black}{\textbf{[TODO: #1]}}}
+\newcommand{\pq}[1]{\texttt{#1}}        % Power-Query-Bezeichner
+\newcommand{\quelle}[1]{\textsf{#1}}    % Quellsystem-Objekte
+\newcommand{\skript}[1]{(Skript Kap.~#1)}
+% \abb{datei}{Bildunterschrift}{label}{Breite}: zeigt bilder/datei.png, sonst einen Platzhalter mit dem Dateinamen
+\newcommand{\abb}[4]{%
+  \begin{figure}[H]\centering
+  \IfFileExists{bilder/#1.png}{\includegraphics[width=#4\textwidth]{#1.png}}%
+    {\fbox{\parbox{#4\textwidth}{\centering\vspace{1.2cm}\textcolor{gray}{Screenshot \texttt{bilder/#1.png}}\vspace{1.2cm}}}}
+  \caption{#2}\label{#3}\end{figure}}
+% Anhänge ohne Gliederungsnummer (HR 2.5/2.9)
+\newcounter{anhang}
+\renewcommand{\theanhang}{\Alph{anhang}}
+\crefname{anhang}{Anhang}{Anhänge}
+\Crefname{anhang}{Anhang}{Anhänge}
+\newcommand{\anhang}[2]{\clearpage\refstepcounter{anhang}%
+  \section*{Anhang \Alph{anhang}: #1}\label{#2}\addcontentsline{toc}{section}{Anhang \Alph{anhang}: #1}}
+
+\newcommand{\arbeitstitel}{Integration der Quellsysteme eines Dart-Händlers mit Excel Power Query}
+\newcommand{\abgabedatum}{27. November 2026}
+\hypersetup{pdftitle={\arbeitstitel}, pdfauthor={Steffen Waldvogel}}
+
+% =====================================================================
+\begin{document}
+
+% ---------- Deckblatt (ungezählt)
+\pagenumbering{alph}
+\thispagestyle{empty}
+\begin{flushright}\includegraphics[width=3.5cm]{dhbw_logo.png}\end{flushright}
+\vspace{2.5cm}
+\begin{center}
+  {\Large \textbf{\arbeitstitel}} \\[0.6cm]
+  {\large Fallbeispiel DartPoint GmbH, Thema 1.2} \\[1.2cm]
+  {\large \textbf{PORTFOLIOLEISTUNG}} \\[0.4cm]
+  Schriftliche Ausarbeitung im Modul Business Intelligence \\[1cm]
+  des Studienganges Wirtschaftsinformatik: Business Engineering \\
+  an der Dualen Hochschule Baden-Württemberg Ravensburg \\[1.5cm]
+  von \\[0.8cm]
+  Steffen Waldvogel \\[1.5cm]
+  Ravensburg, \abgabedatum
+\end{center}
+\vfill
+\begin{tabular}{ll}
+Matrikelnummer, Kurs: & 3989184, WWIBE124 \\
+Fachsemester:         & 5. Semester \\
+Dualer Partner:       & Hokubema Maschinenbau GmbH, Sigmaringen \\
+Dozent:               & Prof. Dr. Paul F. Kirchberg \\
+\end{tabular}
+
+% ---------- Verzeichnisse (römisch)
+\newpage
+\pagenumbering{roman}
+\setcounter{page}{1}
+\tableofcontents
+\newpage
+\listoffigures
+\addcontentsline{toc}{section}{Abbildungsverzeichnis}
+% Tabellenverzeichnis nur bei >= 3 Tabellen (HR 2.7) – derzeit 3, also aktiv
+\listoftables
+\addcontentsline{toc}{section}{Tabellenverzeichnis}
+
+% =====================================================================
+% TEXTTEIL – Ziel 8–12 Seiten; bei vielen Abbildungen dürfen es mehr sein (Vorgabe Kirchberg)
+% =====================================================================
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\section{Einleitung}\label{sec:einleitung}
+
+Ein großer Händler für Dart-Zubehör arbeitet mit drei Systemen, einer ERP-Software für Bestellungen, Zahlungen und Lieferungen, einem Online-Shop und einem CRM. Für diese drei Quellsysteme sind Tabellen zu entwerfen, mit denen sich Verkäufer in Bezug auf Kundenmerkmale auswerten lassen. Excel Power Query soll sie in einen gemeinsamen Datenbestand überführen. Dabei müssen alle im Skript genannten Integrationsprobleme in den Quellen vorkommen und gelöst werden.
+
+Als Fallbeispiel dient die fiktive DartPoint GmbH, ein Großhändler mit Kunden in Deutschland, Österreich und der Schweiz. Sie beliefert Dartvereine, Fachhändler und Gastronomie über Außen- und Innendienst und verkauft an Privatkunden über einen eigenen Online-Shop. Die drei Systeme wurden zu verschiedenen Zeiten eingeführt und stammen von verschiedenen Herstellern, was ihre Unterschiede erklärt. Das ERP-System ist seit 2012 im Einsatz, wird lokal betrieben und exportiert im Zeichensatz Windows-1252. 2018 kam der Shop als Standardsystem mit UTF-8 und ISO-Datum hinzu, 2022 das CRM-System als Cloud-Dienst mit GUIDs, US-amerikanischem Datumsformat und Excel-Export.
+
+Der integrierte Datenbestand soll sechs Fragen beantworten, die jeweils Verkäufer und Kundenmerkmal verknüpfen. Gefragt wird nach dem Umsatz je Verkäufer nach Kundentyp (F1) sowie nach Land und Region (F2), nach dem Saisonverlauf (F3), nach den Produktgruppen (F4), nach dem Anteil der Kanäle Direkt und Shop bei betreuten Kunden (F5) und nach der Zahlungs- und Lieferqualität je Verkäufer (F6).
+
+\Cref{sec:quellsysteme} beschreibt die Quellsysteme und die Erzeugung der Beispieldaten, \cref{sec:zielschema} den angestrebten Datenbestand. Die Umsetzung in Power Query folgt dem Ablauf der Integration. Auf Import und Harmonisierung (\cref{sec:integration}) folgen die Kundenintegration mit Messung des Integrationserfolgs gegen die bekannte Zuordnung (\cref{sec:linkage}), die verbleibenden Befunde (\cref{sec:pruefliste}) sowie die Bewegungsdaten und die Auswertung (\cref{sec:fakten}). Je Schritt werden die gewählte Lösung, ihre Begründung und die verworfene Alternative genannt. \Cref{sec:zusammenfassung} fasst die Ergebnisse zusammen.
+
+% =====================================================================
+\section{Themenbearbeitung}\label{sec:themen}
+
+\subsection{Quellsysteme und Beispieldaten}\label{sec:quellsysteme}
+
+Die drei Quellsysteme haben eigene Tabellen, Exportformate und Schlüssel, und nur zwei Attribute verweisen von einem System auf ein anderes (\cref{fig:quellen}).
+
+\begin{figure}[H]\centering\small
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[x=1cm, y=1cm,
+  sys/.style={draw, rounded corners=2pt, fill=white, inner sep=5pt, text width=4.9cm, align=left, font=\scriptsize, anchor=north},
+  tech/.style={draw=gray!60, fill=gray!8, rounded corners=2pt, inner sep=4pt, text width=4.9cm, align=left, font=\scriptsize, anchor=north},
+  ref/.style={<->, gray, dashed}]
+  \node[sys] (erp) at (0,0) {%
+    \textbf{\sffamily ERP (Lexware-Typ, seit 2012)}\\[2pt]
+    \pq{KUNDE} (KdNr, Firma, Name1, Vorname, Strasse, PLZ, Ort, Land, Kundengruppe, VertreterNr, Zahlungsziel, Gesperrt, Bemerkung)\\
+    \pq{VERTRETER} (VertreterNr, Name, Gebiet, Austritt)\\
+    \pq{AUFTRAG} (AuftragNr, KdNr, Datum, VertreterNr, Status, Waehrung, Lieferart, ShopRef)\\
+    \pq{AUFTRAGSPOS} (AuftragNr, Pos, ArtNr, Menge, Einheit, EPreisNetto)\\
+    \pq{ZAHLUNG}, \pq{LIEFERUNG}, \pq{ARTIKEL}};
+  \node[sys] (shop) at (5.6,0) {%
+    \textbf{\sffamily Online-Shop (seit 2018)}\\[2pt]
+    \pq{customers} (customer\_id, email, first\_name, last\_name, gender, address, country, is\_club, newsletter, created\_at, erp\_customer\_no, company)\\
+    \pq{orders} (order\_id, customer\_id, order\_date, status, total\_gross, shipping\_method\_id)\\
+    \pq{order\_items} (order\_id, line\_no, sku, qty, unit\_price\_gross)\\
+    \pq{products} (sku, name, category)\\
+    \pq{shipping\_methods} (id, name)};
+  \node[sys] (crm) at (11.2,0) {%
+    \textbf{\sffamily CRM (SaaS, seit 2022)}\\[2pt]
+    \pq{Accounts} (AccountId, Firma, Anrede, Titel, Vorname, Nachname, Strasse, Hausnr, PLZ, Ort, Land, Kundentyp, Segment, Betreuer, ERP\_KdNr, Erstkontakt, Newsletter, Status, LetzteAenderung, E-Mail)\\
+    \pq{Betreuer} (Name, E-Mail, Rolle, Region)\\
+    \pq{Aktivitaet} (ActivityId, AccountId, Typ, Datum, Betreuer)};
+  \node[tech] (erpt) at (0,-4.7) {%
+    \textbf{.txt}, Windows-1252, Semikolon, CRLF\\ Datum TT.MM.JJJJ, Dezimalkomma\\ Preise netto, Währung je Auftrag\\ Schlüssel: KdNr numerisch, VertreterNr, ArtNr sprechend\\ Vollabzug ohne Änderungsdatum};
+  \node[tech] (shopt) at (5.6,-4.7) {%
+    \textbf{.csv}, UTF-8, Komma, LF\\ Datum ISO 8601 UTC, Dezimalpunkt\\ Preise brutto, immer EUR (auch CH)\\ Schlüssel: customer\_id alphanumerisch, sku numerisch\\ created\_at/updated\_at vorhanden};
+  \node[tech] (crmt) at (11.2,-4.7) {%
+    \textbf{.xlsx}, ein Blatt je Tabelle\\ Datum MM/DD/YYYY, teils nur MM/YYYY\\ keine Preise, Freitext vom Vertrieb\\ Schlüssel: AccountId als GUID, Betreuer per Name\\ LetzteAenderung je Account};
+  % Querverweise unterhalb
+  \draw[ref] (erpt.south) to[out=-90, in=-90, looseness=0.5] node[below, font=\tiny, align=center, pos=0.5] {Shop.erp\_customer\_no (40\,\%)} (shopt.south);
+  \draw[ref] (shopt.south) to[out=-90, in=-90, looseness=0.5] node[below, font=\tiny, align=center, pos=0.5] {E-Mail (Shop $\leftrightarrow$ CRM)} (crmt.south);
+  \draw[ref] (erpt.south west) ++(0.3,0) to[out=-90, in=-90, looseness=0.35] node[below, font=\tiny, align=center, pos=0.5] {CRM.ERP\_KdNr (60\,\%, mit Tippfehlern)} ($(crmt.south east)+(-0.3,0)$);
+\end{tikzpicture}}
+\caption{Tabellen, Formate und Querverweise der drei Quellsysteme der DartPoint GmbH}
+\label{fig:quellen}
+\end{figure}
+
+Das ERP-System ist das älteste der drei und verwaltet Kunden, Aufträge, Auftragspositionen, Zahlungen und Lieferungen. Der Export erfolgt als Textdatei im Zeichensatz Windows-1252 mit Semikolon als Trennzeichen, deutschem Datumsformat und Dezimalkomma. Seine Struktur ist die eines Altsystems. Straße und Hausnummer stehen in einem gemeinsamen Attribut, der Firmenname ist auf 30 Zeichen begrenzt, und die Kundengruppe ist als Ziffer von 1 bis 4 kodiert. Für fehlende Werte stehen Ersatzwerte, etwa $-1$ als Zahlungsziel oder der 31.12.9999 als Sperrdatum. Was in kein Attribut passt, steht im Freitextfeld \pq{Bemerkung}, darunter Sperrvermerke und mehrzeilige Einträge.
+
+Der Online-Shop enthält nur Daten, die der Besteller selbst eingibt. Die Anschrift steht in einem einzigen Attribut, statt eines Kundentyps gibt es nur das Kennzeichen \pq{is\_club}, und einen Verkäuferbezug gibt es nicht. Der Shop führt Preise brutto und immer in Euro, auch für Kunden in der Schweiz, und speichert Zeitstempel in koordinierter Weltzeit (UTC). Auf das ERP-System verweist ein optionales Attribut mit der ERP-Kundennummer, das bei 40\,\% der Shop-Kunden gefüllt ist.
+
+Das CRM-System pflegt der Vertrieb von Hand, entsprechend uneinheitlich sind die Einträge. Vereine sind ohne Vereinskürzel und Rechtsform erfasst, Privatkunden teilweise mit vollständigem Namen im Firmenfeld, und der zuständige Betreuer ist als Name statt als Schlüssel hinterlegt. Exportiert wird eine Excel-Arbeitsmappe mit US-amerikanischem Datumsformat, in der manche Postleitzahlen als Zahl gespeichert und manche Umlaute fehlerhaft kodiert sind. Die ERP-Kundennummer ist bei 60\,\% der Accounts eingetragen, in Einzelfällen fehlerhaft.
+
+Einen Schlüssel, der in allen drei Systemen gilt, gibt es also nicht. Die beiden Verweisattribute decken nur einen Teil der Kunden ab, und der Verweis im CRM-System enthält selbst Fehler. Die übrigen Kunden lassen sich nur über E-Mail-Adresse, Anschrift und Name wiederfinden, die jedes System anders schreibt. Ein Verein, der in allen drei Systemen geführt wird, macht das sichtbar (\cref{fig:vnkunde}). Er hat drei verschiedene Schlüssel, seine Goethestraße ist auf drei Arten geschrieben, und der Postleitzahl fehlt im ERP-System die führende Null. Land, Kundentyp, Newsletter-Einwilligung und Datum sind in jedem System anders kodiert. Die rechte Spalte enthält bereits das Ergebnis der Harmonisierung aus \cref{sec:integration}.
+
+\abb{vn-kunde-6}{Kunde 6 in den drei Quellen mit dem Rohwert je Merkmal und dem harmonisierten Ergebnis (Abfrage \pq{BELEG\_Heterogenitaet})}{fig:vnkunde}{1.0}
+
+Die Kundenbestände überlappen sich, aber kein System enthält die anderen vollständig. Vereine, Händler und Gastronomiebetriebe stehen im ERP- und im CRM-System und zum großen Teil auch im Shop. Privatkunden gibt es fast nur im Shop, Interessenten ohne Auftrag nur im CRM-System und gesperrte Altkunden nur im ERP-System. Auch Bewegungsdaten liegen doppelt vor, weil ein Teil der Shop-Bestellungen in das ERP-System übernommen wird. Die Verkäufer sind in ERP- und CRM-System dieselben Personen, das ERP-System führt sie jedoch unter einer Vertreternummer und das CRM-System unter ihrem Namen.
+
+Im Dart-Handel ist die Objektidentifikation schwieriger als in einem gewöhnlichen Firmenkundenbestand. Vereine haben ihr Vereinsheim häufig in einem Gastronomiebetrieb, der selbst Kunde ist, sodass zu einer Anschrift zwei Kunden gehören. Manche Vereine und Gastronomiebetriebe teilen sich außerdem ein Postfach, weshalb auch die E-Mail-Adresse nicht eindeutig ist.
+
+Ein Python-Skript mit festem Startwert erzeugt die Beispieldaten. Von Hand angelegte Daten kamen nicht in Frage, weil sich die Fehlerdichte dabei nicht gezielt steuern lässt. Daten, die eine KI unmittelbar erzeugt, schieden ebenfalls aus, da dann unbekannt ist, welche Datensätze denselben Kunden beschreiben. Der Generator erzeugt zunächst 285 eindeutige Kunden und leitet daraus die Datensätze der drei Systeme ab. Danach bringt er die Fehler ein und protokolliert jeden einzeln. Die Fehlerbilder stammen aus dem Skript der Vorlesung, ergänzt um solche, die in von Hand gepflegten Kundenstammdaten üblich sind. Mit rund 500 Kundendatensätzen kommt jedes Fehlerbild mehrfach vor, und trotzdem lässt sich jeder Einzelfall in Excel nachvollziehen.
+
+Von den 285 Kunden sind 64 in allen drei Systemen geführt, 28 im ERP- und im CRM-System sowie 43 im Shop und im CRM-System. Nur im Shop stehen 93 Privatkunden, nur im CRM-System 21 Interessenten und nur im ERP-System 36 gesperrte Altkunden. Daraus entstehen 499 Kundensätze. Auf das ERP-System entfallen 134 Sätze mit vier Dubletten und zwei Testkunden, auf den Shop 201 Sätze mit einem Testkunden und auf das CRM-System 164 Sätze mit sieben Dubletten und einem Testkunden. Hinzu kommen 478 ERP-Aufträge und 549 Shop-Bestellungen. Von den 135 überlappenden Kunden haben 40\,\% eine identische Anschrift, 40\,\% eine abweichende Schreibweise und 20\,\% sind umgezogen, wobei das CRM-System die jüngere Anschrift führt. Zusätzlich schreibt der Generator zwei Sollwert-Dateien, die nicht Teil der Quellen sind. Die erste hält fest, welcher Kunde unter welchem Schlüssel in welchem System geführt wird, die zweite, welcher der 318 eingebrachten Fehler in welchem Datensatz liegt. Beide werden nur für die Erfolgsmessung in \cref{sec:linkage} gebraucht.
+
+% =====================================================================
+\subsection{Integrierter Datenbestand}\label{sec:zielschema}
+
+Der integrierte Datenbestand soll die sechs Fragen beantworten, ohne dass auf die Quellsysteme zurückgegriffen werden muss. Er besteht aus einer Tabelle der Verkäufe auf Ebene der Auftragsposition und je einer Tabelle für Kunden, Verkäufer und Produkte (\cref{fig:zielschema}). Da die Quellsysteme keinen gemeinsamen Kundenschlüssel besitzen, erhält jeder Kunde einen künstlichen Schlüssel, und eine Mapping-Tabelle hält fest, welcher Quellschlüssel auf welchen Zielschlüssel abgebildet wurde. Hat ein Kunde in zwei Quellen verschiedene Anschriften, bleiben beide mit ihrem Gültigkeitszeitraum erhalten, damit jeder Umsatz der Region zugerechnet wird, die zum Auftragsdatum galt. Ein Verein, der am 13.01.2024 von Bregenz nach Linz umgezogen ist, erhält auf diese Weise zwei Adressversionen, von denen die erste bis zum 12.01.2024 gilt und die zweite als aktuell gekennzeichnet ist.
+
+\begin{figure}[H]\centering\small
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[x=1cm, y=1cm, >=Latex,
+  ent/.style={draw, rounded corners=2pt, fill=white, inner sep=4pt, text width=3.6cm, align=left, font=\scriptsize},
+  fact/.style={ent, fill=gray!12, text width=4.2cm},
+  key/.style={font=\scriptsize\bfseries}]
+  \node[fact] (f) at (0,0) {%
+    \textbf{\sffamily FAKT\_VERKAUF} (1 Zeile je Position)\\[2pt]
+    \textbf{KundeKey, VerkaeuferKey, ProduktKey}\\
+    AuftragID, Pos, Quelle (ERP/Shop), Kanal (Direkt/Online)\\
+    Auftragsdatum, Jahr, Quartal, Monat, Saison, Saisonjahr\\
+    LandISO, Region, PLZ \textit{(zum Auftragsdatum)}\\
+    Kundentyp, Stamm\_VertreterNr, Produktgruppe\\
+    Status, Lieferart, MengeStk, NettoEUR\\
+    Lieferdauer\_Tage, Zahlungsverzug\_Tage};
+  \node[ent, anchor=south] (k) at (-5.6,0.4) {%
+    \textbf{\sffamily DIM\_KUNDE}\\[2pt]
+    \textbf{KundeKey} (Surrogat)\\
+    Firma, Anrede, Titel, Vorname, Nachname\\
+    Kundentyp (Verein/Händler/Gastro/Privat)\\
+    LandISO, Newsletter, Erstkontakt, Kontaktstatus (Kunde/Lead/gesperrt)\\
+    VertreterNr, Betreuer\\
+    ERP\_KdNr, ShopID, AccountId, Quellen, AnzahlQuellen};
+  \node[ent, anchor=north] (a) at (-5.6,-0.4) {%
+    \textbf{\sffamily DIM\_KUNDE\_ADRESSE} (historisiert)\\[2pt]
+    \textbf{KundeKey, Version}\\
+    Strasse, Hausnr, PLZ, Ort, LandISO, Region\\
+    GueltigVon, GueltigBis, CurrentFlag};
+  \node[ent, anchor=south] (v) at (5.6,0.4) {%
+    \textbf{\sffamily DIM\_VERKAEUFER}\\[2pt]
+    \textbf{VerkaeuferKey} (= VertreterNr, \enquote{ONLINE} als Pseudo-Verkäufer)\\
+    Nachname, Vorname, Rolle (Außen-/Innendienst/Online)\\
+    Gebiet, Region, E-Mail, Austritt, Aktiv};
+  \node[ent, anchor=north] (p) at (5.6,-0.4) {%
+    \textbf{\sffamily DIM\_PRODUKT}\\[2pt]
+    \textbf{ProduktKey}\\
+    ArtNr (ERP), Shop\_sku, Bezeichnung, Shop\_name\\
+    Produktgruppe, EKPreis\\
+    Flag\_Gruppe\_abweichend, Flag\_ohne\_Shop};
+  \node[ent, fill=gray!8, above=7mm of k] (m) {%
+    \textbf{\sffamily MAP\_SCHLUESSEL}\\[2pt]
+    Quelle, \textbf{QuellID} $\rightarrow$ \textbf{KundeKey}\\
+    Matchmethode (ERP-Schlüssel / E-Mail / Adresse / Fuzzy / Dublette)};
+  \draw[->] (k.east) -- node[sloped, above, font=\tiny] {1 : n} (f.north west);
+  \draw[->] (v.west) -- node[sloped, above, font=\tiny] {1 : n} (f.north east);
+  \draw[->] (p.west) -- node[sloped, above, font=\tiny] {1 : n} (f.south east);
+  \draw[->] (k) -- node[right, font=\tiny] {1 : n (Versionen)} (a);
+  \draw[->, dashed] (a.east) -- node[sloped, below, font=\tiny, fill=white, inner sep=1pt] {Adresse zum Auftragsdatum} (f.south west);
+  \draw[->, dashed] (m) -- node[right, font=\tiny] {n : 1} (k);
+\end{tikzpicture}}
+\caption{Integrierter Datenbestand mit Verkäufen, Kunden, Verkäufern und Produkten sowie Schlüssel-Mapping und Adressversionen (Schlüssel fett)}
+\label{fig:zielschema}
+\end{figure}
+
+% =====================================================================
+\subsection{Import und Harmonisierung}\label{sec:integration}
+
+Die Integration ist in einer Excel-Arbeitsmappe umgesetzt. Ihre Abfragen sind in Schichten aufgebaut, die zugleich den Ablauf der Integration und den Aufbau der folgenden Abschnitte vorgeben (\cref{fig:abhaengigkeiten}). Die Rohdaten-Abfragen enthalten nur den Import. Jede weitere Schicht verweist auf die vorhergehende, ohne sie zu verändern, sodass sich jeder Zwischenstand einzeln prüfen lässt. Zuordnungen wie Länder, Kundentypen, Regionen und Mehrwertsteuersätze liegen als eigene Mapping-Tabellen vor, veränderliche Größen wie Quellordner, Wechselkurs und Ähnlichkeitsschwelle als Parameter. Stünden diese Werte im Abfragecode, müsste jede Änderung an mehreren Stellen nachgezogen werden. Die Quellen werden nacheinander integriert. Den Anfang macht das ERP-System, weil es die Verkäufer und die auftragsbezogenen Stammdaten führt, danach folgen CRM-System und Shop. Würden alle drei Quellen in einem Schritt integriert, ließe sich ein Zuordnungsfehler keiner Quelle mehr zuschreiben.
+
+\begin{figure}[H]\centering\small
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[>=Latex, x=1cm, y=1cm,
+  box/.style={draw, rounded corners=1pt, fill=white, minimum height=7mm, inner sep=3pt, font=\ttfamily\scriptsize, align=center},
+  layer/.style={draw=gray!60, fill=gray!8, rounded corners=2pt, inner sep=3pt},
+  lab/.style={font=\sffamily\scriptsize\bfseries, text=gray!70!black, anchor=east, align=right}]
+  % Zeile 1: Rohdaten und Hilfen
+  \node[box] (k) at (0,0) {KUNDE, AUFTRAG, \dots};
+  \node[box] (c) at (3.6,0) {customers, orders, \dots};
+  \node[box] (a) at (7.2,0) {Accounts, Betreuer};
+  \node[box, fill=gray!15] (h) at (10.6,0) {fnClean, fnNorm*, fnStrasse, fnTel,\\mapLand, mapKundentyp, Parameter};
+  % Zeile 2: Harmonisierung
+  \node[box] (kh) at (0,-1.4) {KUNDE\_h};
+  \node[box] (sh) at (3.6,-1.4) {SHOP\_h};
+  \node[box] (ch) at (7.2,-1.4) {CRM\_h};
+  % Zeile 3: Kundenintegration
+  \node[box] (kk) at (0,-2.8) {KUNDE\_k,\\ERP\_Dubletten};
+  \node[box] (sk) at (3.6,-2.8) {SHOP\_k};
+  \node[box] (ck) at (7.2,-2.8) {CRM\_k};
+  \node[box] (map) at (10.6,-2.8) {MAP\_SCHLUESSEL};
+  % Zeile 4: Zielschema
+  \node[box] (dk) at (0,-4.3) {DIM\_KUNDE,\\DIM\_KUNDE\_ADRESSE};
+  \node[box] (dp) at (3.6,-4.3) {DIM\_PRODUKT,\\DIM\_VERKAEUFER};
+  \node[box] (fv) at (7.2,-4.3) {FAKT\_ERP + FAKT\_SHOP\\$\rightarrow$ FAKT\_VERKAUF};
+  % Zeile 5: Prüfung
+  \node[box, fill=gray!15] (cs) at (0,-5.7) {CHECK\_Sollwerte,\\CHECK\_Pruefliste};
+  \node[box, fill=gray!15] (cf) at (7.2,-5.7) {CHECK\_Fakten};
+  \node[box, fill=gray!15] (pv) at (10.6,-5.7) {Pivots P1--P6};
+  % Kanten
+  \draw[->] (k) -- (kh); \draw[->] (c) -- (sh); \draw[->] (a) -- (ch);
+  \draw[->] (kh) -- (kk); \draw[->] (sh) -- (sk); \draw[->] (ch) -- (ck);
+  \draw[->] (kk) -- node[above, font=\tiny] {Basis} (sk);
+  \draw[->] (kk.south east) to[out=-20, in=200] (ck.south west);
+  \draw[->] (ck) -- (sk);
+  \draw[->] (sk) -- (dp); \draw[->] (kk) -- (dk); \draw[->] (ck.east) -- (map.west);
+  \draw[->] (map) -- (fv); \draw[->] (dk) -- (fv); \draw[->] (dp) -- (fv);
+  \draw[->] (dk) -- (cs); \draw[->] (fv) -- (cf); \draw[->] (fv) -- (pv);
+  \begin{scope}[on background layer]
+    \node[layer, fit=(k)(c)(a)(h)] (L1) {};
+    \node[layer, fit=(kh)(sh)(ch)] (L2) {};
+    \node[layer, fit=(kk)(sk)(ck)(map)] (L3) {};
+    \node[layer, fit=(dk)(dp)(fv)] (L4) {};
+    \node[layer, fit=(cs)(cf)(pv)] (L5) {};
+  \end{scope}
+  \node[lab] at (-1.75,0) {Rohdaten,\\Hilfen};
+  \node[lab] at (-1.75,-1.4) {Harmoni-\\sierung};
+  \node[lab] at (-1.75,-2.8) {Kunden-\\integration};
+  \node[lab] at (-1.75,-4.3) {Ziel-\\schema};
+  \node[lab] at (-1.75,-5.7) {Prüfung};
+\end{tikzpicture}}
+\caption{Schichten der Abfragen in der Arbeitsmappe in vereinfachter Darstellung der Abhängigkeiten}
+\label{fig:abhaengigkeiten}
+\end{figure}
+
+Die drei Exporte unterscheiden sich in Zeichensatz, Trennzeichen, Dezimaltrennzeichen und Datumsformat, deshalb gibt jede Typumwandlung das Gebietsschema ausdrücklich an. Die automatische Typerkennung von Power Query eignet sich dafür nicht, weil sie das Gebietsschema des ausführenden Rechners verwendet und ein Datum wie 03/04/2023 je nach Einstellung als 3. April oder als 4. März liest. Zeitstempel des Shops werden vor der Datumsbildung von UTC in mitteleuropäische Zeit umgerechnet, da eine Bestellung kurz vor Mitternacht sonst auf den falschen Tag fiele. Die Sommerzeit bleibt dabei unberücksichtigt. Wegen der mehrzeiligen Einträge im Bemerkungsfeld des ERP-Systems muss der Import die Anführungszeichen auswerten, sonst zerfällt ein Datensatz in mehrere Zeilen.
+
+Bevor eine feldbezogene Regel greift, bereinigt die Funktion \pq{fnClean} jede Textspalte (\cref{lst:fnclean}). Sie ersetzt zunächst fehlerhaft kodierte Umlaute anhand einer Ersetzungsliste, entfernt Steuerzeichen, wandelt geschützte Leerzeichen in gewöhnliche um, löscht nicht sichtbare Trennzeichen und fasst Mehrfach-Leerzeichen zusammen. Zuletzt setzt sie Platzhalter wie \enquote{-} oder \enquote{k.A.} auf einen leeren Wert. Die Bereinigung liegt in einer zentralen Funktion, denn allein die CRM-Tabelle hat 19 Textspalten, und ein einziges nicht sichtbares Zeichen lässt einen späteren Schlüsselvergleich scheitern. Die Ersetzungsliste kennt nur deutsche Umlaute, andere fehlerhaft kodierte Zeichen bleiben stehen.
+
+\begin{lstlisting}[language=PowerQueryM, caption={Hilfsfunktion \pq{fnClean} gegen Zeichensatzfehler, unsichtbare Zeichen, Mehrfach-Leerzeichen und Platzhalter}, label={lst:fnclean}]
+(s as nullable text) as nullable text =>
+let
+    moji = {{"Ã¼","ü"}, {"Ã¶","ö"}, {"Ã¤","ä"}, {"ÃŸ","ß"}, {"Ãœ","Ü"}, {"Ã–","Ö"}, {"Ã„","Ä"}},
+    m0 = if s = null then null else List.Accumulate(moji, s, (acc, p) => Text.Replace(acc, p{0}, p{1})),
+    t0 = if m0 = null then null else Text.Clean(m0),
+    t1 = if t0 = null then null else Text.Replace(t0, Character.FromNumber(160), " "),
+    t2 = if t1 = null then null else Text.Remove(t1, {Character.FromNumber(173), Character.FromNumber(8203)}),
+    t3 = if t2 = null then null else Text.Combine(List.Select(Text.Split(t2, " "), each _ <> ""), " "),
+    t4 = if t3 = null or t3 = "" or List.Contains({"-", "?", "k.a.", "xxx", "n/a", "unbekannt"}, Text.Lower(t3)) then null else t3
+in
+    t4
+\end{lstlisting}
+
+Die Quellen kodieren denselben Sachverhalt unterschiedlich. Die Newsletter-Einwilligung steht als J/N, als true/false und als X oder leer in den Daten, das Land als Kürzel, ISO-Code und ausgeschriebener Name, der Kundentyp als Ziffer, als Kennzeichen und als Text. Mapping-Tabellen vereinheitlichen diese Werte, für Ja/Nein-Felder übernimmt das die Funktion \pq{fnJN}, und die Ersatzwerte $-1$ und 31.12.9999 werden zu leeren Werten. Gegen bedingte Spalten sprach, dass jede neue Variante den Abfragecode ändert, während eine Mapping-Tabelle nur eine Zeile mehr bekommt. Ein Wert, der sich nicht zuordnen lässt, bleibt leer. Beim Kundentyp reicht es nur für den kleinsten gemeinsamen Nenner, weil der Shop nur Vereine von sonstigen Kunden unterscheidet, und die im CRM-System getrennten Fach- und Großhändler werden zu \enquote{Händler}. Gleich benannte Attribute mit unterschiedlicher Bedeutung erhalten bei der Übernahme eindeutige Namen, etwa \pq{Status}, das im ERP-System den Auftragsstatus, im Shop den Bestellstatus und im CRM-System den Kontaktstatus meint.
+
+Die Beispieldaten enthalten mehr als Formatfehler. In von Hand gepflegten Stammdaten ist der \emph{Feldmissbrauch} verbreitet, bei dem der richtige Wert im falschen Attribut steht oder Freitext dort erfasst ist, wo ein kodierter Wert erwartet wird. \Cref{tab:fehlerbilder} nennt zu jedem eingebrachten Fehlerbild die Fallzahl und die Behandlung, die Einteilung in automatisch, hybrid und manuell begründet \cref{sec:pruefliste}.
+
+\begin{table}[H]
+  \centering\scriptsize
+  \caption{Eingebrachte Fehlerbilder in den Kundenstammdaten (Auswahl) mit Fallzahl laut Fehlerprotokoll und Behandlung in Power Query}
+  \label{tab:fehlerbilder}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.4cm}r>{\raggedright\arraybackslash}p{7.3cm}c@{}}
+    \toprule
+    Fehlerbild (Beispiel) & Fälle & Behandlung & Klasse \\
+    \midrule
+    E-Mail mit Transportmüll (\texttt{mailto:}, \texttt{Name <\dots>}, \texttt{(at)}) & 42 & \pq{fnNormEmail} & A \\
+    Telefon mit Text oder Durchwahl (\texttt{0751/5512 -16 Hr.\ Vogel}) & 27 & Ziffern bis zum ersten Buchstaben in E.164 umsetzen, sofern das Land gültig ist, Rest auf die Prüfliste & H \\
+    Land als Variante (\texttt{BRD}, \texttt{Germany}, \texttt{AUT}) & 20 & Mapping-Tabelle \pq{mapLand}, unbekannter Wert bleibt leer & A \\
+    PLZ als Zahl aus Excel, führende Null fehlt & 16 & Text, in Deutschland auf fünf Stellen auffüllen & A \\
+    Zeichensatzfehler (\texttt{MÃ¼nchen}) & 12 & Ersetzungsliste in \pq{fnClean} & A \\
+    PLZ mit Länderpräfix (\texttt{D-88212}) & 10 & Präfix abtrennen und ein fehlendes Land daraus füllen & A \\
+    Name nach 30 Zeichen abgeschnitten & 7 & Namensprüfung über gemeinsamen Anfang statt Gleichheit & H \\
+    Hausnummer vor Straße, Felder vertauscht & 7 & Rücktausch-Regel in ERP und CRM & A \\
+    Betreuer nicht auflösbar (\texttt{S.\ Huber}) & 7 & Abgleich über normalisierten Nachnamen, Rest auf die Prüfliste & H \\
+    Privatkunde nur im Firmenfeld (\texttt{Müller Hans}) & 6 & erstes Wort zählt für den Abgleich, Feldkorrektur manuell & H \\
+    Tippfehler im Namen (\texttt{Dar-tLounge}) & 6 & Fuzzy-Kandidat, bestätigt durch Adresse & H \\
+    PLZ im Ortsfeld (\texttt{88212 Ravensburg}) & 5 & führende Ziffern übernehmen, wenn PLZ leer & A \\
+    Zwei E-Mails in einem Feld, Leerzeichen, Bemerkung im Feld & 12 & teilen und bereinigen, ein Wert ohne \texttt{@} wird leer & A \\
+    Sperrvermerk im Freitext (\texttt{INSOLVENT}) & 4 & Schlüsselwortliste setzt Kontaktstatus \enquote{gesperrt} & A \\
+    Postfach im Straßenfeld, Hausnummer-Bereich (\texttt{2-5}) & 6 & erkennen, ein Postfach erhält keinen Adressschlüssel & H \\
+    PLZ fehlt, ungültig oder passt nicht zum Land & 7 & nur erkennen und melden & M \\
+    E-Mail ohne \texttt{@} & 2 & nur erkennen und melden & M \\
+    Ansprechpartner im Firmenfeld (\texttt{Dart-Shop / Hr.\ Koch}) & 2 & nur erkennen und melden & M \\
+    \bottomrule
+    \multicolumn{4}{@{}l}{A = automatisch behoben, H = hybrid (Regel mit zweiter Bedingung oder Vorschlag), M = manuell (erkennen und melden)}
+  \end{tabular}
+\end{table}
+
+Die feldbezogenen Regeln laufen in fester Reihenfolge, zuerst Postleitzahl und Ort, dann Land, Straße und Hausnummer und zuletzt Telefon, da spätere Regeln die Ergebnisse früherer brauchen. Das Länderpräfix einer Postleitzahl liefert ein fehlendes Land, und die Normierung der Telefonnummer benötigt ein gültiges Land für die Vorwahl. Fehlt das Land, lässt eine fünfstellige Postleitzahl im Vertriebsgebiet nur Deutschland zu. Bei einer vierstelligen Postleitzahl bleibt das Land offen, da Österreich und die Schweiz in Frage kommen. Straße und Hausnummer werden an der ersten Ziffer getrennt, wobei die Regel vorangestellte Hausnummern, Hausnummernbereiche und Postfächer erkennt. Straßennamen, die selbst eine Zahl enthalten, würden dabei falsch getrennt, kommen in den Beispieldaten jedoch nicht vor.
+
+Wie das an den Daten aussieht, zeigt \cref{fig:vn3} für die Adressfehler mit je einem Datensatz aus dem Fehlerprotokoll. Postleitzahlen im Ortsfeld, Länderpräfixe und vertauschte Felder behebt die Harmonisierung automatisch. Eine ungültige oder fehlende Postleitzahl erhält dagegen keinen Adressschlüssel und kommt auf die Prüfliste. Für die übrigen sechs Fehlergruppen stehen die gleichen Belege in \cref{app:belege}.
+
+\abb{vn-3-adresse}{Adressfehler vor und nach der Harmonisierung mit je einem Datensatz aus dem Fehlerprotokoll (Abfrage \pq{BELEG\_Fehlerbilder})}{fig:vn3}{1.0}
+
+Keine Regel schätzt einen Wert. Lässt sich ein Wert nicht sicher ableiten, bleibt er leer, und der Datensatz erhält einen Befund für die Prüfliste (\cref{sec:pruefliste}). Feldmissbrauch erkennen die Regeln, die Korrektur des Feldes muss jedoch manuell überprüft und entschieden werden. Datensätze mit Mängeln bleiben im Bestand, weil mit ihnen auch die zugehörigen Umsätze entfielen, verworfen werden nur Testkunden.
+
+\subsection{Kundenintegration und Erfolgsmessung}\label{sec:linkage}
+
+Nach der Harmonisierung werden die Kundensätze den Kunden zugeordnet. Weil es keinen gemeinsamen Kundenschlüssel gibt, erhält jeder Kunde einen künstlichen Schlüssel \pq{KundeKey}, und die Tabelle \pq{MAP\_SCHLUESSEL} hält je Quellschlüssel den zugeordneten Zielschlüssel und die Zuordnungsmethode fest. Als führender Schlüssel taugt die ERP-Kundennummer nicht, denn 157 der 285 Kunden sind im ERP-System gar nicht geführt. Liefern mehrere Quellen Werte zu demselben Kunden, gilt für Stammattribute der erste vorhandene Wert in der Reihenfolge ERP, CRM, Shop. Die Anschrift ist davon ausgenommen und wird in Versionen mit Gültigkeitszeitraum geführt, da eine Priorisierung die ältere Anschrift überschreiben und Umsätze aus der Zeit vor einem Umzug der neuen Region zurechnen würde.
+
+ERP- und CRM-System teilen die ERP-Kundennummer nur bei 60\,\% der Accounts und teilweise fehlerhaft, Shop und CRM-System teilen die E-Mail-Adresse, und das ERP-System führt keine E-Mail-Adresse. Jede Quelle durchläuft deshalb eine Kaskade, die den sichersten verfügbaren Abgleich zuerst versucht und je Zeile protokolliert, welche Stufe gegriffen hat (\cref{tab:kaskade}). Der M-Code der Kaskade für das CRM-System steht in \cref{app:mcode}.
+
+\begin{table}[H]
+  \centering\small
+  \caption{Match-Kaskade je Quelle und Trefferzahlen (Messung 8)}
+  \label{tab:kaskade}
+  \begin{tabular}{@{}c>{\raggedright\arraybackslash}p{6.2cm}>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{3.5cm}@{}}
+    \toprule
+    Stufe & Kriterium & CRM $\rightarrow$ ERP & Shop $\rightarrow$ ERP/CRM \\
+    \midrule
+    0 & Vorfilter entfernt Testkunden und legt Dubletten je Quelle zusammen & 1 Test, 7 Dubletten & 1 Test \\
+    1 & ERP-Schlüssel, bestätigt durch Namen oder Adresse & 54 & 21 \\
+    2 & E-Mail-Adresse, bei mehreren Kunden je Adresse entscheidet der Name & entfällt (ERP ohne E-Mail) & 83 \\
+    3 & Adressschlüssel und Namensbestätigung & 23 & 3 \\
+    4 & Fuzzy auf normalisierten Namen, Nachregel entscheidet & 8 & 0 \\
+    neu & kein Treffer, eigener \pq{KundeKey} & 71 & 93 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Der Adressschlüssel besteht aus Land, Postleitzahl, normierter Straße und erster Hausnummer. Der Name fehlt darin, damit er als unabhängiges zweites Merkmal bestätigen kann, denn in der Kaskade entscheidet kein Merkmal allein. Der Verweis auf die ERP-Kundennummer gilt nur, wenn auch Name oder Anschrift übereinstimmen, weil er in drei Fällen falsch ist. Beim Namensvergleich genügt ein gemeinsamer Namensanfang, da das ERP-System sieben Firmennamen nach 30 Zeichen abschneidet. Eine E-Mail-Adresse, die bei mehreren Kunden steht, braucht wegen der fünf gemeinsam genutzten Postfächer die Bestätigung durch den Namen. Dasselbe gilt für die Anschrift wegen der acht Vereinsheime in Gastronomiebetrieben.
+
+Erwogen wurde auch ein Punktemodell, das Übereinstimmungen gewichtet aufsummiert und ab einem Schwellwert zuordnet. Dafür hätten die Gewichte ohne Vergleichsdaten geschätzt werden müssen, und der unscharfe Abgleich in Power Query gibt keinen Ähnlichkeitswert aus. Bei der Kaskade lässt sich dagegen jede Stufe einzeln nachvollziehen und messen.
+
+Der unscharfe Abgleich der vierten Stufe liefert nur Kandidaten und kann einem Datensatz mehrere Partner zuordnen, deshalb entscheidet eine fachliche Nachregel. Bei Vereinen muss der normierte Name identisch sein, weil der Ort Teil des Vereinsnamens ist. Bei Händlern und Gastronomiebetrieben muss die Postleitzahl übereinstimmen oder der Name identisch und der Ort gleich sein. Privatkunden des Shops durchlaufen die Stufe nicht, da häufige Familiennamen zu Fehlzuordnungen führen.
+
+Weil der Generator die richtige Zuordnung mitliefert, lässt sich der Erfolg der Integration messen. Die Abfrage \pq{CHECK\_Sollwerte} vergleicht die vergebenen Schlüssel mit der Sollwerttabelle und zählt \emph{zerrissene} Kunden, bei denen ein Kunde mehrere Schlüssel erhalten hat, sowie \emph{verschmolzene} Schlüssel, unter denen mehrere Kunden zusammengefasst sind (\cref{tab:messreihe}).
+
+\begin{table}[H]
+  \centering\small
+  \caption{Messreihe der Kundenintegration auf dem Datenstand mit 285 Kunden und 499 Kundensätzen (\pq{CHECK\_Sollwerte})}
+  \label{tab:messreihe}
+  \begin{tabular}{@{}c>{\raggedright\arraybackslash}p{9.4cm}rr@{}}
+    \toprule
+    Nr. & Stand der Kaskade & zerrissen & verschmolzen \\
+    \midrule
+    6 & jedes Merkmal zählt allein (Schlüssel bei gleichem Namen, E-Mail, Adresse, Fuzzy mit Nachregel) & 17 & 9 \\
+    7 & Schlüssel, E-Mail und Adresse benötigen die Bestätigung durch ein zweites Merkmal & 7 & 1 \\
+    8 & wie 7, zusätzlich Belegt-Regel & \textbf{7} & \textbf{0} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Die Messungen 1 bis 5 liefen auf einem ersten Datenstand mit 200 Kunden ohne Feldmissbrauch. Sie führten von 12 Verschmelzungen (Fuzzy ohne fachliche Regel) auf 0 und zeigten, dass der Fuzzy-Schwellwert zwischen 0,7 und 0,9 keine Rolle mehr spielt, sobald eine fachliche Nachregel über die Kandidaten entscheidet.
+
+Messung 6 wendet die Kaskade an, die auf dem ersten Datenstand ohne Verschmelzung blieb, und verschmilzt neun Schlüssel, sobald gemeinsam genutzte Postfächer und Anschriften in den Daten vorkommen. Ein fehlerfreies Messergebnis gilt also nur für die Fehlerbilder, die in den Daten vorkommen. Mit der Bestätigung durch ein zweites Merkmal (Messung 7) verbleibt eine Verschmelzung, bei der ein Gastronomiebetrieb in einen Ort umzieht, in dem ein gleichnamiger Betrieb besteht, und diesem zugeordnet wird. Die Belegt-Regel (Messung 8) behebt den Fall, denn ein ERP-Kunde, dem bereits ein Account über Schlüssel oder Anschrift zugeordnet ist, nimmt über den unscharfen Abgleich keinen weiteren auf.
+
+Die Kaskade soll vor allem falsche Verschmelzungen vermeiden. Eine Verschmelzung rechnet Umsätze dem falschen Kunden zu und fällt später kaum auf, ein doppelt geführter Kunde lässt sich dagegen nachträglich zusammenführen. Die sieben zerrissenen Kunden sind umgezogene Betriebe ohne bestätigenden Schlüssel, sie bleiben getrennt und müssen manuell überprüft und entschieden werden (\cref{sec:pruefliste}). Eine Messung dauert in Excel rund acht Minuten.
+
+\subsection{Prüfliste und manuelle Entscheidung}\label{sec:pruefliste}
+
+Was die Regeln nicht sicher beheben können, weist die Abfrage \pq{CHECK\_Pruefliste} aus. Sie sammelt diese Befunde nach Bereinigung und Zuordnung in einer Liste mit einer Zeile je Datensatz und Befund, insgesamt 161 Befunde an 139 der 499 Kundensätze. Weil die Liste erst am Ende des Ablaufs entsteht, enthält sie nur, was nach der automatischen Bereinigung übrig ist.
+
+Ob ein Fehlerbild automatisch, hybrid oder manuell behandelt wird, hängt davon ab, ob der Fehler sicher erkennbar ist, ob die Korrektur eindeutig ist und was eine falsche Korrektur anrichten würde. Kodierungen, Formate und Länderpräfixe sind sicher erkennbar und eindeutig korrigierbar und werden automatisch behoben. Telefonnummern mit Zusatztext oder abgeschnittene Namen löst eine Regel nur unter einer zweiten Bedingung oder nur zum Teil, sie gelten als hybrid. Eine fehlende Postleitzahl oder ein Ansprechpartner im Firmenfeld ist erkennbar, aber nicht eindeutig korrigierbar und bleibt manuell. Bei 499 Kundensätzen lohnt sich eine eigene Regel ab etwa fünf gleichartigen Fällen, darunter ist die Einzelprüfung wirtschaftlicher.
+
+Am häufigsten sind eine Anschrift bei mehreren Kunden (50 Zeilen), eine Telefonnummer mit Text (28 Zeilen) und eine E-Mail-Adresse bei mehreren Kunden (22 Zeilen). Bei den Telefonnummern sind Durchwahl und Ansprechpartner aus dem Resttext zu übernehmen, bei den E-Mail-Adressen ist das gemeinsam genutzte Postfach zu bestätigen. Es folgen ein nur monatsgenau erfasster Erstkontakt (12), möglicherweise abgeschnittene Namen (9), fehlende oder ungültige Postleitzahlen (7), ungültige E-Mail-Adressen (6), Privatnamen im Firmenfeld (6) und Sperrvermerke im Freitext (5). Die übrigen 16 Zeilen betreffen Testkunden, zwei E-Mail-Adressen in einem Feld, Postfächer und Sonstiges und dienen nur der Kenntnisnahme.
+
+Die 50 Zeilen zur Anschrift bei mehreren Kunden gehen auf zwölf Anschriften zurück. Acht davon sind Vereinsheime in Gastronomiebetrieben, bei denen Verein und Betrieb zu Recht getrennt bleiben. Die übrigen vier gehören zu umgezogenen Kunden, bei denen der Shop-Datensatz noch die alte Anschrift des ERP-Kunden trägt, über die E-Mail-Adresse jedoch dem neuen CRM-Eintrag zugeordnet ist. Der Shop-Datensatz verbindet damit zwei Schlüssel, die die paarweise arbeitende Kaskade getrennt lässt. Eine zusätzliche Regel könnte diese Fälle automatisch zusammenführen und würde die Zahl der zerrissenen Kunden von sieben auf drei senken. Sie wurde nicht umgesetzt, weil eine automatische Zusammenführung zugleich entscheidet, welche Anschrift, welcher Ansprechpartner und welcher Betreuer gelten. Bei einer Fehlentscheidung gehen Daten verloren, die sich aus dem integrierten Bestand nicht wiederherstellen lassen. Da sich ein Umzug und ein gemeinsam genutztes Gebäude anhand der Daten nicht unterscheiden lassen, weist die Prüfliste die betroffenen Datensätze aus. Sie müssen manuell überprüft und entschieden werden, erst danach wird zusammengeführt oder getrennt.
+
+Aus dem Bestand entfernt werden nur Datensätze, die keinen realen Kunden oder Geschäftsvorfall beschreiben oder ihn doppelt abbilden, also Testkunden, stornierte Bestellungen, Auftragspositionen ohne Auftrag und doppelt übernommene Shop-Bestellungen. Dubletten innerhalb einer Quelle werden zusammengeführt. Die Prüfabfragen zählen jede dieser Mengen und weisen sie aus. Wegen mangelnder Datenqualität allein wird kein Datensatz verworfen.
+
+\subsection{Fakten und Auswertung}\label{sec:fakten}
+
+Zuletzt werden die Bewegungsdaten beider Quellen auf Ebene der Auftragsposition zusammengeführt und auf einheitliche Kennzahlen gebracht. Beträge in Schweizer Franken werden mit einem als Parameter hinterlegten Kurs in Euro umgerechnet, die Bruttopreise des Shops mit dem Mehrwertsteuersatz des Lieferlandes in Nettowerte und in Sets erfasste Mengen in Stück. Die Produkte beider Quellen werden über die Artikelnummer des ERP-Systems verbunden, aus deren letzten vier Stellen sich die Artikelnummer des Shops ableiten lässt. Die Produktgruppe ergibt sich aus dem Präfix der Artikelnummer.
+
+Der Verkäufer kommt aus dem Auftrag, nicht aus dem Kundenstamm, und Bestellungen über den Shop erhalten den Verkäufer \enquote{Online}. Der im Kundenstamm hinterlegte Vertreter bleibt als eigenes Attribut erhalten, weil sich der Kanalanteil betreuter Kunden (F5) nur mit dieser Trennung auswerten lässt. Shop-Bestellungen, die in das ERP-System übernommen wurden (131 von 549), gehen nur als ERP-Auftrag in den Bestand ein. Stornierte und erstattete Bestellungen (56) werden nicht übernommen.
+
+Die Bewegungsdaten enthalten vier eigene Fehlerbilder. Vier Auftragspositionen ohne zugehörigen Auftrag und drei doppelt übernommene Shop-Bestellungen werden verworfen, da sie Umsatz ohne Geschäftsvorfall oder doppelt ausweisen würden. Bei vier Lieferungen mit einem Versanddatum vor dem Auftragsdatum bleibt die Lieferdauer leer, der Umsatz bleibt erhalten. Fünf Gutschriften mit negativer Menge werden unverändert übernommen und mindern den Umsatz. Die Abfrage \pq{CHECK\_Fakten} weist jede dieser Mengen sowie Zeilenzahlen und Umsatzsummen je Quelle im Soll-Ist-Vergleich aus, und alle Vergleiche sind erfüllt (\cref{fig:checkfakten} in \cref{app:belege}).
+
+Ein Dashboard mit je einem Diagramm beantwortet die sechs Fragen (\cref{fig:dashboard}). Jede dieser Auswertungen braucht mindestens einen Integrationsschritt. Der Umsatz je Verkäufer und Kundentyp (F1) erfordert den vereinheitlichten Kundentyp, die Auswertung nach Region (F2) die zum Auftragsdatum gültige Anschrift und der Kanalanteil betreuter Kunden (F5) die Verbindung des Vertreters aus dem ERP-System mit den Bestellungen des Shops über den gemeinsamen Kundenschlüssel.
+
+\abb{dashboard}{Ergebnis-Dashboard mit den sechs Auswertungsfragen F1 bis F6 als PivotCharts auf dem integrierten Datenbestand (Blatt \pq{Dashboard})}{fig:dashboard}{1.0}
+
+Fragen, die über die sechs Diagramme hinausgehen, beantwortet ein Analyse-Blatt (\cref{fig:analyse}). Seine Pivot-Tabelle zeigt den Nettoumsatz in den Zeilen nach Land, Region und Verkäufer und in den Spalten nach Jahr, Quartal und Monat. Jede Ebene lässt sich aufklappen (Drill-down) und wieder zusammenfassen (Roll-up), und vier Datenschnitte filtern nach Produktgruppe, Kundentyp, Saisonjahr und Kanal.
+
+\abb{analyse}{Analyse-Blatt mit Pivot-Tabelle und vier Datenschnitten, in dem die Region Süd bis auf die Verkäufer und das vierte Quartal bis auf die Monate aufgeklappt ist (Blatt \pq{Analyse})}{fig:analyse}{1.0}
+
+% =====================================================================
+\section{Zusammenfassung}\label{sec:zusammenfassung}
+
+Für die fiktive DartPoint GmbH wurden drei Quellsysteme entworfen, deren Tabellen die im Skript genannten Integrationsprobleme enthalten. Dazu gehören unterschiedliche Formate, Kodierungen und Schlüssel, Feldmissbrauch, Dubletten sowie überlappende Kunden- und Auftragsbestände. Die Beispieldaten erzeugt ein Skript, das neben den Quelldateien die tatsächliche Zuordnung der Kunden und ein Protokoll aller eingebrachten Fehler ausgibt.
+
+Die Integration in Excel Power Query erfolgt in Schichten. Auf den Import mit ausdrücklich angegebenem Gebietsschema folgen die zentrale Bereinigung, die Harmonisierung über Mapping-Tabellen und feldbezogene Regeln, die Zuordnung der Kunden über eine vierstufige Kaskade sowie die Zusammenführung der Bewegungsdaten. Der Integrationserfolg wurde gegen die bekannte Zuordnung gemessen. Die 285 Kunden aus 499 Kundensätzen mit 318 eingebrachten Fehlern werden ohne falsche Verschmelzung zugeordnet, und sieben umgezogene Kunden bleiben getrennt geführt. Eine Prüfliste weist 161 Befunde an 139 Kundensätzen aus, die manuell überprüft und entschieden werden müssen. Der integrierte Datenbestand beantwortet die sechs Fragestellungen in einem Dashboard.
+
+Das Ergebnis beruht auf drei Entscheidungen. Kein Merkmal entscheidet allein über die Zuordnung zweier Datensätze, denn Schlüssel, E-Mail-Adresse und Anschrift brauchen jeweils die Bestätigung durch ein zweites Merkmal. Kein Wert wird geschätzt, sodass nicht sicher ableitbare Angaben leer bleiben und ausgewiesen werden. Abweichende Anschriften werden mit Gültigkeitszeitraum geführt statt nach Quelle priorisiert. Die Messreihe zeigte außerdem, dass eine fehlerfreie Zuordnung nur für die Fehlerbilder gilt, die in den Daten vorkommen, denn erst gemeinsam genutzte Postfächer und Anschriften machten die Bestätigung durch ein zweites Merkmal nötig.
+
+% =====================================================================
+% ANHANG – knapp (HR 2.9: nie größer als der Textteil)
+% Jedes Listing wird vor dem Code kurz beschrieben (was der Code bewerkstelligt).
+% =====================================================================
+\anhang{Zentrale Power-Query-Abfragen (M-Code)}{app:mcode}
+Abgedruckt sind die vier Abfragen, auf denen die Entscheidungen aus \cref{sec:linkage} beruhen, jeweils mit einer kurzen Beschreibung vor dem Code.
+% Zeilennummern passen zu code/Section1.m (Stand 12.11.2026); bei Änderungen in der Mappe neu extrahieren.
+
+Die Funktion \pq{fnNormName} bildet aus einem Firmen- oder Vereinsnamen die Vergleichsform für den Abgleich. Sie wandelt den Text in Kleinbuchstaben um, ersetzt Umlaute und ß durch ihre Umschrift, entfernt Rechtsformen, Vereinskürzel, Titel und Sperrvermerke anhand einer Stoppwortliste und streicht zuletzt alle Leerzeichen. Aus \enquote{DC Black Arrows Dresden e.V.} und \enquote{Black Arrows Dresden} entsteht so derselbe Wert \pq{blackarrowsdresden}.
+\lstinputlisting[language=PowerQueryM, caption={\pq{fnNormName} normalisiert Namen für den Abgleich}, firstline=70, lastline=80]{code/Section1.m}
+
+Die Funktion \pq{fnNameOk} prüft, ob zwei normalisierte Namen als derselbe Name gelten. Das ist der Fall, wenn beide gleich sind oder wenn der kürzere Name mindestens zwölf Zeichen lang ist und beide Namen bis auf höchstens vier Zeichen des kürzeren mit denselben Zeichen beginnen. Damit werden im ERP-System nach 30 Zeichen abgeschnittene Namen bestätigt, ohne dass kurze Namen verwechselt werden.
+\lstinputlisting[language=PowerQueryM, caption={\pq{fnNameOk} bestätigt Namen über den gemeinsamen Anfang}, firstline=108, lastline=116]{code/Section1.m}
+
+Die Abfrage \pq{CRM\_k} ordnet jedem CRM-Account einen \pq{KundeKey} zu. Nach dem Entfernen der Testkunden prüft die Funktion \pq{fKey} den eingetragenen ERP-Schlüssel und lässt ihn nur gelten, wenn Name oder Adressschlüssel ihn bestätigen (Stufe 1). Die Funktion \pq{fAdr} sucht anschließend einen ERP-Kunden mit gleichem Adressschlüssel und passendem Namen (Stufe 3). Für die danach noch offenen Zeilen liefert \pq{Table.FuzzyNestedJoin} Kandidaten mit ähnlichem Namen im selben Land, über die die fachliche Nachregel und die Belegt-Regel entscheiden (Stufe 4). Die Spalte \pq{Matchmethode} protokolliert die erfolgreiche Stufe. Accounts ohne Treffer erhalten neue Schlüssel ab 1001, wobei Dubletten innerhalb des CRM-Systems über Adressschlüssel und Namen gruppiert werden und sich einen Schlüssel teilen. Der Parameter \pq{pAbsicherung} schaltet die Bestätigungen ab, womit sich Messung 6 nachstellen lässt.
+\lstinputlisting[language=PowerQueryM, caption={\pq{CRM\_k} mit der Match-Kaskade für das CRM-System}, firstline=355, lastline=404]{code/Section1.m}
+
+Die Abfrage \pq{CHECK\_Sollwerte} misst den Integrationserfolg. Sie lädt die Sollwerttabelle des Generators, bringt die drei Quellschlüssel je Kunde in eine lange Form mit einer Zeile je Quelle und Quellschlüssel und verbindet diese mit \pq{MAP\_SCHLUESSEL}. Anschließend zählt sie je Sollschlüssel die vergebenen Zielschlüssel, je Zielschlüssel die Sollschlüssel sowie die Quellschlüssel ohne Zuordnung. Mehr als ein Zielschlüssel je Sollschlüssel bedeutet einen zerrissenen Kunden, mehr als ein Sollschlüssel je Zielschlüssel einen verschmolzenen Schlüssel. Das Ergebnis stellt diese drei Gesamtwerte vor eine Aufschlüsselung nach Quelle, Zuordnungsmethode und Abweichungsart.
+\lstinputlisting[language=PowerQueryM, caption={\pq{CHECK\_Sollwerte} zur Erfolgsmessung}, firstline=481, lastline=505]{code/Section1.m}
+
+\anhang{Belege aus der Arbeitsmappe}{app:belege}
+Die ersten sechs Abbildungen zeigen für die übrigen Fehlergruppen je einen Datensatz aus dem Fehlerprotokoll vor und nach der Behandlung (Abfrage \pq{BELEG\_Fehlerbilder}), die Adressfehler stehen in \cref{fig:vn3}. Die letzten vier Abbildungen zeigen die Kaskade, die Erfolgsmessung, die Prüfliste und die Prüfung der Fakten in der Arbeitsmappe.
+
+\abb{vn-1-format}{Fehlergruppe 1 (Zeichen und Format) vor und nach der Bereinigung}{fig:vn1}{1.0}
+\abb{vn-2-kodierung}{Fehlergruppe 2 (Kodierungen) vor und nach der Vereinheitlichung}{fig:vn2}{1.0}
+\abb{vn-4-kontakt}{Fehlergruppe 4 (Kontaktdaten) vor und nach der Normierung}{fig:vn4}{1.0}
+\abb{vn-5-feldmissbrauch}{Fehlergruppe 5 (Feldmissbrauch), bei der das Erkennen automatisch gelingt und die Korrektur des Feldes manuell überprüft und entschieden werden muss}{fig:vn5}{1.0}
+\abb{vn-6-schluessel}{Fehlergruppe 6 (Datensätze und Schlüssel) mit verworfenen Testkunden sowie Dubletten und Schlüsselfehlern, die die Kaskade löst}{fig:vn6}{1.0}
+\abb{vn-7-bewegung}{Fehlergruppe 7 (Bewegungsdaten und Kennzahlen), bei der nur Zeilen verworfen werden, die Umsatz doppelt zählen oder zu keinem Auftrag gehören}{fig:vn7}{1.0}
+\abb{pq-kaskade}{Ergebnis der Match-Kaskade in \pq{CRM\_k} mit der Zuordnungsmethode je Zeile}{fig:kaskade}{0.95}
+\abb{pq-check}{Ergebnis von \pq{CHECK\_Sollwerte} mit zerrissenen und verschmolzenen Kunden}{fig:check}{0.55}
+\abb{pq-pruefliste}{Auszug aus \pq{CHECK\_Pruefliste} mit einer Zeile je Datensatz und Befund}{fig:pruefliste}{0.9}
+\abb{check-fakten}{Soll-Ist-Prüfung der Fakten in \pq{CHECK\_Fakten} mit Zeilenzahlen, fehlenden Schlüsseln und Umsatzsummen je Quelle}{fig:checkfakten}{0.6}
+
+% ---------- Ehrenwörtliche Erklärung (HR 2.12, Wortlaut vorgegeben, ohne Seitenzahl)
+\newpage
+\thispagestyle{empty}
+\section*{Ehrenwörtliche Erklärung}
+Ich versichere hiermit, dass ich die vorliegende Arbeit mit dem Thema \enquote{\arbeitstitel} selbständig verfasst und keine anderen als die angegebenen Quellen und Hilfsmittel benutzt habe. Ich versichere zudem, dass die eingereichte elektronische Fassung mit der gedruckten Fassung übereinstimmt.
+
+\vspace{2cm}
+\makebox[0.5\textwidth]{\hrulefill} \hfill \makebox[0.4\textwidth]{\hrulefill} \\
+Ort, Datum \hfill Unterschrift
+
+\end{document}

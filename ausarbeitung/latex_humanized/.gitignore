@@ -1,0 +1,16 @@
+# LaTeX-Build-Artefakte
+*.aux
+*.log
+*.out
+*.toc
+*.lot
+*.lof
+*.lol
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+texput.log
