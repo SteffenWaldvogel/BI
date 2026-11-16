@@ -1,5 +1,7 @@
 # BI-Portfolio – Thema 1.2: Power-Query-Integration DartPoint GmbH
 
+> Aktueller Projektstand, Vorgaben und offene Punkte: `ausarbeitung/STAND.md`. Die Kennzahlen weiter unten stammen vom ersten Datenstand und sind veraltet.
+
 Abgabe: 27.11.2026, 24 Uhr, PDF an kirchberg@dhbw-ravensburg.de (von der DHBW-Adresse).
 Entwurf der Quellsysteme und Checkliste: Claude-Doc "Quellsysteme Dart-Händler".
 
